@@ -224,8 +224,12 @@ module gtwizard_ultrascale_1_example_top (
   wire [63:0] gtwiz_userdata_tx_int;
   wire [31:0] hb0_gtwiz_userdata_tx_int;
   wire [31:0] hb1_gtwiz_userdata_tx_int;
-  assign gtwiz_userdata_tx_int[31:0] = 32'h503C503C;//hb0_gtwiz_userdata_tx_int;
-  assign gtwiz_userdata_tx_int[63:32] = hb1_gtwiz_userdata_tx_int;
+  assign gtwiz_userdata_tx_int[31:16] = 16'h503C;//hb0_gtwiz_userdata_tx_int;
+  assign gtwiz_userdata_tx_int[15:0] = counter1;
+  
+  assign gtwiz_userdata_tx_int[47:32] = counter1;//hb0_gtwiz_userdata_tx_int;
+  assign gtwiz_userdata_tx_int[63:48] = 16'h503C;
+  //assign gtwiz_userdata_tx_int[63:32] = hb1_gtwiz_userdata_tx_int;
 
   //--------------------------------------------------------------------------------------------------------------------
   wire [63:0] gtwiz_userdata_rx_int;
@@ -726,8 +730,13 @@ module gtwizard_ultrascale_1_example_top (
     .o_out  (gtwiz_reset_rx_done_vio_sync[0])
   );
 
-  wire [127:0] ila_data;
+  reg[32:0] counter1;
+  initial counter1 = 0;
+  always @ (posedge hb_gtwiz_reset_clk_freerun_buf_int) begin
+    counter1 <= counter1 + 1'b1;
+  end
   
+  wire [127:0] ila_data; 
   
   assign ila_data[31:0] = gtwiz_userdata_rx_int[31:0];
   assign ila_data[63:32] = gtwiz_userdata_rx_int[63:32];
