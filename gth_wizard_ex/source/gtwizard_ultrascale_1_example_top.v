@@ -227,8 +227,8 @@ module gtwizard_ultrascale_1_example_top (
   assign gtwiz_userdata_tx_int[31:16] = 16'h503C;//hb0_gtwiz_userdata_tx_int;
   assign gtwiz_userdata_tx_int[15:0] = counter1;
   
-  assign gtwiz_userdata_tx_int[47:32] = counter1;//hb0_gtwiz_userdata_tx_int;
-  assign gtwiz_userdata_tx_int[63:48] = 16'h503C;
+  assign gtwiz_userdata_tx_int[63:48] = counter1;//hb0_gtwiz_userdata_tx_int;
+  assign gtwiz_userdata_tx_int[47:32] = 16'h503C;
   //assign gtwiz_userdata_tx_int[63:32] = hb1_gtwiz_userdata_tx_int;
 
   //--------------------------------------------------------------------------------------------------------------------
