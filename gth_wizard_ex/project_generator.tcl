@@ -15,9 +15,6 @@ create_project project_gth_wizard_ex project -part $FPGA_TYPE -force
 set_property target_language VHDL [current_project]
 set_property target_simulator XSim [current_project]
 
-create_fileset -srcset sources_1
-set obj [get_filesets sources_1]
-
 # Add files
 # for f in source/*; do echo \"$f\"\\; done
 # find ip -type f -name "*.xci"
@@ -40,7 +37,8 @@ set files [list \
 "ip/$FPGA_TYPE/gtwizard_ultrascale_1/gtwizard_ultrascale_1.xci"\
 "ip/$FPGA_TYPE/gtwizard_ultrascale_1_vio_0/gtwizard_ultrascale_1_vio_0.xci"\
 ]
-add_files -norecurse -fileset $obj $files
+#add_files -norecurse -fileset $obj $files
+add_files -norecurse $files
 add_files -fileset constrs_1 -norecurse "source/gtwizard_ultrascale_1_example_top.xdc"
 
 # Add tcl for simulation
