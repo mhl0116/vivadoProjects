@@ -23,8 +23,8 @@ Only the source folder is requried. Other folders can be generated using the gen
 - ip/xcku040-ffva1156-2-e/gtwizard_ultrascale_1/gtwizard_ultrascale_1.xci
 - ip/xcku040-ffva1156-2-e/gtwizard_ultrascale_1_vio_0/gtwizard_ultrascale_1_vio_0.xci
 
-- project/tb_project.xpr: Vivado project for testbench. Set for KCU105 (xcku040-ffva1156-2-e)
-
+- project/project_gth_wizard_ex.xpr: Vivado project for testbench. Set for KCU105 (xcku040-ffva1156-2-e)
+- ip/xcku040-ffva1156-2-e/managed_ip_project/managed_ip_project.xpr
 ## Generator files
 - ip_generator.tcl
 - project_generator.tcl
