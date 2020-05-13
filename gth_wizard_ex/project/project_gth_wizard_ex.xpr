@@ -6,7 +6,7 @@
 <Project Version="7" Minor="44" Path="/home/hmei/workspace/vivadoProjects/gth_wizard_ex/project/project_gth_wizard_ex.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="9ff13016ef3f4ca088abbaa0c3694536"/>
+    <Option Name="Id" Val="841bd5cba6b840c99fab6f16254feaa1"/>
     <Option Name="Part" Val="xcku040-ffva1156-2-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -136,17 +136,9 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../source/gtwizard_ultrascale_1_example_top.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../source/gtwizard_ultrascale_1_example_wrapper_functions.v">
-        <FileInfo>
+        <FileInfo SFType="VHeader">
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -164,7 +156,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../source/gtwizard_ultrascale_1_example_top_sim.v">
+      <File Path="$PPRDIR/../source/gtwizard_ultrascale_1_example_top.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -179,8 +171,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="gtwizard_ultrascale_1_example_top_sim"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TopModule" Val="gtwizard_ultrascale_1_example_top"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
@@ -199,7 +190,7 @@
       <Filter Type="Srcs"/>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="gtwizard_ultrascale_1_example_top_sim"/>
+        <Option Name="TopModule" Val="gtwizard_ultrascale_1_example_top"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="TransportPathDelay" Val="0"/>
