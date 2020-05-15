@@ -20,11 +20,10 @@ end Firmware_tb;
 architecture Behavioral of Firmware_tb is
   component clockManager is
   port (
-    CLK_IN300  : in std_logic := '0';
-    CLK_OUT40  : out std_logic := '0';
-    CLK_OUT10  : out std_logic := '0';
-    CLK_OUT80  : out std_logic := '0';
-    CLK_OUT160 : out std_logic := '0'
+    CLK_IN300 : in std_logic := '0';
+    CLK_OUT40 : out std_logic := '0';
+    CLK_OUT10 : out std_logic := '0';
+    CLK_OUT80 : out std_logic := '0'
   );
   end component;
   component ila is
@@ -54,8 +53,6 @@ architecture Behavioral of Firmware_tb is
   signal sysclk : std_logic := '0';
   signal sysclkQuarter : std_logic := '0'; 
   signal sysclkDouble : std_logic := '0';
-  signal sysclk160 : std_logic := '0';
-
   signal inputCounter: unsigned(13 downto 0) := (others=> '0');
   signal intime_s: std_logic := '0';
   -- Constants
@@ -63,7 +60,7 @@ architecture Behavioral of Firmware_tb is
   constant bw_input2 : integer := 12;
   constant bw_output : integer := 20;
   constant bw_addr : integer := 2;
-  constant nclocksrun : integer := 32;
+  constant nclocksrun : integer := 32000;
   -- Input to firmware signals
   signal input1_s: std_logic_vector(bw_input1-1 downto 0) := (others=> '0');
   signal input2_s: std_logic_vector(bw_input2-1 downto 0) := (others=> '0');
@@ -105,8 +102,7 @@ begin
             CLK_IN300=> clk_in_buf,
             CLK_OUT40=> sysclk,
             CLK_OUT10=> sysclkQuarter,
-            CLK_OUT80=> sysclkDouble,
-            CLK_OUT160=> sysclk160
+            CLK_OUT80=> sysclkDouble
           );
 
   J36_USER_SMA_GPIO_P <= sysclk;
@@ -164,7 +160,7 @@ begin
         input1_s <= std_logic_vector(init_input1);
         input2_s <= std_logic_vector(init_input2);
       end if;
-
+      
     end if;
 
   end process;

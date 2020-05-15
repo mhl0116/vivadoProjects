@@ -28,6 +28,10 @@ if { $argc != 1 } {
   create_ip -name blk_mem_gen -vendor xilinx.com -library ip -version 8.3 -module_name lut_input2 -dir ../ip/$FPGA_TYPE
   set_property -dict [list CONFIG.Memory_Type {Single_Port_ROM} CONFIG.Write_Width_A {12} CONFIG.Write_Depth_A {4} CONFIG.Enable_A {Always_Enabled} CONFIG.Register_PortA_Output_of_Memory_Primitives {false} CONFIG.Load_Init_File {true} CONFIG.Coe_File {../../../source/data/Input2.coe} CONFIG.Read_Width_A {12} CONFIG.Write_Width_B {12} CONFIG.Read_Width_B {12} CONFIG.Port_A_Write_Rate {0}] [get_ips lut_input2]
 
+  #create fifo
+  create_ip -name fifo_generator -vendor xilinx.com -library ip -version 13.1 -module_name datafifo_dcfeb -dir ../ip/$FPGA_TYPE
+  set_property -dict [list CONFIG.Fifo_Implementation {Independent_Clocks_Builtin_FIFO} CONFIG.Performance_Options {First_Word_Fall_Through} CONFIG.Input_Depth {8192} CONFIG.Read_Clock_Frequency {40} CONFIG.Write_Clock_Frequency {40} CONFIG.Programmable_Full_Type {Single_Programmable_Full_Threshold_Constant} CONFIG.Full_Threshold_Assert_Value {6152} CONFIG.Output_Depth {8192} CONFIG.Data_Count_Width {13} CONFIG.Write_Data_Count_Width {13} CONFIG.Read_Data_Count_Width {13} CONFIG.Full_Threshold_Negate_Value {6151} CONFIG.Empty_Threshold_Assert_Value {6} CONFIG.Empty_Threshold_Negate_Value {7}] [get_ips datafifo_dcfeb]
+
   puts "\[Success\] Created ip for $FPGA_TYPE"
   close_project
 }
