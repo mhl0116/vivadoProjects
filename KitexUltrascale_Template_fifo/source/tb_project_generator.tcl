@@ -19,7 +19,6 @@ add_files -norecurse "Firmware.vhd Firmware_pkg.vhd Firmware_tb.vhd ../ip/$FPGA_
 add_files -fileset constrs_1 -norecurse "Firmware_tb.xdc"
 
 # Add tcl for simulation
-#set_property -name {xsim.simulate.custom_tcl} -value {../source/Firmware_tb.tcl} -objects [get_filesets sim_1]
 set_property -name {xsim.simulate.custom_tcl} -value {../../../../source/Firmware_tb.tcl} -objects [get_filesets sim_1]
 
 # Set ip as global
