@@ -244,7 +244,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
 
   signal sm_link : std_logic := '1'; -- most likely set it to 1 wont work, need to come up with a counter
   signal init_done_int : std_logic := '0';
-  signal init_retry_ctr_int : std_logic_vector(2 downto 0) := (others=> '0');
+  signal init_retry_ctr_int : std_logic_vector(3 downto 0) := (others=> '0');
 
   signal hb_gtwiz_reset_all_int : std_logic := '0';
   
