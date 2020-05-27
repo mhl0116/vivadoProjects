@@ -159,7 +159,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   component ila_0 is
   port (
     clk : in std_logic := '0';
-    probe0 : in std_logic_vector(127 downto 0) := (others=> '0')
+    probe0 : in std_logic_vector(135 downto 0) := (others=> '0')
   );
   end component;
 
@@ -278,6 +278,8 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
 
   signal ila_data: std_logic_vector(127 downto 0) := (others=> '0'); 
 
+  signal sm_link_counter : unsigned(6 downto 0) := (others=> '0');
+
 begin
     -- for kcu105 
   sel_si750_clk_i <= '0';
@@ -362,6 +364,19 @@ begin
   -- or data connections. It also resets the receiver in the event of link loss in an attempt to regain link, so please
   -- note the possibility that this behavior can have the effect of overriding or disturbing user-provided inputs that
   -- destabilize the data stream. It is a demonstration only and can be modified to suit your system needs.
+
+  process(hb_gtwiz_reset_clk_freerun_buf_int)
+   begin
+      if(rising_edge(hb_gtwiz_reset_clk_freerun_buf_int)) then
+        if(sm_link_counter < x"43") then
+            sm_link <= '0';
+            sm_link_counter <= sm_link_counter + 1;
+        elsif(sm_link_counter = x"43") then
+            sm_link <= '1';
+        end if;
+      end if;
+  end process;
+
   example_init_inst : gtwizard_ultrascale_1_example_init  
   port map(
            clk_freerun_in    => hb_gtwiz_reset_clk_freerun_buf_int,
@@ -433,6 +448,8 @@ begin
   ila_data(63 downto 32) <= gtwiz_userdata_rx_int(63 downto 32);
   ila_data(95 downto 64) <= gtwiz_userdata_tx_int(31 downto 0);
   ila_data(127 downto 96) <= gtwiz_userdata_tx_int(63 downto 32);
+  ila_data(128) <= sm_link;
+  ila_data(135 downto 129) <= b"0000000";
 
   i_ila : ila_0
   port map(
