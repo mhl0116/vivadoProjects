@@ -35,6 +35,7 @@ set files [list \
 "source/gtwizard_ultrascale_1_example_clean_top.vhd"\
 "source/gtwizard_ultrascale_1_example_top.xdc"\
 "source/gtwizard_ultrascale_1_example_wrapper.v"\
+"source/gtwizard_ultrascale_1_example_reset_sync.v"\
 "source/gtwizard_ultrascale_1_example_wrapper_functions.v"\
 "ip/$FPGA_TYPE/clockManager/clockManager.xci"\
 "ip/$FPGA_TYPE/ila_0/ila_0.xci"\
@@ -42,7 +43,6 @@ set files [list \
 "ip/$FPGA_TYPE/gtwizard_ultrascale_1_vio_0/gtwizard_ultrascale_1_vio_0.xci"\
 ]
 #"source/gtwizard_ultrascale_1_example_checking_8b10b.v"\
-"source/gtwizard_ultrascale_1_example_reset_sync.v"\
 "source/gtwizard_ultrascale_1_prbs_any.v"\
 "source/gtwizard_ultrascale_1_example_stimulus_8b10b.v"\
 

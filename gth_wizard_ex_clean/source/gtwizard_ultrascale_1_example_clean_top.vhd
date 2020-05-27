@@ -150,7 +150,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
 
   component clockManager is
   port (
-    clk_in : in std_logic := '0';
+    clk_in1 : in std_logic := '0';
     clk_out1 : out std_logic := '0';
     clk_out2 : out std_logic := '0'
   );
@@ -335,7 +335,7 @@ begin
 
   ClockManager_i : clockManager
   port map(
-            clk_in => inclk_buf,
+            clk_in1 => inclk_buf,
             clk_out1 => clk_out40,
             clk_out2 => clk_out80 
           );
