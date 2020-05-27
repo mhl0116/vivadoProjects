@@ -276,7 +276,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal ch0_tx8b10ben_int : std_logic := '1';
   signal ch1_tx8b10ben_int : std_logic := '1';
 
-  signal ila_data: std_logic_vector(127 downto 0) := (others=> '0'); 
+  signal ila_data: std_logic_vector(135 downto 0) := (others=> '0'); 
 
   signal sm_link_counter : unsigned(6 downto 0) := (others=> '0');
 
