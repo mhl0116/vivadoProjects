@@ -163,13 +163,42 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   );
   end component;
 
+  COMPONENT gtwizard_ultrascale_1_vio_0
+  PORT (
+    clk : IN STD_LOGIC;
+    probe_in0 : IN STD_LOGIC;
+    probe_in1 : IN STD_LOGIC;
+    probe_in2 : IN STD_LOGIC;
+    probe_in3 : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+    probe_in4 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    probe_in5 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    probe_in6 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
+    probe_in7 : IN STD_LOGIC;
+    probe_in8 : IN STD_LOGIC;
+    probe_out0 : OUT STD_LOGIC;
+    probe_out1 : OUT STD_LOGIC;
+    probe_out2 : OUT STD_LOGIC;
+    probe_out3 : OUT STD_LOGIC;
+    probe_out4 : OUT STD_LOGIC;
+    probe_out5 : OUT STD_LOGIC
+  );
+  END COMPONENT;
+
+  component gtwizard_ultrascale_1_example_bit_synchronizer 
+  port (
+  clk_in: in std_logic := '0';
+  i_in: in std_logic := '0';
+  o_out: out std_logic := '0'
+  );
+  end component;
 
 -- signals that may be useful
 --  wire link_down_latched_reset_in;
---  wire link_status_out;
---  reg  link_down_latched_out = 1'b1;
+  signal link_status_out: std_logic := '0';
+  signal link_down_latched_out: std_logic := '1';
   signal hb_gtwiz_reset_all_in : std_logic := '0';
 
+-- Synchronize the latched link down reset input and the VIO-driven signal into the free-running clock domain
 
   signal gthrxn_int: std_logic_vector(1 downto 0) := (others=> '0');
   signal gthrxp_int: std_logic_vector(1 downto 0) := (others=> '0');
@@ -280,6 +309,28 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
 
   signal sm_link_counter : unsigned(6 downto 0) := (others=> '0');
 
+  -- vio related
+  signal gtpowergood_vio_sync : std_logic_vector(1 downto 0) := (others=> '0');
+  signal txpmaresetdone_vio_sync: std_logic_vector(1 downto 0) := (others=> '0');
+  signal rxpmaresetdone_vio_sync: std_logic_vector(1 downto 0) := (others=> '0');
+  signal gtwiz_reset_rx_done_vio_sync: std_logic;
+  signal gtwiz_reset_tx_done_vio_sync: std_logic;
+  signal link_down_latched_reset_vio_int: std_logic;
+  signal link_down_latched_reset_sync: std_logic;
+  signal hb_gtwiz_reset_rx_datapath_vio_int: std_logic;
+  signal hb_gtwiz_reset_rx_pll_and_datapath_vio_int: std_logic;
+
+  attribute dont_touch : string;
+  attribute dont_touch of bit_synchronizer_vio_gtpowergood_0_inst : label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_gtpowergood_1_inst : label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_txpmaresetdone_0_inst : label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_txpmaresetdone_1_inst: label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_rxpmaresetdone_0_inst: label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_rxpmaresetdone_1_inst: label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_gtwiz_reset_rx_done_0_inst: label is "true"; 
+  attribute dont_touch of bit_synchronizer_vio_gtwiz_reset_tx_done_0_inst: label is "true"; 
+  attribute dont_touch of bit_synchronizer_link_down_latched_reset_inst: label is "true"; 
+
 begin
     -- for kcu105 
   sel_si750_clk_i <= '0';
@@ -357,7 +408,7 @@ begin
     O => hb_gtwiz_reset_all_buf_int
   );
 
-  hb_gtwiz_reset_all_int <= hb_gtwiz_reset_all_buf_int or hb_gtwiz_reset_all_init_int; -- or hb_gtwiz_reset_all_vio_int;
+  hb_gtwiz_reset_all_int <= hb_gtwiz_reset_all_buf_int or hb_gtwiz_reset_all_init_int or hb_gtwiz_reset_all_vio_int;
 
   -- The example initialization module interacts with the reset controller helper block and other example design logic
   -- to retry failed reset attempts in order to mitigate bring-up issues such as initially-unavilable reference clocks
@@ -396,7 +447,7 @@ begin
 
   gtwiz_reset_tx_datapath_int <= hb0_gtwiz_reset_tx_datapath_int;
 
-  hb_gtwiz_reset_rx_datapath_int <= hb_gtwiz_reset_rx_datapath_init_int; --|| hb_gtwiz_reset_rx_datapath_vio_int;
+  hb_gtwiz_reset_rx_datapath_int <= hb_gtwiz_reset_rx_datapath_init_int or hb_gtwiz_reset_rx_datapath_vio_int;
 
   -- tx and rx data
   gtwiz_userdata_tx_int(31 downto 16) <= x"503C";
@@ -485,6 +536,112 @@ begin
   port map(
     clk => hb_gtwiz_reset_clk_freerun_buf_int,
     probe0 => ila_data
+  );
+
+  -- ===================================================================================================================
+  -- VIO FOR HARDWARE BRING-UP AND DEBUG
+  -- ===================================================================================================================
+
+  -- Synchronize gtpowergood into the free-running clock domain for VIO usage
+  bit_synchronizer_vio_gtpowergood_0_inst: gtwizard_ultrascale_1_example_bit_synchronizer
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => gtpowergood_int(0),
+    o_out  => gtpowergood_vio_sync(0)
+  );
+
+  bit_synchronizer_vio_gtpowergood_1_inst: gtwizard_ultrascale_1_example_bit_synchronizer  
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => gtpowergood_int(1),
+    o_out  => gtpowergood_vio_sync(1)
+  );
+
+  -- Synchronize txpmaresetdone into the free-running clock domain for VIO usage
+  bit_synchronizer_vio_txpmaresetdone_0_inst: gtwizard_ultrascale_1_example_bit_synchronizer
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => txpmaresetdone_int(0),
+    o_out  => txpmaresetdone_vio_sync(0)
+  );
+
+  bit_synchronizer_vio_txpmaresetdone_1_inst: gtwizard_ultrascale_1_example_bit_synchronizer  
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => txpmaresetdone_int(1),
+    o_out  => txpmaresetdone_vio_sync(1)
+  );
+
+  -- Synchronize rxpmaresetdone into the free-running clock domain for VIO usage
+  bit_synchronizer_vio_rxpmaresetdone_0_inst: gtwizard_ultrascale_1_example_bit_synchronizer  
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => rxpmaresetdone_int(0),
+    o_out  => rxpmaresetdone_vio_sync(0)
+  );
+
+  bit_synchronizer_vio_rxpmaresetdone_1_inst: gtwizard_ultrascale_1_example_bit_synchronizer 
+  port map ( 
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => rxpmaresetdone_int(1),
+    o_out  => rxpmaresetdone_vio_sync(1)
+  );
+
+  -- Synchronize gtwiz_reset_tx_done into the free-running clock domain for VIO usage
+  bit_synchronizer_vio_gtwiz_reset_tx_done_0_inst: gtwizard_ultrascale_1_example_bit_synchronizer   port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => gtwiz_reset_tx_done_int,
+    o_out  => gtwiz_reset_tx_done_vio_sync
+  );
+
+  -- Synchronize gtwiz_reset_rx_done into the free-running clock domain for VIO usage
+  bit_synchronizer_vio_gtwiz_reset_rx_done_0_inst: gtwizard_ultrascale_1_example_bit_synchronizer 
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => gtwiz_reset_rx_done_int,
+    o_out  => gtwiz_reset_rx_done_vio_sync
+  );
+
+  -- Synchronize the latched link down reset input and the VIO-driven signal into the free-running clock domain
+  bit_synchronizer_link_down_latched_reset_inst: gtwizard_ultrascale_1_example_bit_synchronizer
+  port map (
+    clk_in => hb_gtwiz_reset_clk_freerun_buf_int,
+    i_in   => link_down_latched_reset_vio_int,
+    o_out  => link_down_latched_reset_sync
+  );
+
+  -- Reset the latched link down indicator when the synchronized latched link down reset signal is high. Otherwise, set
+  -- the latched link down indicator upon losing link. This indicator is available for user reference.
+  process (hb_gtwiz_reset_clk_freerun_buf_int) 
+  begin
+    if (rising_edge(link_down_latched_reset_sync) ) then
+      link_down_latched_out <= '0';
+    elsif (sm_link = '0') then
+      link_down_latched_out <= '1';
+    end if;
+  end process;
+
+  -- Assign the link status indicator to the top-level two-state output for user reference
+  link_status_out <= sm_link;
+  
+  gtwizard_ultrascale_1_vio_0_inst : gtwizard_ultrascale_1_vio_0
+  PORT MAP (
+    clk => hb_gtwiz_reset_clk_freerun_buf_int,
+    probe_in0 => link_status_out,
+    probe_in1 => link_down_latched_out,
+    probe_in2 => init_done_int,
+    probe_in3 => init_retry_ctr_int,
+    probe_in4 => gtpowergood_vio_sync,
+    probe_in5 => txpmaresetdone_vio_sync,
+    probe_in6 => rxpmaresetdone_vio_sync,
+    probe_in7 => gtwiz_reset_tx_done_vio_sync,
+    probe_in8 => gtwiz_reset_rx_done_vio_sync,
+    probe_out0 => hb_gtwiz_reset_all_vio_int,
+    probe_out1 => hb0_gtwiz_reset_tx_pll_and_datapath_int,
+    probe_out2 => hb0_gtwiz_reset_tx_datapath_int,
+    probe_out3 => hb_gtwiz_reset_rx_pll_and_datapath_vio_int,
+    probe_out4 => hb_gtwiz_reset_rx_datapath_vio_int,
+    probe_out5 => link_down_latched_reset_vio_int
   );
 
   example_wrapper_inst : gtwizard_ultrascale_1_example_wrapper  
