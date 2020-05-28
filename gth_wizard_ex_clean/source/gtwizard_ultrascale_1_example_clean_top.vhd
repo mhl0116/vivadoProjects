@@ -461,24 +461,26 @@ begin
   ila_data(137) <= gtwiz_reset_rx_cdr_stable_int; 
   ila_data(138) <= gtwiz_reset_tx_done_int; 
   ila_data(139) <= gtwiz_reset_rx_done_int; 
-  ila_data(140) <= rx8b10ben_int; 
-  ila_data(141) <= rxcommadeten_int; 
-  ila_data(142) <= rxmcommaalignen_int; 
-  ila_data(143) <= rxpcommaalignen_int; 
-  ila_data(144) <= tx8b10ben_int; 
-  ila_data(145) <= txctrl0_int; 
-  ila_data(146) <= txctrl1_int; 
-  ila_data(147) <= txctrl2_int; 
-  ila_data(148) <= gtpowergood_int; 
-  ila_data(149) <= rxbyteisaligned_int; 
-  ila_data(150) <= rxbyterealign_int; 
-  ila_data(151) <= rxcommadet_int; 
-  ila_data(152) <= rxctrl0_int; 
-  ila_data(153) <= rxctrl1_int; 
-  ila_data(154) <= rxctrl2_int; 
-  ila_data(155) <= rxctrl3_int; 
-  ila_data(156) <= rxpmaresetdone_int; 
-  ila_data(157) <= txpmaresetdone_int; 
+  ila_data(140) <= rx8b10ben_int(0); 
+  ila_data(141) <= rx8b10ben_int(1); 
+  ila_data(142) <= rxcommadeten_int(0); 
+  ila_data(143) <= rxcommadeten_int(1); 
+  ila_data(144) <= rxmcommaalignen_int(0); 
+  ila_data(145) <= rxpcommaalignen_int(1); 
+  ila_data(146) <= tx8b10ben_int(0); 
+  ila_data(147) <= tx8b10ben_int(1); 
+  ila_data(148) <= gtpowergood_int(0); 
+  ila_data(149) <= gtpowergood_int(1); 
+  ila_data(150) <= rxbyteisaligned_int(0); 
+  ila_data(151) <= rxbyteisaligned_int(1); 
+  ila_data(152) <= rxbyterealign_int(0); 
+  ila_data(153) <= rxbyterealign_int(1); 
+  ila_data(154) <= rxcommadet_int(0); 
+  ila_data(155) <= rxcommadet_int(1); 
+  ila_data(156) <= rxpmaresetdone_int(0); 
+  ila_data(157) <= rxpmaresetdone_int(1); 
+  ila_data(158) <= txpmaresetdone_int(0); 
+  ila_data(159) <= txpmaresetdone_int(1); 
 
   i_ila : ila_0
   port map(
