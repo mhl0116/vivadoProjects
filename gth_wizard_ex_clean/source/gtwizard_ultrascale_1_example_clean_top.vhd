@@ -615,10 +615,12 @@ begin
   process (hb_gtwiz_reset_clk_freerun_buf_int) 
   begin
     if (rising_edge(link_down_latched_reset_sync) ) then
-      link_down_latched_out <= '0';
-    elsif (sm_link = '0') then
-      link_down_latched_out <= '1';
-    end if;
+      if (sm_link = '0') then
+        link_down_latched_out <= '1';
+      else
+        link_down_latched_out <= '0';     
+      end if;
+   end if;
   end process;
 
   -- Assign the link status indicator to the top-level two-state output for user reference
