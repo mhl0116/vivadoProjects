@@ -448,10 +448,9 @@ begin
   ila_data(63 downto 32) <= gtwiz_userdata_rx_int(63 downto 32);
   ila_data(95 downto 64) <= gtwiz_userdata_tx_int(31 downto 0);
   ila_data(127 downto 96) <= gtwiz_userdata_tx_int(63 downto 32);
-  ila_data(128) <= sm_link;
+  ila_data(128) <= gtwiz_userclk_rx_reset_int;
   ila_data(129) <= gtwiz_userclk_tx_reset_int;
   ila_data(130) <= gtwiz_userclk_tx_active_int; 
-  ila_data(130) <= gtwiz_userclk_rx_reset_int;
   ila_data(131) <= gtwiz_userclk_rx_active_int; 
   ila_data(132) <= hb_gtwiz_reset_all_int; 
   ila_data(133) <= gtwiz_reset_tx_pll_and_datapath_int; 
