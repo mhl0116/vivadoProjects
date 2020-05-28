@@ -742,7 +742,7 @@ module gtwizard_ultrascale_1_example_top (
   assign ila_data[63:32] = gtwiz_userdata_rx_int[63:32];
   assign ila_data[95:64] = gtwiz_userdata_tx_int[31:0];
   assign ila_data[127:96] = gtwiz_userdata_tx_int[63:32];
-  assign ila_data[128] = sm_link;
+  assign ila_data[128] = gtwiz_userclk_rx_reset_int;
   assign ila_data[129] = gtwiz_userclk_tx_reset_int;
   assign ila_data[130] = gtwiz_userclk_tx_active_int; 
   assign ila_data[131] = gtwiz_userclk_rx_active_int; 
