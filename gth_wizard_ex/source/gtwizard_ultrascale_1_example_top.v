@@ -736,12 +736,45 @@ module gtwizard_ultrascale_1_example_top (
     counter1 <= counter1 + 1'b1;
   end
   
-  wire [127:0] ila_data; 
+  wire [159:0] ila_data; 
   
   assign ila_data[31:0] = gtwiz_userdata_rx_int[31:0];
   assign ila_data[63:32] = gtwiz_userdata_rx_int[63:32];
   assign ila_data[95:64] = gtwiz_userdata_tx_int[31:0];
   assign ila_data[127:96] = gtwiz_userdata_tx_int[63:32];
+  assign ila_data[128] = sm_link;
+  assign ila_data[129] = gtwiz_userclk_tx_reset_int;
+  assign ila_data[130] = gtwiz_userclk_tx_active_int; 
+  assign ila_data[130] = gtwiz_userclk_rx_reset_int;
+  assign ila_data[131] = gtwiz_userclk_rx_active_int; 
+  assign ila_data[132] = hb_gtwiz_reset_all_int; 
+  assign ila_data[133] = gtwiz_reset_tx_pll_and_datapath_int; 
+  assign ila_data[134] = gtwiz_reset_tx_datapath_int; 
+  assign ila_data[135] = hb_gtwiz_reset_rx_pll_and_datapath_int; 
+  assign ila_data[136] = hb_gtwiz_reset_rx_datapath_int; 
+  assign ila_data[137] = gtwiz_reset_rx_cdr_stable_int; 
+  assign ila_data[138] = gtwiz_reset_tx_done_int; 
+  assign ila_data[139] = gtwiz_reset_rx_done_int; 
+  assign ila_data[140] = rx8b10ben_int[0]; 
+  assign ila_data[141] = rx8b10ben_int[1]; 
+  assign ila_data[142] = rxcommadeten_int[0]; 
+  assign ila_data[143] = rxcommadeten_int[1]; 
+  assign ila_data[144] = rxmcommaalignen_int[0]; 
+  assign ila_data[145] = rxpcommaalignen_int[1]; 
+  assign ila_data[146] = tx8b10ben_int[0]; 
+  assign ila_data[147] = tx8b10ben_int[1]; 
+  assign ila_data[148] = gtpowergood_int[0]; 
+  assign ila_data[149] = gtpowergood_int[1]; 
+  assign ila_data[150] = rxbyteisaligned_int[0]; 
+  assign ila_data[151] = rxbyteisaligned_int[1]; 
+  assign ila_data[152] = rxbyterealign_int[0]; 
+  assign ila_data[153] = rxbyterealign_int[1]; 
+  assign ila_data[154] = rxcommadet_int[0]; 
+  assign ila_data[155] = rxcommadet_int[1]; 
+  assign ila_data[156] = rxpmaresetdone_int[0]; 
+  assign ila_data[157] = rxpmaresetdone_int[1]; 
+  assign ila_data[158] = txpmaresetdone_int[0]; 
+  assign ila_data[159] = txpmaresetdone_int[1]; 
 
   ila_0 ila_i (
 	.clk(hb_gtwiz_reset_clk_freerun_buf_int), // input wire clk
