@@ -54,6 +54,8 @@ use ieee.std_logic_unsigned.all;
 library UNISIM;
 use UNISIM.VComponents.all;
 
+use ieee.std_logic_misc.all;
+
 entity gtwizard_ultrascale_1_example_clean_top is
   PORT ( 
 
@@ -189,6 +191,14 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   clk_in: in std_logic := '0';
   i_in: in std_logic := '0';
   o_out: out std_logic := '0'
+  );
+  end component;
+
+  component gtwizard_ultrascale_1_example_reset_synchronizer
+  port (
+  clk_in: in std_logic := '0';
+  rst_in: in std_logic := '0';
+  rst_out: out std_logic := '0'
   );
   end component;
 
@@ -330,6 +340,14 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   attribute dont_touch of bit_synchronizer_vio_gtwiz_reset_rx_done_0_inst: label is "true"; 
   attribute dont_touch of bit_synchronizer_vio_gtwiz_reset_tx_done_0_inst: label is "true"; 
   attribute dont_touch of bit_synchronizer_link_down_latched_reset_inst: label is "true"; 
+  attribute dont_touch of example_stimulus_reset_synchronizer_inst: label is "true"; 
+
+  -- for align
+  signal ch0_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
+  signal ch1_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
+  signal example_stimulus_reset_int: std_logic;
+  signal example_stimulus_reset_sync: std_logic;
+  signal txctrl_counter : unsigned(9 downto 0) := (others=> '0');
 
 begin
     -- for kcu105 
@@ -450,11 +468,13 @@ begin
   hb_gtwiz_reset_rx_datapath_int <= hb_gtwiz_reset_rx_datapath_init_int or hb_gtwiz_reset_rx_datapath_vio_int;
 
   -- tx and rx data
-  gtwiz_userdata_tx_int(31 downto 16) <= x"503C";
-  gtwiz_userdata_tx_int(15 downto 0) <= x"503C"; --counter1;
-  
-  gtwiz_userdata_tx_int(63 downto 48) <= x"503C";
-  gtwiz_userdata_tx_int(47 downto 32) <= x"503C";
+  --gtwiz_userdata_tx_int(31 downto 16) <= x"503C";
+  --gtwiz_userdata_tx_int(15 downto 0) <= x"503C"; --counter1;
+  --
+  --gtwiz_userdata_tx_int(63 downto 48) <= x"503C";
+  --gtwiz_userdata_tx_int(47 downto 32) <= x"503C";
+  gtwiz_userdata_tx_int(63 downto 32) <= hb1_gtwiz_userdata_tx_int;
+  gtwiz_userdata_tx_int(31 downto 0) <= hb0_gtwiz_userdata_tx_int;
 
   -- reference clk
   gtrefclk00_int <= cm0_gtrefclk00_int;
@@ -625,7 +645,45 @@ begin
 
   -- Assign the link status indicator to the top-level two-state output for user reference
   link_status_out <= sm_link;
+
+  -- let transceiver align
+  txctrl2_int(7 downto 0) <= ch0_txctrl2_int;
+  txctrl2_int(15 downto 8) <= ch1_txctrl2_int;
+
+  -- Synchronize the example stimulus reset condition into the txusrclk2 domain
+  example_stimulus_reset_int <= hb_gtwiz_reset_all_int or (not gtwiz_userclk_tx_active_int) or (not hb0_gtwiz_userclk_tx_active_int);
+
+  example_stimulus_reset_synchronizer_inst: gtwizard_ultrascale_1_example_reset_synchronizer  
+  port map(
+    clk_in  => gtwiz_userclk_tx_usrclk2_int,
+    rst_in  => example_stimulus_reset_int,
+    rst_out => example_stimulus_reset_sync
+  );
   
+  process (gtwiz_userclk_tx_usrclk2_int)
+  begin
+    if (rising_edge(gtwiz_userclk_tx_usrclk2_int)) then
+       if (example_stimulus_reset_sync = '1') then
+          hb0_gtwiz_userdata_tx_int <= (others => '0');
+          hb1_gtwiz_userdata_tx_int <= (others => '0');
+          ch0_txctrl2_int <= (others => '0');
+          ch1_txctrl2_int <= (others => '0');
+          txctrl_counter <= (others => '0');
+       elsif (txctrl_counter = x"3FF") then
+          hb0_gtwiz_userdata_tx_int <= x"503C503C";
+          hb1_gtwiz_userdata_tx_int <= x"503C503C";
+          ch0_txctrl2_int <= (others => '0');
+          ch1_txctrl2_int <= (others => '0');
+       else 
+          hb0_gtwiz_userdata_tx_int <= x"503C503C";
+          hb1_gtwiz_userdata_tx_int <= x"503C503C";
+          ch0_txctrl2_int <= x"00001111";
+          ch1_txctrl2_int <= x"00001111";
+          txctrl_counter <=  txctrl_counter + 1;
+      end if;
+    end if;
+  end process;
+
   gtwizard_ultrascale_1_vio_0_inst : gtwizard_ultrascale_1_vio_0
   PORT MAP (
     clk => hb_gtwiz_reset_clk_freerun_buf_int,
