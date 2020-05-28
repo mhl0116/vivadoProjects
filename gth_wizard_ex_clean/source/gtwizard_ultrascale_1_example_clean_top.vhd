@@ -348,6 +348,8 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal example_stimulus_reset_int: std_logic;
   signal example_stimulus_reset_sync: std_logic;
   signal txctrl_counter : unsigned(9 downto 0) := (others=> '0');
+  signal hb0_gtwiz_reset_rx_done_int : std_logic := '0';
+  signal simple_counter : std_logic_vector(15 downto 0) := (others=> '0');
 
 begin
     -- for kcu105 
@@ -651,7 +653,9 @@ begin
   txctrl2_int(15 downto 8) <= ch1_txctrl2_int;
 
   -- Synchronize the example stimulus reset condition into the txusrclk2 domain
-  example_stimulus_reset_int <= hb_gtwiz_reset_all_int or (not gtwiz_userclk_tx_active_int) or (not hb0_gtwiz_userclk_tx_active_int);
+  --example_stimulus_reset_int <= hb_gtwiz_reset_all_int or (not gtwiz_userclk_tx_active_int) or (not hb0_gtwiz_userclk_tx_active_int);
+  example_stimulus_reset_int <= hb_gtwiz_reset_all_int or (not hb0_gtwiz_reset_rx_done_int) or (not hb0_gtwiz_userclk_tx_active_int);
+  hb0_gtwiz_reset_rx_done_int <= gtwiz_reset_rx_done_int;
 
   example_stimulus_reset_synchronizer_inst: gtwizard_ultrascale_1_example_reset_synchronizer  
   port map(
@@ -659,6 +663,7 @@ begin
     rst_in  => example_stimulus_reset_int,
     rst_out => example_stimulus_reset_sync
   );
+   
   
   process (gtwiz_userclk_tx_usrclk2_int)
   begin
@@ -669,27 +674,29 @@ begin
           ch0_txctrl2_int <= (others => '0');
           ch1_txctrl2_int <= (others => '0');
           txctrl_counter <= (others => '0');
+          simple_counter <= (others => '0');
        elsif (txctrl_counter = x"3FF") then
-          hb0_gtwiz_userdata_tx_int <= x"503C503C";
+          hb0_gtwiz_userdata_tx_int <= simple_counter & x"503C";
           hb1_gtwiz_userdata_tx_int <= x"503C503C";
---          ch0_txctrl2_int <= (others => '0');
---          ch1_txctrl2_int <= (others => '0');
+          ch0_txctrl2_int <= (others => '0');
+          ch1_txctrl2_int <= (others => '0');
+          simple_counter <= simple_counter + 1;
        else 
-          hb0_gtwiz_userdata_tx_int <= x"503C503C";
-          hb1_gtwiz_userdata_tx_int <= x"503C503C";
---          ch0_txctrl2_int <= x"0F";
---          ch1_txctrl2_int <= x"0F";
+          hb0_gtwiz_userdata_tx_int <= x"3C3C3C3C";
+          hb1_gtwiz_userdata_tx_int <= x"3C3C3C3C";
+          ch0_txctrl2_int <= x"0F";
+          ch1_txctrl2_int <= x"0F";
           txctrl_counter <=  txctrl_counter + 1;
       end if;
     end if;
   end process;
 
-          ch0_txctrl2_int <= x"0F";
-          ch1_txctrl2_int <= x"0F";
+         
 
   gtwizard_ultrascale_1_vio_0_inst : gtwizard_ultrascale_1_vio_0
   PORT MAP (
-    clk => hb_gtwiz_reset_clk_freerun_buf_int,
+    clk => gtwiz_userclk_tx_usrclk2_int,
+    --clk => hb_gtwiz_reset_clk_freerun_buf_int,
     probe_in0 => link_status_out,
     probe_in1 => link_down_latched_out,
     probe_in2 => init_done_int,
