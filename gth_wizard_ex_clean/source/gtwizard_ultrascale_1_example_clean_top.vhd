@@ -672,17 +672,20 @@ begin
        elsif (txctrl_counter = x"3FF") then
           hb0_gtwiz_userdata_tx_int <= x"503C503C";
           hb1_gtwiz_userdata_tx_int <= x"503C503C";
-          ch0_txctrl2_int <= (others => '0');
-          ch1_txctrl2_int <= (others => '0');
+--          ch0_txctrl2_int <= (others => '0');
+--          ch1_txctrl2_int <= (others => '0');
        else 
           hb0_gtwiz_userdata_tx_int <= x"503C503C";
           hb1_gtwiz_userdata_tx_int <= x"503C503C";
-          ch0_txctrl2_int <= x"0F";
-          ch1_txctrl2_int <= x"0F";
+--          ch0_txctrl2_int <= x"0F";
+--          ch1_txctrl2_int <= x"0F";
           txctrl_counter <=  txctrl_counter + 1;
       end if;
     end if;
   end process;
+
+          ch0_txctrl2_int <= x"0F";
+          ch1_txctrl2_int <= x"0F";
 
   gtwizard_ultrascale_1_vio_0_inst : gtwizard_ultrascale_1_vio_0
   PORT MAP (
