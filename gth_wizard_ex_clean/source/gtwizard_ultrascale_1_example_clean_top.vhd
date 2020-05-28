@@ -159,7 +159,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   component ila_0 is
   port (
     clk : in std_logic := '0';
-    probe0 : in std_logic_vector(135 downto 0) := (others=> '0')
+    probe0 : in std_logic_vector(159 downto 0) := (others=> '0')
   );
   end component;
 
@@ -276,7 +276,7 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal ch0_tx8b10ben_int : std_logic := '1';
   signal ch1_tx8b10ben_int : std_logic := '1';
 
-  signal ila_data: std_logic_vector(135 downto 0) := (others=> '0'); 
+  signal ila_data: std_logic_vector(159 downto 0) := (others=> '0'); 
 
   signal sm_link_counter : unsigned(6 downto 0) := (others=> '0');
 
@@ -449,7 +449,36 @@ begin
   ila_data(95 downto 64) <= gtwiz_userdata_tx_int(31 downto 0);
   ila_data(127 downto 96) <= gtwiz_userdata_tx_int(63 downto 32);
   ila_data(128) <= sm_link;
-  ila_data(135 downto 129) <= b"0000000";
+  ila_data(129) <= gtwiz_userclk_tx_reset_int;
+  ila_data(130) <= gtwiz_userclk_tx_active_int; 
+  ila_data(130) <= gtwiz_userclk_rx_reset_int;
+  ila_data(131) <= gtwiz_userclk_rx_active_int; 
+  ila_data(132) <= hb_gtwiz_reset_all_int; 
+  ila_data(133) <= gtwiz_reset_tx_pll_and_datapath_int; 
+  ila_data(134) <= gtwiz_reset_tx_datapath_int; 
+  ila_data(135) <= hb_gtwiz_reset_rx_pll_and_datapath_int; 
+  ila_data(136) <= hb_gtwiz_reset_rx_datapath_int; 
+  ila_data(137) <= gtwiz_reset_rx_cdr_stable_int; 
+  ila_data(138) <= gtwiz_reset_tx_done_int; 
+  ila_data(139) <= gtwiz_reset_rx_done_int; 
+  ila_data(140) <= rx8b10ben_int; 
+  ila_data(141) <= rxcommadeten_int; 
+  ila_data(142) <= rxmcommaalignen_int; 
+  ila_data(143) <= rxpcommaalignen_int; 
+  ila_data(144) <= tx8b10ben_int; 
+  ila_data(145) <= txctrl0_int; 
+  ila_data(146) <= txctrl1_int; 
+  ila_data(147) <= txctrl2_int; 
+  ila_data(148) <= gtpowergood_int; 
+  ila_data(149) <= rxbyteisaligned_int; 
+  ila_data(150) <= rxbyterealign_int; 
+  ila_data(151) <= rxcommadet_int; 
+  ila_data(152) <= rxctrl0_int; 
+  ila_data(153) <= rxctrl1_int; 
+  ila_data(154) <= rxctrl2_int; 
+  ila_data(155) <= rxctrl3_int; 
+  ila_data(156) <= rxpmaresetdone_int; 
+  ila_data(157) <= txpmaresetdone_int; 
 
   i_ila : ila_0
   port map(
