@@ -165,26 +165,26 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   );
   end component;
 
-  COMPONENT gtwizard_ultrascale_1_vio_0
-  PORT (
-    clk : IN STD_LOGIC;
-    probe_in0 : IN STD_LOGIC;
-    probe_in1 : IN STD_LOGIC;
-    probe_in2 : IN STD_LOGIC;
-    probe_in3 : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-    probe_in4 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-    probe_in5 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-    probe_in6 : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-    probe_in7 : IN STD_LOGIC;
-    probe_in8 : IN STD_LOGIC;
-    probe_out0 : OUT STD_LOGIC;
-    probe_out1 : OUT STD_LOGIC;
-    probe_out2 : OUT STD_LOGIC;
-    probe_out3 : OUT STD_LOGIC;
-    probe_out4 : OUT STD_LOGIC;
-    probe_out5 : OUT STD_LOGIC
+  component gtwizard_ultrascale_1_vio_0
+  port (
+    clk : in std_logic;
+    probe_in0 : in std_logic;
+    probe_in1 : in std_logic;
+    probe_in2 : in std_logic;
+    probe_in3 : in std_logic_vector(3 downto 0);
+    probe_in4 : in std_logic_vector(1 downto 0);
+    probe_in5 : in std_logic_vector(1 downto 0);
+    probe_in6 : in std_logic_vector(1 downto 0);
+    probe_in7 : in std_logic;
+    probe_in8 : in std_logic;
+    probe_out0 : out std_logic;
+    probe_out1 : out std_logic;
+    probe_out2 : out std_logic;
+    probe_out3 : out std_logic;
+    probe_out4 : out std_logic;
+    probe_out5 : out std_logic
   );
-  END COMPONENT;
+  end component;
 
   component gtwizard_ultrascale_1_example_bit_synchronizer 
   port (
@@ -202,14 +202,11 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   );
   end component;
 
--- signals that may be useful
---  wire link_down_latched_reset_in;
   signal link_status_out: std_logic := '0';
   signal link_down_latched_out: std_logic := '1';
-  signal hb_gtwiz_reset_all_in : std_logic := '0';
 
 -- Synchronize the latched link down reset input and the VIO-driven signal into the free-running clock domain
-
+-- signals passed to wizard
   signal gthrxn_int: std_logic_vector(1 downto 0) := (others=> '0');
   signal gthrxp_int: std_logic_vector(1 downto 0) := (others=> '0');
   signal gthtxn_int: std_logic_vector(1 downto 0) := (others=> '0');
@@ -256,7 +253,11 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal rxctrl3_int : std_logic_vector(15 downto 0) := (others=> '0');
   signal rxpmaresetdone_int : std_logic_vector(1 downto 0) := (others=> '0');
   signal txpmaresetdone_int : std_logic_vector(1 downto 0) := (others=> '0');
+  signal hb_gtwiz_reset_all_int : std_logic := '0';
 
+-- signals local to this wrapper
+
+  signal hb_gtwiz_reset_all_in : std_logic := '0';
   signal hb0_gtwiz_userclk_tx_reset_int : std_logic := '0';
   signal hb0_gtwiz_userclk_rx_reset_int : std_logic := '0';
 
@@ -274,6 +275,8 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal clk_out80 : std_logic := '0'; 
   signal inclk_buf : std_logic := '0';
 
+-- reset related
+
   signal hb_gtwiz_reset_clk_freerun_in : std_logic := '0';
   signal hb_gtwiz_reset_clk_freerun_buf_int : std_logic := '0';
 
@@ -284,21 +287,25 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal sm_link : std_logic := '0'; -- most likely set it to 1 wont work, need to come up with a counter
   signal init_done_int : std_logic := '0';
   signal init_retry_ctr_int : std_logic_vector(3 downto 0) := (others=> '0');
-
-  signal hb_gtwiz_reset_all_int : std_logic := '0';
   
   signal hb0_gtwiz_reset_tx_pll_and_datapath_int : std_logic := '0';
   signal hb0_gtwiz_reset_tx_datapath_int : std_logic := '0';
   signal hb_gtwiz_reset_rx_pll_and_datapath_int : std_logic := '0';
   signal hb_gtwiz_reset_rx_datapath_init_int : std_logic := '0';
   signal hb_gtwiz_reset_rx_datapath_int : std_logic := '0';
+
+-- serial data
  
   signal hb0_gtwiz_userdata_tx_int: std_logic_vector(31 downto 0) := (others=> '0');
   signal hb1_gtwiz_userdata_tx_int: std_logic_vector(31 downto 0) := (others=> '0');
 
+-- ref clock
+
   signal cm0_gtrefclk00_int: std_logic := '0';
 
   signal mgtrefclk0_x0y3_int: std_logic := '0';
+
+-- 8b10b and comma
 
   signal ch0_rx8b10ben_int : std_logic := '1';
   signal ch1_rx8b10ben_int : std_logic := '1';
@@ -315,6 +322,8 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal ch0_tx8b10ben_int : std_logic := '1';
   signal ch1_tx8b10ben_int : std_logic := '1';
 
+-- ila
+
   signal ila_data: std_logic_vector(159 downto 0) := (others=> '0'); 
 
   signal sm_link_counter : unsigned(6 downto 0) := (others=> '0');
@@ -330,6 +339,15 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   signal hb_gtwiz_reset_rx_datapath_vio_int: std_logic;
   signal hb_gtwiz_reset_rx_pll_and_datapath_vio_int: std_logic;
 
+  -- for align
+  signal ch0_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
+  signal ch1_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
+  signal example_stimulus_reset_int: std_logic;
+  signal example_stimulus_reset_sync: std_logic;
+  signal txctrl_counter : unsigned(9 downto 0) := (others=> '0');
+  signal hb0_gtwiz_reset_rx_done_int : std_logic := '0';
+  signal simple_counter : std_logic_vector(15 downto 0) := (others=> '0');
+
   attribute dont_touch : string;
   attribute dont_touch of bit_synchronizer_vio_gtpowergood_0_inst : label is "true"; 
   attribute dont_touch of bit_synchronizer_vio_gtpowergood_1_inst : label is "true"; 
@@ -341,15 +359,6 @@ architecture Behavioral of gtwizard_ultrascale_1_example_clean_top is
   attribute dont_touch of bit_synchronizer_vio_gtwiz_reset_tx_done_0_inst: label is "true"; 
   attribute dont_touch of bit_synchronizer_link_down_latched_reset_inst: label is "true"; 
   attribute dont_touch of example_stimulus_reset_synchronizer_inst: label is "true"; 
-
-  -- for align
-  signal ch0_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
-  signal ch1_txctrl2_int: std_logic_vector(7 downto 0) := (others=> '0');
-  signal example_stimulus_reset_int: std_logic;
-  signal example_stimulus_reset_sync: std_logic;
-  signal txctrl_counter : unsigned(9 downto 0) := (others=> '0');
-  signal hb0_gtwiz_reset_rx_done_int : std_logic := '0';
-  signal simple_counter : std_logic_vector(15 downto 0) := (others=> '0');
 
 begin
     -- for kcu105 
@@ -556,7 +565,8 @@ begin
 
   i_ila : ila_0
   port map(
-    clk => hb_gtwiz_reset_clk_freerun_buf_int,
+    clk => gtwiz_userclk_tx_usrclk2_int,
+    --clk => hb_gtwiz_reset_clk_freerun_buf_int,
     probe0 => ila_data
   );
 
@@ -695,8 +705,7 @@ begin
 
   gtwizard_ultrascale_1_vio_0_inst : gtwizard_ultrascale_1_vio_0
   PORT MAP (
-    clk => gtwiz_userclk_tx_usrclk2_int,
-    --clk => hb_gtwiz_reset_clk_freerun_buf_int,
+    clk => hb_gtwiz_reset_clk_freerun_buf_int,
     probe_in0 => link_status_out,
     probe_in1 => link_down_latched_out,
     probe_in2 => init_done_int,
