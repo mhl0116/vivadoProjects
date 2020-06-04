@@ -687,14 +687,15 @@ begin
           simple_counter <= (others => '0');
        elsif (txctrl_counter = x"3FF") then
           hb0_gtwiz_userdata_tx_int <= simple_counter & x"503C";
+          --hb0_gtwiz_userdata_tx_int <= simple_counter & simple_counter;
           hb1_gtwiz_userdata_tx_int <= x"503C503C";
           ch0_txctrl2_int <= (others => '0');
           ch1_txctrl2_int <= (others => '0');
           simple_counter <= simple_counter + 1;
        else 
-          hb0_gtwiz_userdata_tx_int <= x"3C3C3C3C";
-          hb1_gtwiz_userdata_tx_int <= x"3C3C3C3C";
-          ch0_txctrl2_int <= x"0F";
+          hb0_gtwiz_userdata_tx_int <= x"0000003C";
+          hb1_gtwiz_userdata_tx_int <= x"0000003C";
+          ch0_txctrl2_int <= x"03";
           ch1_txctrl2_int <= x"0F";
           txctrl_counter <=  txctrl_counter + 1;
       end if;
