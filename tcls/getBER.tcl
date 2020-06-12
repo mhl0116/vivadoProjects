@@ -8,11 +8,19 @@ open_hw_target
 current_hw_device [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
 
-# set_property PROGRAM.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.bit} [get_hw_devices xcku040_0]
-# set_property PROBES.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.ltx} [get_hw_devices xcku040_0]
-# set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.ltx} [get_hw_devices xcku040_0]
-# program_hw_devices [lindex [get_hw_devices] 0]
-# refresh_hw_device [lindex [get_hw_devices] 0]
+set programfpga [lindex $argv 0]
+set bitfilename [lindex $argv 2]
+
+if {$programfpga == 1} {
+ #set_property PROGRAM.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.bit} [get_hw_devices xcku040_0]
+ #set_property PROBES.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.ltx} [get_hw_devices xcku040_0]
+ #set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0.ltx} [get_hw_devices xcku040_0]
+ set_property PROGRAM.FILE $bitfilename.bit [get_hw_devices xcku040_0]
+ set_property PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
+ set_property FULL_PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
+ program_hw_devices [lindex [get_hw_devices] 0]
+ refresh_hw_device [lindex [get_hw_devices] 0]
+}
 
 # Set Up Link
 set rxs [get_hw_sio_rxs]
@@ -47,22 +55,30 @@ proc parse_report {objname propertyname index} {
 }
 
 # first argument passed to this script is the index of nth link to dump
-set linkindex [lindex $argv 0]
-puts $linkindex
-# record bit error rate, number of bits received, prbs pattern
-set BER [parse_report [lindex $links $linkindex] "RX_BER" 3]
-set RECEIVEBITCOUNT [parse_report [lindex $links $linkindex] "RX_RECEIVED_BIT_COUNT" 3]
-set PRBSPATTERN [parse_report [lindex $links $linkindex] "RX_PATTERN" 4]
+set nlinks [lindex $argv 1]
+set tag [lindex $argv 3]
+
+for {set linkindex 0} {$linkindex < $nlinks} {incr linkindex} {
+
+    puts "link: $linkindex"
+
+    # record bit error rate, number of bits received, prbs pattern
+    set BER [parse_report [lindex $links $linkindex] "RX_BER" 3]
+    set RECEIVEBITCOUNT [parse_report [lindex $links $linkindex] "RX_RECEIVED_BIT_COUNT" 3]
+    set PRBSPATTERN [parse_report [lindex $links $linkindex] "RX_PATTERN" 4]
+    puts "$BER $RECEIVEBITCOUNT $PRBSPATTERN"
+    
+    #get current time with microseconds precision:
+    set val [clock microseconds]
+    # extract time with seconds precision:
+    set seconds_precision [expr { $val / 1000000 }]
+    set currenttime [format "%s" [clock format $seconds_precision -format "%Y-%m-%d %H:%M:%S"]]
+    
+    # write to file
+    set outfile [open [format "reports/report_%s_link%s.out" $tag $linkindex] a+]
+    puts $outfile "$currenttime $PRBSPATTERN $BER $RECEIVEBITCOUNT" 
+    close $outfile
+
+}
 
 close_hw_manager
-
-#get current time with microseconds precision:
-set val [clock microseconds]
-# extract time with seconds precision:
-set seconds_precision [expr { $val / 1000000 }]
-set currenttime [format "%s" [clock format $seconds_precision -format "%Y-%m-%d %H:%M:%S"]]
-
-# write to file
-set outfile [open [format "report_%s.out" $linkindex] a+]
-puts $outfile "$currenttime $PRBSPATTERN $BER $RECEIVEBITCOUNT" 
-close $outfile

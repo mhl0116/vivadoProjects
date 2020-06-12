@@ -1,1 +1,1 @@
-vivado -nojournal -nolog -mode batch -notrace -source getBER.tcl -tclargs 1
+vivado -nojournal -nolog -mode batch -notrace -source getBER.tcl -tclargs 0 2 "/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0"  "20200612_v1"
