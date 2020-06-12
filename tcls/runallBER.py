@@ -36,11 +36,11 @@ def makeplot(inputtxt, linkname, plotbase, tag):
   fig, ax1 = plt.subplots()
   
   color = 'tab:red'
-  ax1.set_xlabel('time', fontsize = 15)
-  ax1.set_ylabel('received bits', fontsize = 15)#, color=color)
+  ax1.set_xlabel('time', fontsize = 15, color='black')
+  ax1.set_ylabel('received bits', fontsize = 15, color=color)
   ax1.plot(time, bits_f, 'C0o', alpha=0.5, color=color)
   ax1.set_yscale('log')
-  ax1.tick_params(direction='in', which='both', colors='black')
+  ax1.tick_params(axis='y', direction='in', which='both', colors=color)
   
   plt.xticks(rotation=45)
   plt.figtext(0.4, 0.6, '%s, link %s, %s PRBS' %(date[0], linkname, pattern[0]) )
@@ -48,10 +48,10 @@ def makeplot(inputtxt, linkname, plotbase, tag):
   ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
   
   color = 'tab:blue'
-  ax2.set_ylabel('bit error rate', fontsize = 15)#, color=color)  # we already handled the x-label with ax1
+  ax2.set_ylabel('bit error rate', fontsize = 15, color=color)  # we already handled the x-label with ax1
   ax2.plot(time, ber_f, 'C0o', alpha=0.5, color=color)
   ax2.set_yscale('log')
-  ax2.tick_params(axis='y', direction='in', which='both', colors='black') #labelcolor=color)
+  ax2.tick_params(axis='y', direction='in', which='both', colors=color)
   
   fig.tight_layout()  # otherwise the right y-label is slightly clipped
   
@@ -71,7 +71,7 @@ tclScriptBase = 'vivado -nojournal -nolog -mode batch -notrace -source ./getBER.
 bitfile = '/net/top/homes/hmei/ODMB/odmbDevelopment/ibert_ultrascale_gth_0_ex/ibert_ultrascale_gth_0_ex.runs/impl_1/example_ibert_ultrascale_gth_0'
 reportfilebase = 'reports/report_'
 plotbase = 'plots/'
-uniqueTag = '20200612_ber_v2'
+uniqueTag = '20200612_ber_v3'
 nlinks = 2
 
 currentBER = 1
@@ -89,5 +89,5 @@ while currentBER > 1e-12:
       currentBER = makeplot(reportname, str(i), plotbase, uniqueTag)     
 
     print ("currentBER: ", currentBER)
-    time.sleep(60)
+    time.sleep(120)
 
