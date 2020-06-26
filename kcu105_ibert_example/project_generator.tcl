@@ -32,6 +32,9 @@ set files [list \
 "source/example_ibert_ultrascale_gth_0.xdc"\
 "source/ibert_ultrascale_gth_ip_example.xdc"\
 "ip/$FPGA_TYPE/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci"\
+"ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
+"ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci"\
+"ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci"
 ]
 
 add_files -norecurse $files
@@ -49,6 +52,9 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Set ip as global
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockManager/clockManager.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_0/ila_0.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_0/vio_0.xci]
 
 puts "\[Success\] Created project"
 close_project

@@ -34,6 +34,33 @@ set_property PACKAGE_PIN M5 [get_ports gth_refclk1n_i[0]]
 set_property PACKAGE_PIN F12 [get_ports sel_si750_clk_i]
 set_property IOSTANDARD LVCMOS18 [get_ports sel_si750_clk_i]
 
+## for LED
+set_property PACKAGE_PIN AP8 [get_ports {gpio_led[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {gpio_led[0]}]
+set_property PACKAGE_PIN H23 [get_ports {gpio_led[1]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {gpio_led[1]}]
+
+##
+# below block copy from example in
+# https://www.xilinx.com/support/documentation/application_notes/xapp1280-us-post-cnfg-flash-startupe3.pdf
+# Recommended setting: 33, increasing is possible, check: https://www.xilinx.com/support/documentation/application_notes/xapp1233-spi-config-ultrascale.pdf
+set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
+# YES for flash densities over 128 Mb, NO for 128 Mb or smaller densities
+set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]
+set_property CONFIG_MODE SPIx4 [current_design]
+#
+set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+set_property CONFIG_VOLTAGE 1.8 [current_design]
+set_property CFGBVS GND [current_design]
+##IPROG options for loading the second bitream
+#set_property BITSTREAM.CONFIG.CONFIGFALLBACK Enable [current_design]
+#set_property BITSTREAM.CONFIG.TIMER_CFG 32'h00050000 [current_design]
+## Golden Bitstream settings
+#set_property BITSTREAM.CONFIG.NEXT_CONFIG_REBOOT Enable [current_design]
+#set_property BITSTREAM.CONFIG.NEXT_CONFIG_ADDR 32'h00F50000 [current_design]
+#
 ## Refclk constraints
 ##
 create_clock -name gth_refclk0_3 -period 6.4 [get_ports gth_refclk0p_i[0]]

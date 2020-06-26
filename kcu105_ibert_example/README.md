@@ -9,6 +9,9 @@ Only the source folder is requried. Other folders can be generated using the gen
 - source/ibert_ultrascale_gth_ip_example.xdc
 
 - ip/xcku040-ffva1156-2-e/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci
+- ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci
+- ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci
+- ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci
 
 - project/example_ibert_ultrascale_gth_0.xpr: Vivado project for testbench. Set for KCU105 (xcku040-ffva1156-2-e)
 

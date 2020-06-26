@@ -31,7 +31,8 @@ module example_ibert_ultrascale_gth_0
   input  [`C_GTH_REFCLKS_USED-1:0]      gth_refclk0p_i,
   input  [`C_GTH_REFCLKS_USED-1:0]      gth_refclk0n_i,
   input  [`C_GTH_REFCLKS_USED-1:0]      gth_refclk1p_i,
-  input  [`C_GTH_REFCLKS_USED-1:0]      gth_refclk1n_i
+  input  [`C_GTH_REFCLKS_USED-1:0]      gth_refclk1n_i,
+  output reg [1:0]                          gpio_led
 );
 
   //
@@ -83,6 +84,58 @@ module example_ibert_ultrascale_gth_0
       );
 
   //
+  wire clk_out40;
+    
+  clockManager clockManager_i
+   (
+    // Clock out ports
+    .clk_out1(clk_out40),     // output clk_out1
+    // Clock in ports
+    .clk_in1(gth_sysclk_i)
+    );      // input clk_in300
+    
+  reg div_temp;
+  wire reset;
+  reg[15:0] cnt;
+  
+  always @ (posedge clk_out40) begin
+    
+    if (reset) begin
+        cnt <= 16'b0;
+    end else if (cnt == 16'hFFFF) begin
+        div_temp <= !div_temp;
+        cnt <= cnt + 1'b1; 
+    end else begin
+    cnt <= cnt + 1'b1;
+    end
+    
+    gpio_led[0] <= div_temp;
+    
+  end
+    
+  wire [31:0] ila_data; 
+  wire [7:0] ila_trigger; 
+  
+  assign ila_data[0] = reset;
+  assign ila_data[1] = div_temp;
+  assign ila_data[17:2] = cnt;
+  
+  assign ila_trigger[1] = div_temp;
+  assign ila_trigger[0] = reset;
+  
+  ila_0 ila_i (
+	.clk(clk_out40), // input wire clk
+
+	.probe1(ila_trigger), // input wire [7:0]  probe0  
+	.probe0(ila_data) // input wire [31:0]  probe1
+  );
+  
+  
+  vio_0 vio_i (
+    .clk (clk_out40)
+    ,.probe_out0 (reset)
+  );
+    
   assign sel_si750_clk_i = 1'b0;
   // Refclk connection from each IBUFDS to respective quads depending on the source selected in gui
   //
