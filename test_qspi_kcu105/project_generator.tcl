@@ -28,8 +28,14 @@ set obj [get_filesets sources_1]
 # for f in source/*; do echo \"$f\"\\; done
 # find ip -type f -name "*.xci"
 set files [list \
-"source/kcu105.vhd"\
-"source/kcu105.xdc"
+"source/spiflash_programmer_top.vhd"\
+"source/spiflashprogrammer.vhd"\
+"source/leds_0to7.vhd"\
+"source/oneshot.vhd"\
+"ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
+"source/Firmware_pkg.vhd"
+#"source/kcu105.vhd"\
+#"source/kcu105.xdc"\
 #"source/ibert_ultrascale_gth_ip_example.xdc"\
 #"ip/$FPGA_TYPE/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci"\
 #"ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
@@ -42,7 +48,7 @@ add_files -fileset constrs_1 -norecurse "source/kcu105.xdc"
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "kcu105.vhd" -objects $obj
+set_property -name "top" -value "spiflash_programmer_top.vhd" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Add tcl for simulation
@@ -51,7 +57,7 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Set ip as global
 #set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci]
-#set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockManager/clockManager.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockManager/clockManager.xci]
 #set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_0/ila_0.xci]
 #set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_0/vio_0.xci]
 
