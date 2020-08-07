@@ -78,7 +78,8 @@ architecture behavioral of spiflashprogrammer_top is
   component clockManager is
   port (
     CLK_IN300 : in std_logic := '0';
-    CLK_OUT6 : out std_logic := '0' 
+    CLK_OUT6 : out std_logic := '0';
+    CLK_OUT31p25: out std_logic := '0' 
   );
   end component;
   
@@ -187,7 +188,8 @@ begin
   ClockManager_i : clockManager
   port map(
             CLK_IN300=> clk_in_buf,
-            CLK_OUT6=> drck 
+            CLK_OUT6=> drck,
+            CLK_OUT31p25=> spiclk 
           );
                       
   reset_simulation_i : if in_simulation generate
@@ -301,15 +303,15 @@ process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
                  if (init_counter = "00000") then sectorcount <= "11" & x"111"; 
                  elsif (init_counter = "00001") then 
                    --sectorcount <= shift32b(13 downto 0); 
-                   sectorcount <= "11" & x"111"; 
+                   sectorcount <= "00" & x"002"; 
                    sectorcountvalid <= '1'; -- sector count first
                  elsif (init_counter = "00010") then 
                    --startaddr <= shift32b(31 downto 0); 
-                   startaddr <= x"22222222"; 
+                   startaddr <= x"00000000"; 
                    startaddrvalid <= '1';
                  elsif (init_counter = "00011") then 
                    --pagecount <= shift32b(16 downto 0); 
-                   pagecount <= '1' & x"3333"; 
+                   pagecount <= '0' & x"000F"; 
                    pagecountvalid <= '1';
                    init_counter <= "00000";
                    download_state <= S_ERASE;
