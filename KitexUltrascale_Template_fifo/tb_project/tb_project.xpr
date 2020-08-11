@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="44" Path="/net/top/homes/hmei/ODMB/odmbDevelopment/KintexUltrascale_Template/tb_project/tb_project.xpr">
+<Project Version="7" Minor="44" Path="/home/hmei/workspace/vivadoProjects/KitexUltrascale_Template_fifo/tb_project/tb_project.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="1cb31e3b0ebb41108f48cf2fc833adf5"/>
@@ -38,13 +38,13 @@
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="5"/>
-    <Option Name="WTModelSimExportSim" Val="5"/>
-    <Option Name="WTQuestaExportSim" Val="5"/>
-    <Option Name="WTIesExportSim" Val="5"/>
-    <Option Name="WTVcsExportSim" Val="5"/>
-    <Option Name="WTRivieraExportSim" Val="5"/>
-    <Option Name="WTActivehdlExportSim" Val="5"/>
+    <Option Name="WTXSimExportSim" Val="6"/>
+    <Option Name="WTModelSimExportSim" Val="6"/>
+    <Option Name="WTQuestaExportSim" Val="6"/>
+    <Option Name="WTIesExportSim" Val="6"/>
+    <Option Name="WTVcsExportSim" Val="6"/>
+    <Option Name="WTRivieraExportSim" Val="6"/>
+    <Option Name="WTActivehdlExportSim" Val="6"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -90,14 +90,15 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../source/Firmware.vhd">
+      <File Path="$PPRDIR/../source/Firmware_tb.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../source/Firmware_tb.vhd">
+      <File Path="$PPRDIR/../source/Firmware.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -111,6 +112,14 @@
       <File Path="$PPRDIR/../source/data/Input2.coe">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/fifo_generator_0/fifo_generator_0.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
