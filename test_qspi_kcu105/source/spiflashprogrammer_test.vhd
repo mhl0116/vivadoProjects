@@ -52,8 +52,18 @@ entity spiflashprogrammer_test is
     --writedone     : out std_logic;
     ----------------------------------
     reset         : in std_logic;
-    read         : in std_logic
+    read         : in std_logic;
     --eraseing      : out std_logic
+    out_read_inprogress        : out std_logic;
+    out_rd_SpiCsB: out std_logic;
+    out_SpiCsB_N: out std_logic;
+    out_read_start: out std_logic;
+    out_SpiMosi: out std_logic;
+    out_CmdSelect: out std_logic_vector(7 downto 0);
+    out_CmdIndex: out std_logic_vector(3 downto 0);
+    out_SpiCsB_FFDin: out std_logic;
+    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
+    out_rd_rddata: out std_logic_vector(7 downto 0)
    ); 	
 end spiflashprogrammer_test;
 
@@ -115,7 +125,7 @@ end component oneshot;
   constant  CmdExit4BMode    : std_logic_vector(7 downto 0)  := X"E9";
   
    signal CmdIndex    : std_logic_vector(3 downto 0) := "0001";  -- 32 bit command/addr
-   signal Cmdselect    : std_logic_vector(7 downto 0) := x"FF";  -- 32 bit command/addr
+   signal CmdSelect    : std_logic_vector(7 downto 0) := x"FF";  -- 32 bit command/addr
    ------------- other signals/regs/counters  ------------------------
    signal cmdcounter32    : std_logic_vector(5 downto 0) := "100111";  -- 32 bit command/addr
    signal cmdreg32        : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
@@ -234,6 +244,18 @@ end component oneshot;
         --pulse  => erase_start
         pulse  => read_start
       );
+
+-----------------------------  pass output signals  --------------------------------------------------
+    out_read_inprogress     <= read_inprogress; 
+    out_rd_SpiCsB           <= rd_SpiCsB;
+    out_SpiCsB_N            <= SpiCsB_N; 
+    out_read_start          <= read_start; 
+    out_SpiMosi             <= SpiMiso; 
+    out_CmdSelect          <= CmdSelect;
+    out_CmdIndex           <= CmdIndex;
+    out_SpiCsB_FFDin        <= SpiCsB_FFDin; 
+    out_rd_data_valid_cntr <= rd_data_valid_cntr;
+    out_rd_rddata <= rd_rddata;
 
 -----------------------------  select command  --------------------------------------------------
   CmdSelect <= CmdStatus when CmdIndex = x"1" else

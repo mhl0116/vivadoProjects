@@ -63,7 +63,17 @@ architecture behavioral of spiflashprogrammer_top is
 --    fiforderr   : out std_logic;
 --    writedone   : out std_logic;
     reset       : in  std_logic;
-    read       : in std_logic
+    read       : in std_logic;
+    out_read_inprogress        : out std_logic;
+    out_rd_SpiCsB: out std_logic;
+    out_SpiCsB_N: out std_logic;
+    out_read_start: out std_logic;
+    out_SpiMosi: out std_logic;
+    out_CmdSelect: out std_logic_vector(7 downto 0);
+    out_CmdIndex: out std_logic_vector(3 downto 0);
+    out_SpiCsB_FFDin: out std_logic;
+    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
+    out_rd_rddata: out std_logic_vector(7 downto 0)
   --  eraseing     : out std_logic 
    ); 
   end component spiflashprogrammer_test;
@@ -93,6 +103,17 @@ architecture behavioral of spiflashprogrammer_top is
  signal  Bscan1Tdi            : std_logic;
  signal  Bscan1Update         : std_logic;
  signal  Bscan1Tdo            : std_logic;
+
+ signal ila_read_inprogress : std_logic; 
+ signal ila_rd_SpiCsB : std_logic;
+ signal ila_SpiCsB_N : std_logic; 
+ signal ila_read_start : std_logic; 
+ signal ila_SpiMiso : std_logic; 
+ signal ila_CmdSelect : std_logic_vector(7 downto 0);
+ signal ila_CmdIndex : std_logic_vector(3 downto 0);
+ signal ila_SpiCsB_FFDin : std_logic; 
+ signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
+ signal ila_rd_rddata : std_logic_vector(7 downto 0);
  --
   signal clk125                   : std_logic;
   signal drck                     : std_logic;
@@ -198,10 +219,6 @@ begin
      rst_sim <= '1';
      WAIT FOR 33333 ps;
      rst_sim <= '0';
-     WAIT FOR 33333 ps;
-     startread <= '1';
-     WAIT FOR 33333 ps;
-     startread <= '0';
      WAIT;
     END PROCESS;
   end generate;
@@ -285,7 +302,16 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 --    fiforderr => underflow,
 --    writedone => write_done,
     reset => '0',
-    read => startread
+    read => startread,
+    out_read_inprogress     => ila_read_inprogress; 
+    out_rd_SpiCsB           => ila_rd_SpiCsB;
+    out_SpiCsB_N            => ila_SpiCsB_N; 
+    out_read_start          => ila_read_start; 
+    out_SpiMosi             => ila_SpiMiso; 
+    out_CmdSelect          => ila_CmdSelect;
+    out_CmdIndex           => ila_CmdIndex;
+    out_SpiCsB_FFDin        => ila_SpiCsB_FFDin; 
+    out_rd_data_valid_cntr => ila_rd_data_valid_cntr;
    -- eraseing => erasingspi   
 );
 
