@@ -30,12 +30,13 @@ set obj [get_filesets sources_1]
 set files [list \
 "source/spiflash_programmer_test_top.vhd"\
 "source/spiflashprogrammer_test.vhd"\
-"source/spiflash_programmer_top.vhd"\
-"source/spiflashprogrammer.vhd"\
 "source/leds_0to7.vhd"\
 "source/oneshot.vhd"\
 "ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
+"source/kcu105.xdc"\
 "source/Firmware_pkg.vhd"
+#"source/spiflash_programmer_top.vhd"\
+#"source/spiflashprogrammer.vhd"\
 #"source/kcu105.vhd"\
 #"source/kcu105.xdc"\
 #"source/ibert_ultrascale_gth_ip_example.xdc"\

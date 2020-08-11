@@ -43,30 +43,30 @@ end spiflashprogrammer_top;
 architecture behavioral of spiflashprogrammer_top is
   attribute keep : string;
 
-  component spiflashprogrammer is
+  component spiflashprogrammer_test is
   port
   (
     Clk         : in std_logic; -- untouch
     fifoclk     : in std_logic; -- TODO, make it 6MHz as in example, or use the same as spiclk
-    data_to_fifo : in std_logic_vector(31 downto 0); -- until sectorcountvalid, all hardcoded
-    startaddr   : in std_logic_vector(31 downto 0);
-    startaddrvalid   : in std_logic;
-    pagecount   : in std_logic_vector(16 downto 0);
-    pagecountvalid   : in std_logic;
-    sectorcount : in std_logic_vector(13 downto 0);
-    sectorcountvalid : in std_logic;
-    fifowren    : in Std_logic;
-    fifofull    : out std_logic;
-    fifoempty   : out std_logic;
-    fifoafull   : out std_logic;
-    fifowrerr   : out std_logic;
-    fiforderr   : out std_logic;
-    writedone   : out std_logic;
+--    data_to_fifo : in std_logic_vector(31 downto 0); -- until sectorcountvalid, all hardcoded
+--    startaddr   : in std_logic_vector(31 downto 0);
+--    startaddrvalid   : in std_logic;
+--    pagecount   : in std_logic_vector(16 downto 0);
+--    pagecountvalid   : in std_logic;
+--    sectorcount : in std_logic_vector(13 downto 0);
+--    sectorcountvalid : in std_logic;
+--    fifowren    : in Std_logic;
+--    fifofull    : out std_logic;
+--    fifoempty   : out std_logic;
+--    fifoafull   : out std_logic;
+--    fifowrerr   : out std_logic;
+--    fiforderr   : out std_logic;
+--    writedone   : out std_logic;
     reset       : in  std_logic;
-    erase       : in std_logic;
-    eraseing     : out std_logic 
+    read       : in std_logic
+  --  eraseing     : out std_logic 
    ); 
-  end component spiflashprogrammer;
+  end component spiflashprogrammer_test;
 
   component leds_0to7 
   port  (
@@ -198,6 +198,10 @@ begin
      rst_sim <= '1';
      WAIT FOR 33333 ps;
      rst_sim <= '0';
+     WAIT FOR 33333 ps;
+     startread <= '1';
+     WAIT FOR 33333 ps;
+     startread <= '0';
      WAIT;
     END PROCESS;
   end generate;
@@ -215,7 +219,9 @@ begin
         startread <= '0';
         rst_init_cnt <= rst_init_cnt + 1;
     elsif(rst_init_cnt = 15) then
+        rst_init <= '0';
         startread <= '1';
+        rst_init_cnt <= rst_init_cnt + 1;
     else 
         rst_init <= '0';
         startread <= '0';
@@ -260,27 +266,27 @@ begin
   leds => LEDS
  );
    
-spiflashprogrammer_inst: spiflashprogrammer port map
+spiflashprogrammer_inst: spiflashprogrammer_test port map
   (
     Clk => spiclk,
     fifoclk => drck,
-    data_to_fifo => shift32b,
-    startaddr    =>  startaddr,
-    startaddrvalid  => startaddrvalid,
-    pagecount    =>  pagecount,
-    pagecountvalid  => pagecountvalid,
-    sectorcount  => sectorcount,
-    sectorcountvalid => sectorcountvalid,
-    fifowren => fifowren,
-    fifofull => fifofull,
-    fifoempty => fifoempty,
-    fifoafull => almostfull,
-    fifowrerr => overflow,
-    fiforderr => underflow,
-    writedone => write_done,
+--    data_to_fifo => shift32b,
+--    startaddr    =>  startaddr,
+--    startaddrvalid  => startaddrvalid,
+--    pagecount    =>  pagecount,
+--    pagecountvalid  => pagecountvalid,
+--    sectorcount  => sectorcount,
+--    sectorcountvalid => sectorcountvalid,
+--    fifowren => fifowren,
+--    fifofull => fifofull,
+--    fifoempty => fifoempty,
+--    fifoafull => almostfull,
+--    fifowrerr => overflow,
+--    fiforderr => underflow,
+--    writedone => write_done,
     reset => '0',
-    erase => starterase,
-    eraseing => erasingspi   
+    read => startread
+   -- eraseing => erasingspi   
 );
 
 --process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
@@ -392,7 +398,7 @@ process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
 
   PROCESS 
   BEGIN
-    wait until write_done = '1' or rst_init_cnt = x"FFFF";
+    wait until write_done = '1';-- or rst_init_cnt = x"FFFF";
     --IF(status /= "0" AND status /= "1") THEN
       assert false
       report "Simulation failed"

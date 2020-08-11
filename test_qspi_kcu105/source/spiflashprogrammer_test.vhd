@@ -52,7 +52,7 @@ entity spiflashprogrammer_test is
     --writedone     : out std_logic;
     ----------------------------------
     reset         : in std_logic;
-    read         : in std_logic;
+    read         : in std_logic
     --eraseing      : out std_logic
    ); 	
 end spiflashprogrammer_test;
@@ -179,6 +179,14 @@ end component oneshot;
      attribute async_reg of synced_read : signal is "true";   
      attribute shreg_extract of synced_read : signal is "no";
 
+     type wrstates is
+   (
+     S_WR_IDLE, S_WR_ASSCS1, S_WR_WRCMD,  
+     S_WR_ASSCS2, S_WR_PROGRAM, S_WR_DATA, S_WR_PPDONE, S_WR_PPDONE_WAIT, S_EXIT4BMode_ASSCS1, 
+     S_EXIT4BMODE --  
+   );
+   signal wrstate  : wrstates := S_WR_IDLE;
+
      type rdstates is
    (
      S_RD_IDLE, S_RD_CS1, S_RD_RDREG 
@@ -228,9 +236,9 @@ end component oneshot;
       );
 
 -----------------------------  select command  --------------------------------------------------
-  CmdSelect <= CmdStatus when CmdIndex = "0001" else
-               CmdRDID   when CmdIndex = "0002" else
-               CmdFLAGStatus   when CmdIndex = "0003" else
+  CmdSelect <= CmdStatus when CmdIndex = x"1" else
+               CmdRDID   when CmdIndex = x"2" else
+               CmdFLAGStatus   when CmdIndex = x"3" else
                x"FF";
 -----------------------------  read sectors  --------------------------------------------------
 processerase : process (Clk)
