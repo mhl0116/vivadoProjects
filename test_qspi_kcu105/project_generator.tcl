@@ -28,6 +28,8 @@ set obj [get_filesets sources_1]
 # for f in source/*; do echo \"$f\"\\; done
 # find ip -type f -name "*.xci"
 set files [list \
+"source/spiflash_programmer_test_top.vhd"\
+"source/spiflashprogrammer_test.vhd"\
 "source/spiflash_programmer_top.vhd"\
 "source/spiflashprogrammer.vhd"\
 "source/leds_0to7.vhd"\
