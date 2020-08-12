@@ -35,14 +35,14 @@ set files [list \
 "ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
 "ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci"\
 "ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci"\
-"source/kcu105.xdc"\
+"source/spiflashprogrammer.xdc"\
 "source/Firmware_pkg.vhd"
 ]
 #"source/spiflash_programmer_test_top.vhd"\
 #"source/spiflashprogrammer_test.vhd"\
 
 add_files -norecurse $files
-add_files -fileset constrs_1 -norecurse "source/kcu105.xdc"
+add_files -fileset constrs_1 -norecurse "source/spiflashprogrammer.xdc"
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
