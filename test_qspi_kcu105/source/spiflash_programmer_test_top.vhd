@@ -342,10 +342,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data(3) <= ila_read_start;
   ila_data(4) <= ila_SpiMiso;
   ila_data(12 downto 5) <= ila_CmdSelect(7 downto 0);
-  ila_data(17 downto 13) <= ila_CmdIndex(3 downto 0);
-  ila_data(18) <= ila_SpiCsB_FFDin;
-  ila_data(21 downto 19) <= ila_rd_data_valid_cntr(2 downto 0);
-  ila_data(29 downto 22) <= ila_rd_rddata(7 downto 0);
+  ila_data(16 downto 13) <= ila_CmdIndex(3 downto 0);
+  ila_data(17) <= ila_SpiCsB_FFDin;
+  ila_data(20 downto 18) <= ila_rd_data_valid_cntr(2 downto 0);
+  ila_data(28 downto 21) <= ila_rd_rddata(7 downto 0);
 
   i_ila : ila_0
   port map(
