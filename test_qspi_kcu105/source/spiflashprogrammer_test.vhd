@@ -288,8 +288,8 @@ processerase : process (Clk)
             rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
-          --rd_rddata <= rd_rddata(6 downto 0) & SpiMiso;  -- deser 1:8 
-          rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
+          rd_rddata <= rd_rddata(6 downto 0) & SpiMiso;  -- deser 1:8 
+          --rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
           if (rd_data_valid_cntr = 7) then  -- Check Status after 8 bits (+1) of status read
             --er_status <= er_rddata;   -- Check WE and ERASE in progress one cycle after er_rddate
             rdstate <= S_RD_IDLE;   -- Done. All sectors erased

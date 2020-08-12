@@ -92,7 +92,23 @@ architecture behavioral of spiflashprogrammer_top is
     CLK_OUT31p25: out std_logic := '0' 
   );
   end component;
-  
+
+  component ila_0 is
+  port (
+    clk : in std_logic := '0';
+    probe0 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe1 : in std_logic_vector(31 downto 0) := (others=> '0')
+  );
+  end component;
+
+ COMPONENT vio_0
+  PORT (
+    clk : IN STD_LOGIC;
+    probe_in0 : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    probe_out0 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+  );
+ END COMPONENT;
+
  signal  Bscan1Capture        : std_logic;
  signal  Bscan1Drck           : std_logic;
  attribute keep of Bscan1Drck : signal is "true";
@@ -114,6 +130,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_SpiCsB_FFDin : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
  signal ila_rd_rddata : std_logic_vector(7 downto 0);
+
  --
   signal clk125                   : std_logic;
   signal drck                     : std_logic;
@@ -140,6 +157,8 @@ architecture behavioral of spiflashprogrammer_top is
   signal sectorcount              : std_logic_vector(13 downto 0) := "00000000000000";
   signal sectorcountvalid         : std_logic := '0';
   signal startread               : std_logic := '0';
+  signal startread_gen               : std_logic := '0';
+  signal startread_gen_d               : std_logic := '0';
   signal starterase               : std_logic := '0';
   signal write_done               : std_logic := '0';
 --  signal leds                     : std_logic := '0';
@@ -148,7 +167,10 @@ architecture behavioral of spiflashprogrammer_top is
   signal rst_init                 : std_logic := '0';
   signal rst                      : std_logic := '0';
   signal rst_init_cnt : unsigned(32 downto 0) := (others=> '0');
-
+  signal ila_trigger: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal probe_in0: std_logic_vector(0 downto 0) := (others=>'0'); 
+  signal probe_out0: std_logic_vector(7 downto 0) := (others=> '0'); 
   
     type init is
    (
@@ -229,19 +251,12 @@ begin
   if(rising_edge(drck)) then
     if(rst_init_cnt < 10) then
         rst_init <= '0';
-        startread <= '0';
         rst_init_cnt <= rst_init_cnt + 1;
     elsif(rst_init_cnt = 10) then
         rst_init <= '1';
-        startread <= '0';
-        rst_init_cnt <= rst_init_cnt + 1;
-    elsif(rst_init_cnt = 15) then
-        rst_init <= '0';
-        startread <= '1';
         rst_init_cnt <= rst_init_cnt + 1;
     else 
         rst_init <= '0';
-        startread <= '0';
     end if;
   end if;
   end process;
@@ -303,18 +318,53 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 --    writedone => write_done,
     reset => '0',
     read => startread,
-    out_read_inprogress     => ila_read_inprogress; 
-    out_rd_SpiCsB           => ila_rd_SpiCsB;
-    out_SpiCsB_N            => ila_SpiCsB_N; 
-    out_read_start          => ila_read_start; 
-    out_SpiMosi             => ila_SpiMiso; 
-    out_CmdSelect          => ila_CmdSelect;
-    out_CmdIndex           => ila_CmdIndex;
-    out_SpiCsB_FFDin        => ila_SpiCsB_FFDin; 
-    out_rd_data_valid_cntr => ila_rd_data_valid_cntr;
+    out_read_inprogress     => ila_read_inprogress,
+    out_rd_SpiCsB           => ila_rd_SpiCsB,
+    out_SpiCsB_N            => ila_SpiCsB_N,
+    out_read_start          => ila_read_start, 
+    out_SpiMosi             => ila_SpiMiso, 
+    out_CmdSelect          => ila_CmdSelect,
+    out_CmdIndex           => ila_CmdIndex,
+    out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
+    out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
+    out_rd_rddata => ila_rd_rddata
    -- eraseing => erasingspi   
 );
 
+
+  ila_trigger(0) <= ila_read_inprogress;
+  ila_trigger(1) <= ila_read_start;
+  ila_trigger(2) <= ila_SpiCsB_N;
+
+  ila_data(0) <= ila_read_inprogress;
+  ila_data(1) <= ila_rd_SpiCsB;
+  ila_data(2) <= ila_SpiCsB_N;
+  ila_data(3) <= ila_read_start;
+  ila_data(4) <= ila_SpiMiso;
+  ila_data(12 downto 5) <= ila_CmdSelect(7 downto 0);
+  ila_data(17 downto 13) <= ila_CmdIndex(3 downto 0);
+  ila_data(18) <= ila_SpiCsB_FFDin;
+  ila_data(21 downto 19) <= ila_rd_data_valid_cntr(2 downto 0);
+  ila_data(29 downto 22) <= ila_rd_rddata(7 downto 0);
+
+  i_ila : ila_0
+  port map(
+    clk => spiclk,
+    probe0 => ila_trigger,
+    probe1 => ila_data
+  );
+
+  -- generate a clk pulse of startread once having a 1 from vio
+  startread_gen <= probe_out0(0); 
+  startread_gen_d <= startread_gen when rising_edge(spiclk); 
+  startread <= not startread_gen_d and startread_gen; 
+
+  i_vio : vio_0
+  PORT MAP (
+    clk => spiclk,
+    probe_in0 => probe_in0,
+    probe_out0 => probe_out0
+  );
 --process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
 process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
   begin
