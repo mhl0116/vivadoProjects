@@ -59,8 +59,9 @@ entity spiflashprogrammer_test is
     out_SpiCsB_N: out std_logic;
     out_read_start: out std_logic;
     out_SpiMosi: out std_logic;
+    out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
-    out_CmdIndex: out std_logic_vector(3 downto 0);
+    in_CmdIndex: in std_logic_vector(3 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_rddata: out std_logic_vector(7 downto 0)
@@ -250,9 +251,10 @@ end component oneshot;
     out_rd_SpiCsB           <= rd_SpiCsB;
     out_SpiCsB_N            <= SpiCsB_N; 
     out_read_start          <= read_start; 
-    out_SpiMosi             <= SpiMiso; 
+    out_SpiMosi             <= SpiMosi; 
+    out_SpiMiso             <= SpiMiso; 
     out_CmdSelect          <= CmdSelect;
-    out_CmdIndex           <= CmdIndex;
+    CmdIndex               <= in_CmdIndex;
     out_SpiCsB_FFDin        <= SpiCsB_FFDin; 
     out_rd_data_valid_cntr <= rd_data_valid_cntr;
     out_rd_rddata <= rd_rddata;

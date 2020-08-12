@@ -106,7 +106,7 @@ architecture behavioral of spiflashprogrammer_top is
     clk : IN STD_LOGIC;
     probe_in0 : IN STD_LOGIC := '0';
     probe_out0 : OUT STD_LOGIC := '0';
-    probe_out1 : OUT STD_LOGIC := '0'
+    probe_out1 : OUT STD_LOGIC_VECTOR(3 downto 0) := (others=> '0')
 
   );
  END COMPONENT;
@@ -127,6 +127,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_SpiCsB_N : std_logic; 
  signal ila_read_start : std_logic; 
  signal ila_SpiMiso : std_logic; 
+ signal ila_SpiMosi : std_logic; 
  signal ila_CmdSelect : std_logic_vector(7 downto 0);
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
@@ -173,7 +174,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
-  signal probeout1: std_logic := '0'; 
+  signal probeout1: std_logic_vector(3 downto 0) := (others=> '0'); 
 
     type init is
    (
@@ -325,9 +326,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_rd_SpiCsB           => ila_rd_SpiCsB,
     out_SpiCsB_N            => ila_SpiCsB_N,
     out_read_start          => ila_read_start, 
-    out_SpiMosi             => ila_SpiMiso, 
+    out_SpiMosi             => ila_SpiMosi, 
+    out_SpiMiso             => ila_SpiMiso, 
     out_CmdSelect          => ila_CmdSelect,
-    out_CmdIndex           => ila_CmdIndex,
+    in_CmdIndex           => ila_CmdIndex,
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
     out_rd_rddata => ila_rd_rddata
@@ -353,7 +355,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data(28 downto 21) <= ila_rd_rddata(7 downto 0);
   ila_data(29) <= startread;
   ila_data(30) <= startread_gen;
-  --ila_data(31) <= drck;
+  ila_data(31) <= ila_SpiMosi;
 
   i_ila : ila_0
   port map(
@@ -363,9 +365,11 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   );
 
   -- generate a clk pulse of startread once having a 1 from vio
-  startread_gen <= probeout0 or probeout1; 
+  startread_gen <= probeout0; 
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
   startread <= not startread_gen_d and startread_gen; 
+
+  ila_CmdIndex <= probeout1;
 
   i_vio : vio_0
   PORT MAP (
