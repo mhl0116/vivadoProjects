@@ -104,8 +104,10 @@ architecture behavioral of spiflashprogrammer_top is
  COMPONENT vio_0
   PORT (
     clk : IN STD_LOGIC;
-    probe_in0 : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    probe_out0 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+    probe_in0 : IN STD_LOGIC := '0';
+    probe_out0 : OUT STD_LOGIC := '0';
+    probe_out1 : OUT STD_LOGIC := '0'
+
   );
  END COMPONENT;
 
@@ -169,9 +171,10 @@ architecture behavioral of spiflashprogrammer_top is
   signal rst_init_cnt : unsigned(32 downto 0) := (others=> '0');
   signal ila_trigger: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data: std_logic_vector(31 downto 0) := (others=> '0'); 
-  signal probe_in0: std_logic_vector(0 downto 0) := (others=>'0'); 
-  signal probe_out0: std_logic_vector(7 downto 0) := (others=> '0'); 
-  
+  signal probein0: std_logic := '0'; 
+  signal probeout0: std_logic := '0'; 
+  signal probeout1: std_logic := '0'; 
+
     type init is
    (
      S_INIT, S_ERASE, S_ALIGN, S_DATA   --  S_ERASE,
@@ -335,6 +338,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger(0) <= ila_read_inprogress;
   ila_trigger(1) <= ila_read_start;
   ila_trigger(2) <= ila_SpiCsB_N;
+  ila_trigger(3) <= startread;
+  ila_trigger(4) <= startread_gen;
 
   ila_data(0) <= ila_read_inprogress;
   ila_data(1) <= ila_rd_SpiCsB;
@@ -347,6 +352,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data(20 downto 18) <= ila_rd_data_valid_cntr(2 downto 0);
   ila_data(28 downto 21) <= ila_rd_rddata(7 downto 0);
   ila_data(29) <= startread;
+  ila_data(30) <= startread_gen;
+  --ila_data(31) <= drck;
 
   i_ila : ila_0
   port map(
@@ -356,15 +363,17 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   );
 
   -- generate a clk pulse of startread once having a 1 from vio
-  startread_gen <= probe_out0(0); 
+  startread_gen <= probeout0 or probeout1; 
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
   startread <= not startread_gen_d and startread_gen; 
 
   i_vio : vio_0
   PORT MAP (
     clk => spiclk,
-    probe_in0 => probe_in0,
-    probe_out0 => probe_out0
+    probe_in0 => probein0,
+    probe_out0 => probeout0,
+    probe_out1 => probeout1
+
   );
 --process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
 process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
