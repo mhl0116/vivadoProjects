@@ -63,8 +63,8 @@ entity spiflashprogrammer_test is
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
     out_SpiCsB_FFDin: out std_logic;
-    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
-    out_rd_rddata: out std_logic_vector(7 downto 0)
+    out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
+    out_rd_rddata: out std_logic_vector(47 downto 0)
    ); 	
 end spiflashprogrammer_test;
 
@@ -145,10 +145,10 @@ end component oneshot;
    --signal er_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    signal rd_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    --signal rd_rddata       : std_logic_vector(1 downto 0) := "00";
-   signal rd_rddata       : std_logic_vector(7 downto 0) := X"00";
+   signal rd_rddata       : std_logic_vector(47 downto 0) := X"000000000000";
    --signal er_rddata       : std_logic_vector(1 downto 0) := "00";
    --signal er_data_valid_cntr       : std_logic_vector(2 downto 0) := "000";
-   signal rd_data_valid_cntr       : std_logic_vector(2 downto 0) := "000";
+   signal rd_data_valid_cntr       : std_logic_vector(7 downto 0) := x"00";
    signal er_sector_count          : std_logic_vector(13 downto 0) := "11111111111111";    -- subsector count
    signal er_current_sector_addr   : std_logic_vector(31 downto 0) := X"00000000"; -- start addr of current sector
    --signal er_SpiCsB       : std_logic;
@@ -272,9 +272,9 @@ processerase : process (Clk)
    when S_RD_IDLE =>
         rd_SpiCsB <= '1';
         if (read_start = '1') then  -- one shot based on I/F erase -> synced_erase input going high e.g. "if rising edge erase"
-          rd_data_valid_cntr <= "000";
+          rd_data_valid_cntr <= x"00";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
-          rd_rddata <= x"00";
+          rd_rddata <= x"000000000000";
           rd_cmdreg32 <=  CmdSelect & X"00000000";  
           read_inprogress <= '1';
           rdstate <= S_RD_CS1;
@@ -290,9 +290,9 @@ processerase : process (Clk)
             rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
-          rd_rddata <= rd_rddata(6 downto 0) & SpiMiso;  -- deser 1:8 
+          rd_rddata <= rd_rddata(46 downto 0) & SpiMiso;  -- deser 1:8 
           --rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
-          if (rd_data_valid_cntr = 7) then  -- Check Status after 8 bits (+1) of status read
+          if (rd_data_valid_cntr = 47) then  -- Check Status after 8 bits (+1) of status read
             --er_status <= er_rddata;   -- Check WE and ERASE in progress one cycle after er_rddate
             rdstate <= S_RD_IDLE;   -- Done. All sectors erased
             read_inprogress <= '0';

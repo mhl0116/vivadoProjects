@@ -73,8 +73,8 @@ architecture behavioral of spiflashprogrammer_top is
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
     out_SpiCsB_FFDin: out std_logic;
-    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
-    out_rd_rddata: out std_logic_vector(7 downto 0)
+    out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
+    out_rd_rddata: out std_logic_vector(47 downto 0)
   --  eraseing     : out std_logic 
    ); 
   end component spiflashprogrammer_test;
@@ -97,8 +97,11 @@ architecture behavioral of spiflashprogrammer_top is
   component ila_0 is
   port (
     clk : in std_logic := '0';
-    probe0 : in std_logic_vector(15 downto 0) := (others=> '0');
-    probe1 : in std_logic_vector(31 downto 0) := (others=> '0')
+    probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe1 : in std_logic_vector(31 downto 0) := (others=> '0');
+    probe2 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe3 : in std_logic_vector(47 downto 0) := (others=> '0')
+
   );
   end component;
 
@@ -132,8 +135,8 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_CmdSelect : std_logic_vector(7 downto 0);
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
- signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
- signal ila_rd_rddata : std_logic_vector(7 downto 0);
+ signal ila_rd_data_valid_cntr : std_logic_vector(7 downto 0);
+ signal ila_rd_rddata : std_logic_vector(47 downto 0);
 
  --
   signal clk125                   : std_logic;
@@ -171,8 +174,11 @@ architecture behavioral of spiflashprogrammer_top is
   signal rst_init                 : std_logic := '0';
   signal rst                      : std_logic := '0';
   signal rst_init_cnt : unsigned(32 downto 0) := (others=> '0');
-  signal ila_trigger: std_logic_vector(15 downto 0) := (others=> '0'); 
-  signal ila_data: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal ila_trigger: std_logic_vector(7 downto 0) := (others=> '0'); 
+  signal ila_data1: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal ila_data2: std_logic_vector(7 downto 0) := (others=> '0'); 
+  signal ila_data3: std_logic_vector(47 downto 0) := (others=> '0'); 
+
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
   signal probeout1: std_logic_vector(3 downto 0) := (others=> '0'); 
@@ -348,25 +354,31 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger(3) <= startread;
   ila_trigger(4) <= startread_gen;
 
-  ila_data(0) <= ila_read_inprogress;
-  ila_data(1) <= ila_rd_SpiCsB;
-  ila_data(2) <= ila_SpiCsB_N;
-  ila_data(3) <= ila_read_start;
-  ila_data(4) <= ila_SpiMiso;
-  ila_data(12 downto 5) <= ila_CmdSelect(7 downto 0);
-  ila_data(16 downto 13) <= ila_CmdIndex(3 downto 0);
-  ila_data(17) <= ila_SpiCsB_FFDin;
-  ila_data(20 downto 18) <= ila_rd_data_valid_cntr(2 downto 0);
-  ila_data(28 downto 21) <= ila_rd_rddata(7 downto 0);
-  ila_data(29) <= startread;
-  ila_data(30) <= startread_gen;
-  ila_data(31) <= ila_SpiMosi;
+  ila_data1(0) <= ila_read_inprogress;
+  ila_data1(1) <= ila_rd_SpiCsB;
+  ila_data1(2) <= ila_SpiCsB_N;
+  ila_data1(3) <= ila_read_start;
+  ila_data1(4) <= ila_SpiMiso;
+  ila_data1(12 downto 5) <= ila_CmdSelect(7 downto 0);
+  ila_data1(16 downto 13) <= ila_CmdIndex(3 downto 0);
+  ila_data1(17) <= ila_SpiCsB_FFDin;
+  --ila_data1(21 downto 18) <= ila_rd_data_valid_cntr(3 downto 0);
+  --ila_data1(37 downto 22) <= ila_rd_rddata(15 downto 0);
+  ila_data1(18) <= startread;
+  ila_data1(19) <= startread_gen;
+  ila_data1(20) <= ila_SpiMosi;
+
+  ila_data2(7 downto 0) <= ila_rd_data_valid_cntr(7 downto 0);
+  ila_data3(47 downto 0) <= ila_rd_rddata(47 downto 0);
 
   i_ila : ila_0
   port map(
     clk => spiclk,
     probe0 => ila_trigger,
-    probe1 => ila_data
+    probe1 => ila_data1,
+    probe2 => ila_data2,
+    probe3 => ila_data3
+
   );
 
   startread_synthesize_i : if in_synthesis generate
