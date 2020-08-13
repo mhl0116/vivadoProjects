@@ -69,8 +69,9 @@ architecture behavioral of spiflashprogrammer_top is
     out_SpiCsB_N: out std_logic;
     out_read_start: out std_logic;
     out_SpiMosi: out std_logic;
+    out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
-    out_CmdIndex: out std_logic_vector(3 downto 0);
+    in_CmdIndex: in std_logic_vector(3 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_rddata: out std_logic_vector(7 downto 0)
