@@ -246,6 +246,10 @@ begin
      rst_sim <= '1';
      WAIT FOR 33333 ps;
      rst_sim <= '0';
+     WAIT FOR 3333333 ps;
+     startread_gen <= '1';
+     WAIT FOR 3333333 ps;
+     startread_gen <= '0';
      WAIT;
     END PROCESS;
   end generate;
@@ -365,8 +369,11 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe1 => ila_data
   );
 
+  startread_synthesize_i : if in_synthesis generate
   -- generate a clk pulse of startread once having a 1 from vio
   startread_gen <= probeout0; 
+  end generate;
+  
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
   startread <= not startread_gen_d and startread_gen; 
 
