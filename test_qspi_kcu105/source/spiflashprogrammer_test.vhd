@@ -125,8 +125,9 @@ end component oneshot;
   constant  Cmd4BMode        : std_logic_vector(7 downto 0)  := X"B7";
   constant  CmdExit4BMode    : std_logic_vector(7 downto 0)  := X"E9";
   
-   signal CmdIndex    : std_logic_vector(3 downto 0) := "0001";  -- 32 bit command/addr
-   signal CmdSelect    : std_logic_vector(7 downto 0) := x"FF";  -- 32 bit command/addr
+   signal CmdIndex    : std_logic_vector(3 downto 0) := "0001";  
+   signal CmdSelect    : std_logic_vector(7 downto 0) := x"FF";  
+   signal AddSelect: std_logic_vector(31 downto 0) := x"00000000";  -- 32 bit command/addr
    ------------- other signals/regs/counters  ------------------------
    signal cmdcounter32    : std_logic_vector(5 downto 0) := "100111";  -- 32 bit command/addr
    signal cmdreg32        : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
@@ -275,7 +276,8 @@ processerase : process (Clk)
           rd_data_valid_cntr <= x"00";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"000000000000";
-          rd_cmdreg32 <=  CmdSelect & X"00000000";  
+          --rd_cmdreg32 <=  CmdSelect & X"00000000";  
+          rd_cmdreg32 <=  CmdSelect & AddSelect;  
           read_inprogress <= '1';
           rdstate <= S_RD_CS1;
          end if;
