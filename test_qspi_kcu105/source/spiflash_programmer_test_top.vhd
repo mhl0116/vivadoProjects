@@ -90,7 +90,8 @@ architecture behavioral of spiflashprogrammer_top is
   port (
     CLK_IN300 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
-    CLK_OUT31p25: out std_logic := '0' 
+    CLK_OUT31p25: out std_logic := '0'; 
+    CLK_OUT62p5: out std_logic := '0' 
   );
   end component;
 
@@ -142,7 +143,9 @@ architecture behavioral of spiflashprogrammer_top is
   signal clk125                   : std_logic;
   signal drck                     : std_logic;
   signal spiclk                   : std_logic;
-  signal spiclk_i                   : std_logic := '0';
+  signal spiclk_i                   : std_logic := '1';
+  signal spiclk2                   : std_logic; 
+  signal spiclk2_ii                   : std_logic; 
   signal shift32b                 : std_logic_vector(31 downto 0) := X"00000000";
   signal bscan_bit_cntr           : std_logic_vector(4 downto 0) := "00000";
   signal fifowren                 : std_logic := '0';
@@ -245,14 +248,18 @@ begin
   port map(
             CLK_IN300=> clk_in_buf,
             CLK_OUT6=> drck,
-            CLK_OUT31p25=> spiclk 
+            CLK_OUT31p25=> spiclk, 
+            CLK_OUT62p5=> spiclk2           
           );
 
 
-  process (spiclk)
+  process (spiclk2)
   begin
-      if rising_edge(spiclk) then
-          spiclk_i <= not spiclk_i;
+      if rising_edge(spiclk2) then
+          spiclk2_ii <= spiclk2;
+      end if;
+      if falling_edge(spiclk2) then
+          spiclk2_ii <= spiclk2;
       end if;
   end process;
 
@@ -377,6 +384,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
+  ila_data1(21) <= spiclk2_ii;
+
 
   ila_data2(7 downto 0) <= ila_rd_data_valid_cntr(7 downto 0);
   ila_data3(47 downto 0) <= ila_rd_rddata(47 downto 0);

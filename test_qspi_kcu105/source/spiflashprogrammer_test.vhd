@@ -231,12 +231,20 @@ end component oneshot;
   
   SpiMiso <= di_out(1);  -- Synonym 
   
-  negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
-    port map (
-            C => Clk,
-            D => SpiCsB_FFDin,  
-            Q => SpiCsB_N   
-    );
+  --negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
+  --  port map (
+  --          C => Clk,
+  --          D => SpiCsB_FFDin,  
+  --          Q => SpiCsB_N   
+  --  );
+
+  process (clk)
+  begin
+      if falling_edge(clk) then
+      --if rising_edge(clk) then
+          SpiCsB_N <= SpiCsB_FFDin;
+      end if;
+  end process;
     
   oneshot_inst  : oneshot
       port map (
