@@ -241,8 +241,9 @@ end component oneshot;
   process (clk)
   begin
       if falling_edge(clk) then
-      --if rising_edge(clk) then
-          SpiCsB_N <= SpiCsB_FFDin;
+      --    SpiCsB_N <= SpiCsB_FFDin;
+          SpiCsB_N <= rd_SpiCsB;
+
       end if;
   end process;
     
