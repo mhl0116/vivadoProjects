@@ -62,6 +62,7 @@ entity spiflashprogrammer_test is
     out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
+    in_rdAddr: in std_logic_vector(11 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
     out_rd_rddata: out std_logic_vector(47 downto 0)
@@ -291,12 +292,11 @@ processerase : process (Clk)
           rdstate <= S_RD_CS1;
          end if;
                        
------------------   Set 4 Byte mode first -----------------------------------------------------
    when S_RD_CS1 =>
         rd_SpiCsB <= '0';
         rdstate <= S_RD_RDREG;
           
-    when S_RD_RDREG =>     -- read register according to selected command 
+   when S_RD_RDREG =>     -- read register according to selected command 
         if (rd_cmdcounter32 >= 31) then rd_cmdcounter32 <= rd_cmdcounter32 - 1;
             rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else

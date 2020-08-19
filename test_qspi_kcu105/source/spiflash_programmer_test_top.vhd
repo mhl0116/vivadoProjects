@@ -72,6 +72,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
+    in_rdAddr: in std_logic_vector(11 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
     out_rd_rddata: out std_logic_vector(47 downto 0)
@@ -111,7 +112,8 @@ architecture behavioral of spiflashprogrammer_top is
     clk : IN STD_LOGIC;
     probe_in0 : IN STD_LOGIC := '0';
     probe_out0 : OUT STD_LOGIC := '0';
-    probe_out1 : OUT STD_LOGIC_VECTOR(3 downto 0) := (others=> '0')
+    probe_out1 : OUT STD_LOGIC_VECTOR(3 downto 0) := (others=> '0');
+    probe_out2 : OUT STD_LOGIC_VECTOR(11 downto 0) := (others=> '0')
 
   );
  END COMPONENT;
@@ -135,6 +137,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_SpiMosi : std_logic; 
  signal ila_CmdSelect : std_logic_vector(7 downto 0);
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
+ signal ila_rdAddr : std_logic_vector(11 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(7 downto 0);
  signal ila_rd_rddata : std_logic_vector(47 downto 0);
@@ -186,6 +189,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
   signal probeout1: std_logic_vector(3 downto 0) := (others=> '0'); 
+  signal probeout2: std_logic_vector(11 downto 0) := (others=> '0'); 
 
     type init is
    (
@@ -358,6 +362,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_SpiMiso             => ila_SpiMiso, 
     out_CmdSelect          => ila_CmdSelect,
     in_CmdIndex           => ila_CmdIndex,
+    in_rdAddr           => ila_rdAddr,
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
     out_rd_rddata => ila_rd_rddata
@@ -409,13 +414,15 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startread <= not startread_gen_d and startread_gen; 
 
   ila_CmdIndex <= probeout1;
+  ila_rd_SpiCsB <= probeout2;
 
   i_vio : vio_0
   PORT MAP (
     clk => spiclk2,
     probe_in0 => probein0,
     probe_out0 => probeout0,
-    probe_out1 => probeout1
+    probe_out1 => probeout1,
+    probe_out2 => probeout2
 
   );
 --process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
