@@ -414,7 +414,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startread <= not startread_gen_d and startread_gen; 
 
   ila_CmdIndex <= probeout1;
-  ila_rd_SpiCsB <= probeout2;
+  ila_rdAddr <= probeout2;
 
   i_vio : vio_0
   PORT MAP (

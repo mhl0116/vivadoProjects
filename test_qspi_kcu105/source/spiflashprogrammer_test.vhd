@@ -112,6 +112,7 @@ end component oneshot;
   constant  CmdFASTREAD      : std_logic_vector(7 downto 0)  := X"0B";
   constant  CmdREAD32        : std_logic_vector(7 downto 0)  := X"13";
   constant  CmdRDID          : std_logic_vector(7 downto 0)  := X"9F";
+  constant  CmdRDFlashPara   : std_logic_vector(7 downto 0)  := X"5A";
   constant  CmdFLAGStatus    : std_logic_vector(7 downto 0)  := X"70";
   constant  CmdStatus        : std_logic_vector(7 downto 0)  := X"05";
   constant  CmdWE            : std_logic_vector(7 downto 0)  := X"06";
@@ -273,7 +274,7 @@ end component oneshot;
 -----------------------------  select command  --------------------------------------------------
   CmdSelect <= CmdStatus when CmdIndex = x"1" else
                CmdRDID   when CmdIndex = x"2" else
-               CmdFLAGStatus   when CmdIndex = x"3" else
+               CmdRDFlashPara   when CmdIndex = x"3" else
                x"FF";
 -----------------------------  read sectors  --------------------------------------------------
 processerase : process (Clk)
