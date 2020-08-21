@@ -48,22 +48,28 @@ architecture behavioral of spiflashprogrammer_top is
   (
     Clk         : in std_logic; -- untouch
     fifoclk     : in std_logic; -- TODO, make it 6MHz as in example, or use the same as spiclk
---    data_to_fifo : in std_logic_vector(31 downto 0); -- until sectorcountvalid, all hardcoded
---    startaddr   : in std_logic_vector(31 downto 0);
---    startaddrvalid   : in std_logic;
---    pagecount   : in std_logic_vector(16 downto 0);
---    pagecountvalid   : in std_logic;
---    sectorcount : in std_logic_vector(13 downto 0);
---    sectorcountvalid : in std_logic;
---    fifowren    : in Std_logic;
---    fifofull    : out std_logic;
---    fifoempty   : out std_logic;
---    fifoafull   : out std_logic;
---    fifowrerr   : out std_logic;
---    fiforderr   : out std_logic;
---    writedone   : out std_logic;
+    ------------------------------------
+    data_to_fifo : in std_logic_vector(31 downto 0); -- until sectorcountvalid, all hardcoded
+    startaddr   : in std_logic_vector(31 downto 0);
+    startaddrvalid   : in std_logic;
+    pagecount   : in std_logic_vector(16 downto 0);
+    pagecountvalid   : in std_logic;
+    sectorcount : in std_logic_vector(13 downto 0);
+    sectorcountvalid : in std_logic;
+    ------------------------------------
+    fifowren    : in Std_logic;
+    fifofull    : out std_logic;
+    fifoempty   : out std_logic;
+    fifoafull   : out std_logic;
+    fifowrerr   : out std_logic;
+    fiforderr   : out std_logic;
+    writedone   : out std_logic;
+    ------------------------------------
     reset       : in  std_logic;
     read       : in std_logic;
+    erase     : in std_logic; 
+    eraseing     : out std_logic; 
+    ------------------------------------
     out_read_inprogress        : out std_logic;
     out_rd_SpiCsB: out std_logic;
     out_SpiCsB_N: out std_logic;
@@ -75,8 +81,8 @@ architecture behavioral of spiflashprogrammer_top is
     in_rdAddr: in std_logic_vector(11 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
-    out_rd_rddata: out std_logic_vector(47 downto 0)
-  --  eraseing     : out std_logic 
+    out_rd_data_valid: out std_logic;
+    out_rd_rddata: out std_logic_vector(7 downto 0)
    ); 
   end component spiflashprogrammer_test;
 
@@ -102,7 +108,7 @@ architecture behavioral of spiflashprogrammer_top is
     probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
     probe1 : in std_logic_vector(31 downto 0) := (others=> '0');
     probe2 : in std_logic_vector(7 downto 0) := (others=> '0');
-    probe3 : in std_logic_vector(47 downto 0) := (others=> '0')
+    probe3 : in std_logic_vector(7 downto 0) := (others=> '0')
 
   );
   end component;
@@ -113,10 +119,18 @@ architecture behavioral of spiflashprogrammer_top is
     probe_in0 : IN STD_LOGIC := '0';
     probe_out0 : OUT STD_LOGIC := '0';
     probe_out1 : OUT STD_LOGIC_VECTOR(3 downto 0) := (others=> '0');
-    probe_out2 : OUT STD_LOGIC_VECTOR(11 downto 0) := (others=> '0')
+    probe_out2 : OUT STD_LOGIC_VECTOR(11 downto 0) := (others=> '0');
+    probe_out3 : OUT STD_LOGIC := '0';
+    probe_out4 : OUT STD_LOGIC := '0';
+    probe_out5 : OUT STD_LOGIC := '0'
 
   );
  END COMPONENT;
+
+ -- use a counter to pass these 3 buses
+ constant startaddr_c         : std_logic_vector(31 downto 0) := X"00001000";
+ constant pagecount_c         : std_logic_vector(16 downto 0) := "00000000000000000";
+ constant sectorcount_c       : std_logic_vector(13 downto 0) := "00000000000000";
 
  signal  Bscan1Capture        : std_logic;
  signal  Bscan1Drck           : std_logic;
@@ -139,8 +153,9 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
  signal ila_rdAddr : std_logic_vector(11 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
+ signal ila_rd_data_valid : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(7 downto 0);
- signal ila_rd_rddata : std_logic_vector(47 downto 0);
+ signal ila_rd_rddata : std_logic_vector(7 downto 0);
 
  --
   signal clk125                   : std_logic;
@@ -151,6 +166,12 @@ architecture behavioral of spiflashprogrammer_top is
   signal spiclk2_ii                   : std_logic; 
   signal shift32b                 : std_logic_vector(31 downto 0) := X"00000000";
   signal bscan_bit_cntr           : std_logic_vector(4 downto 0) := "00000";
+  signal loadbit_startinfo                   : std_logic := '0'; 
+  signal startinfo                   : std_logic := '0'; 
+  signal loadbit_startdata                   : std_logic := '0'; 
+  signal startata                   : std_logic := '0'; 
+  signal load_bit_cntr           : integer := 0;
+  signal load_data_cntr           : std_logic_vector(31 downto 0) := X"00000000";
   signal fifowren                 : std_logic := '0';
   signal fifofull                 : std_logic := '0';
   signal almostfull               : std_logic := '0';
@@ -171,26 +192,37 @@ architecture behavioral of spiflashprogrammer_top is
   signal sectorcount              : std_logic_vector(13 downto 0) := "00000000000000";
   signal sectorcountvalid         : std_logic := '0';
   signal startread               : std_logic := '0';
-  signal startread_gen               : std_logic := '0';
-  signal startread_gen_d               : std_logic := '0';
   signal starterase               : std_logic := '0';
+  signal startdata               : std_logic := '0';
+  signal startread_gen               : std_logic := '0';
+  signal starterase_gen               : std_logic := '0';
+  signal startinfo_gen               : std_logic := '0';
+  signal startdata_gen               : std_logic := '0';
+  signal startread_gen_d               : std_logic := '0';
+  signal starterase_gen_d               : std_logic := '0';
+  signal startinfo_gen_d               : std_logic := '0';
+  signal startdata_gen_d               : std_logic := '0';
   signal write_done               : std_logic := '0';
 --  signal leds                     : std_logic := '0';
   signal clk_in_buf               : std_logic := '0';
   signal rst_sim                  : std_logic := '0';
   signal rst_init                 : std_logic := '0';
   signal rst                      : std_logic := '0';
-  signal rst_init_cnt : unsigned(32 downto 0) := (others=> '0');
+  signal rst_init_cnt : unsigned(31 downto 0) := (others=> '0');
   signal ila_trigger: std_logic_vector(7 downto 0) := (others=> '0'); 
   signal ila_data1: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data2: std_logic_vector(7 downto 0) := (others=> '0'); 
-  signal ila_data3: std_logic_vector(47 downto 0) := (others=> '0'); 
+  signal ila_data3: std_logic_vector(7 downto 0) := (others=> '0'); 
 
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
   signal probeout1: std_logic_vector(3 downto 0) := (others=> '0'); 
   signal probeout2: std_logic_vector(11 downto 0) := (others=> '0'); 
+  signal probeout3: std_logic := '0'; 
+  signal probeout4: std_logic := '0'; 
+  signal probeout5: std_logic := '0'; 
 
+  -- this part is from example design, may not needed in the end
     type init is
    (
      S_INIT, S_ERASE, S_ALIGN, S_DATA   --  S_ERASE,
@@ -199,33 +231,7 @@ architecture behavioral of spiflashprogrammer_top is
    
 begin
     
-  --IBUFGDS_inst : IBUFGDS   -- sysclk125 from board pins
-  --generic map (
-  --  DIFF_TERM => FALSE, 
-  --  IBUF_LOW_PWR => TRUE, 
-  --  IOSTANDARD => "LVDS")
-  --port map 
-  --(
-  --  O   => clk125,    
-  --  I   => SYSCLK_P, 
-  --  IB  => SYSCLK_N 
-  --); 
-
----- Use BUFG for minimizing resources (plenty of those). Use MMCM/PLL for finer frequency selections
-  --BUFGCE_inst1 : BUFGCE_DIV 
-  --  generic map(
-  --    BUFGCE_DIVIDE => 4,    -- 31.25MHz
-  --    IS_CE_INVERTED => '0',
-  --    IS_CLR_INVERTED => '0',
-  --    IS_I_INVERTED => '0'
-  --  )
-  --  port map
-  --  (
-  --    O   => spiclk,
-  --    CE  => '1',
-  --    CLR => '0',
-  --    I   => clk125     );
-
+  -- generate clk in simulation
   input_clk_simulation_i : if in_simulation generate
     process
       constant clk_period_by_2 : time := 1.666 ns;
@@ -239,6 +245,7 @@ begin
     end process;
   end generate input_clk_simulation_i;
 
+  -- deal with clk
   input_clk_synthesize_i : if in_synthesis generate
     ibufg_i : IBUFGDS
     port map (
@@ -267,7 +274,7 @@ begin
       end if;
   end process;
 
-                      
+  -- deal with reset in simulation                      
   reset_simulation_i : if in_simulation generate
     PROCESS BEGIN
      rst_sim <= '1';
@@ -277,10 +284,23 @@ begin
      startread_gen <= '1';
      WAIT FOR 3333333 ps;
      startread_gen <= '0';
+     WAIT FOR 3333333 ps;
+     starterase_gen <= '1';
+     WAIT FOR 3333333 ps;
+     starterase_gen <= '0';
+     WAIT FOR 3333333 ps;
+     startinfo_gen <= '1';
+     WAIT FOR 3333333 ps;
+     startinfo_gen <= '0';
+     WAIT FOR 3333333 ps;
+     startdata_gen <= '1';
+     WAIT FOR 3333333 ps;
+     startdata_gen <= '0';
      WAIT;
     END PROCESS;
   end generate;
 
+  -- deal with initial reset in real life
   reset_synthesize_i : if in_synthesis generate
   process(drck)
   begin
@@ -300,34 +320,6 @@ begin
   
   rst <= rst_sim or rst_init;
 
---  Bscan1 : BSCANE2
---  generic map (
---    JTAG_CHAIN => 4   -- avoid 1 and 3 �. Debug cores; 4 is not subject to cable polling
---  )
---  port map 
---  (
---    CAPTURE => Bscan1Capture,
---    DRCK    => Bscan1Drck,
---    RESET   => Bscan1Reset,
---    SEL     => Bscan1Sel,
---    SHIFT   => Bscan1Shift,
---    TCK     => Bscan1Tck,
---    TDI     => Bscan1Tdi,
---    UPDATE  => Bscan1Update,
---    TDO     => erasingspi
---  );
---
---BUFG_inst2 : BUFGCE 
---    generic map(
---      CE_TYPE => "SYNC"
---    )
---    port map
---    (
---      O   => drck,
---      CE  => Bscan1Shift,
---      I   => Bscan1Drck     
---    );
-
  led_inst: leds_0to7 port map
   (
   sysclk => spiclk,
@@ -338,22 +330,24 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   (
     Clk => spiclk,
     fifoclk => drck,
---    data_to_fifo => shift32b,
---    startaddr    =>  startaddr,
---    startaddrvalid  => startaddrvalid,
---    pagecount    =>  pagecount,
---    pagecountvalid  => pagecountvalid,
---    sectorcount  => sectorcount,
---    sectorcountvalid => sectorcountvalid,
---    fifowren => fifowren,
---    fifofull => fifofull,
---    fifoempty => fifoempty,
---    fifoafull => almostfull,
---    fifowrerr => overflow,
---    fiforderr => underflow,
---    writedone => write_done,
+    data_to_fifo => std_logic_vector(load_data_cntr),
+    startaddr    =>  startaddr, 
+    startaddrvalid  => startaddrvalid,
+    pagecount    =>  pagecount,
+    pagecountvalid  => pagecountvalid,
+    sectorcount  => sectorcount,
+    sectorcountvalid => sectorcountvalid,
+    fifowren => fifowren,
+    fifofull => fifofull,
+    fifoempty => fifoempty,
+    fifoafull => almostfull,
+    fifowrerr => overflow,
+    fiforderr => underflow,
+    writedone => write_done,
     reset => '0',
     read => startread,
+    eraseing => erasingspi,   
+    erase => starterase,
     out_read_inprogress     => ila_read_inprogress,
     out_rd_SpiCsB           => ila_rd_SpiCsB,
     out_SpiCsB_N            => ila_SpiCsB_N,
@@ -365,8 +359,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     in_rdAddr           => ila_rdAddr,
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
+    out_rd_data_valid => ila_rd_data_valid,
     out_rd_rddata => ila_rd_rddata
-   -- eraseing => erasingspi   
 );
 
 
@@ -384,16 +378,14 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(12 downto 5) <= ila_CmdSelect(7 downto 0);
   ila_data1(16 downto 13) <= ila_CmdIndex(3 downto 0);
   ila_data1(17) <= ila_SpiCsB_FFDin;
-  --ila_data1(21 downto 18) <= ila_rd_data_valid_cntr(3 downto 0);
-  --ila_data1(37 downto 22) <= ila_rd_rddata(15 downto 0);
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
   ila_data1(21) <= spiclk;
-
+  ila_data1(22) <= ila_rd_data_valid;
 
   ila_data2(7 downto 0) <= ila_rd_data_valid_cntr(7 downto 0);
-  ila_data3(47 downto 0) <= ila_rd_rddata(47 downto 0);
+  ila_data3(7 downto 0) <= ila_rd_rddata(7 downto 0);
 
   i_ila : ila_0
   port map(
@@ -408,13 +400,29 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startread_synthesize_i : if in_synthesis generate
   -- generate a clk pulse of startread once having a 1 from vio
   startread_gen <= probeout0; 
+  startinfo_gen <= probeout3; 
+  startdata_gen <= probeout4; 
+  starterase_gen <= probeout5; 
   end generate;
   
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
   startread <= not startread_gen_d and startread_gen; 
 
+  startinfo_gen_d <= startinfo_gen when rising_edge(spiclk); 
+  startinfo <= not startinfo_gen_d and startinfo_gen; 
+
+  startdata_gen_d <= startdata_gen when rising_edge(spiclk); 
+  startdata <= not startdata_gen_d and startdata_gen; 
+
+  starterase_gen_d <= starterase_gen when rising_edge(spiclk); 
+  starterase <= not starterase_gen_d and starterase_gen; 
+
   ila_CmdIndex <= probeout1;
   ila_rdAddr <= probeout2;
+
+  startaddr <= startaddr_c;
+  pagecount <= pagecount_c;
+  sectorcount <= sectorcount_c;
 
   i_vio : vio_0
   PORT MAP (
@@ -422,84 +430,129 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe_in0 => probein0,
     probe_out0 => probeout0,
     probe_out1 => probeout1,
-    probe_out2 => probeout2
+    probe_out2 => probeout2,
+    probe_out3 => probeout3,
+    probe_out4 => probeout4,
+    probe_out5 => probeout5
 
   );
---process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
-process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
+
+
+-- use a counter to pass initial addr/start sector/start page for spi operation
+-- use 5 spiclk for now
+  process(spiclk, loadbit_startinfo)
   begin
-      --if (Bscan1Reset = '1') then
-      if (rst = '1') then
-         fifowren <= '0';
-         bscan_bit_cntr <= "00000";
-         download_state  <= S_INIT;
-      else
-      if rising_edge(drck) then  
-        --shift32b <= shift32b(30 downto 0) & Bscan1Tdi;  -- shift left
-        --shift32b<= Bscan1Tdi & shift32b(31 downto 1);  -- shift right
-        shift32b<= x"FFFFFFFF"; 
-        case download_state is 
-          when S_INIT =>
-               writeerrreg <= '0';   -- clear sticky registers
-               readerrreg <= '0';
-               bscan_bit_cntr <= bscan_bit_cntr + 1;
-               if (bscan_bit_cntr = 0) then
-                  -- The below should not require synchronization to the SPI clock
-                  -- Very slow DRCK clock and the FIFO fills to AF first anyway 
-                 init_counter <= init_counter + 1;
-                 --if (init_counter = "00000") then sectorcount <= shift32b(13 downto 0);  -- NOOP. Aligncounter and clock cycles
-                 if (init_counter = "00000") then sectorcount <= "11" & x"111"; 
-                 elsif (init_counter = "00001") then 
-                   --sectorcount <= shift32b(13 downto 0); 
-                   sectorcount <= "00" & x"002"; 
-                   sectorcountvalid <= '1'; -- sector count first
-                 elsif (init_counter = "00010") then 
-                   --startaddr <= shift32b(31 downto 0); 
-                   startaddr <= x"00000000"; 
-                   startaddrvalid <= '1';
-                 elsif (init_counter = "00011") then 
-                   --pagecount <= shift32b(16 downto 0); 
-                   pagecount <= '0' & x"000F"; 
-                   pagecountvalid <= '1';
-                   init_counter <= "00000";
-                   download_state <= S_ERASE;
-                  end if;
-               end if;  -- bscan_bit_cntr
-               
-          when S_ERASE =>  
-               -- just wait some time for starterase to assert before deasserting
-               -- needs to propagte to the SPI clock
-               starterase <= '1';
-               init_counter <= init_counter + 1;  
-               if (init_counter = 31) then
-                 starterase <= '0';
-                 if (erasingspi = '0') then 
-                   sectorcountvalid <= '0';  -- should be done with these by now
-                   startaddrvalid <= '0';
-                   pagecountvalid <= '0';
-                   sectorcountvalid <= '0';
-                   download_state <= S_ALIGN;    
-                 end if;
-               end if;  -- init_counter
-               
-          when S_ALIGN => 
-               init_counter <= init_counter + 1;
-               if (init_counter = 31) then download_state <= S_DATA;   end if;   
-                    
-          when S_DATA =>
-               bscan_bit_cntr <= bscan_bit_cntr+1;  -- starts at 0
-               if (bscan_bit_cntr = 31) then  
-                 fifowren  <= '1';
-               else 
-                 fifowren  <= '0';           
-               end if;
-        end case;
-          -- Make FIFO errors sticky
-          if (overflow = '1') then writeerrreg <= '1'; end if;
-          if (underflow = '1') then readerrreg <= '1'; end if;
-         end if;
-     end if;  -- clk
- end process;
+  if (rising_edge(loadbit_startinfo)) then
+      startinfo <= '1';
+      load_bit_cntr <= 0;
+  else  
+  if(rising_edge(spiclk)) then
+    if(load_bit_cntr < 5 and startinfo = '1') then
+       startaddrvalid  <= '1';
+       sectorcountvalid  <= '1';
+       pagecountvalid  <= '1';
+
+       load_bit_cntr <= load_bit_cntr + 1;
+    end if;
+  end if;
+  end if;
+  end process;
+
+  process(spiclk, loadbit_startdata)
+  begin
+  if (rising_edge(loadbit_startdata)) then
+      startdata <= '1';
+      load_data_cntr <= x"00000000";
+  else  
+  if (rising_edge(spiclk)) then
+    if(startdata = '1') then
+       fifowren <= '1';
+       load_data_cntr <= load_data_cntr + 1;
+       -- write 1 pages, 1 page is 256 bytes
+       if (load_data_cntr = x"40") then
+           fifowren <= '0';
+           load_data_cntr <= x"00000000";
+       end if;
+    end if;
+  end if;
+  end if;
+  end process;
+
+----process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
+--process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
+--  begin
+--      --if (Bscan1Reset = '1') then
+--      if (rst = '1') then
+--         fifowren <= '0';
+--         bscan_bit_cntr <= "00000";
+--         download_state  <= S_INIT;
+--      else
+--      if rising_edge(drck) then  
+--        --shift32b <= shift32b(30 downto 0) & Bscan1Tdi;  -- shift left
+--        --shift32b<= Bscan1Tdi & shift32b(31 downto 1);  -- shift right
+--        shift32b<= x"FFFFFFFF"; 
+--        case download_state is 
+--          when S_INIT =>
+--               writeerrreg <= '0';   -- clear sticky registers
+--               readerrreg <= '0';
+--               bscan_bit_cntr <= bscan_bit_cntr + 1;
+--               if (bscan_bit_cntr = 0) then
+--                  -- The below should not require synchronization to the SPI clock
+--                  -- Very slow DRCK clock and the FIFO fills to AF first anyway 
+--                 init_counter <= init_counter + 1;
+--                 --if (init_counter = "00000") then sectorcount <= shift32b(13 downto 0);  -- NOOP. Aligncounter and clock cycles
+--                 if (init_counter = "00000") then sectorcount <= "11" & x"111"; 
+--                 elsif (init_counter = "00001") then 
+--                   --sectorcount <= shift32b(13 downto 0); 
+--                   sectorcount <= "00" & x"002"; 
+--                   sectorcountvalid <= '1'; -- sector count first
+--                 elsif (init_counter = "00010") then 
+--                   --startaddr <= shift32b(31 downto 0); 
+--                   startaddr <= x"00000000"; 
+--                   startaddrvalid <= '1';
+--                 elsif (init_counter = "00011") then 
+--                   --pagecount <= shift32b(16 downto 0); 
+--                   pagecount <= '0' & x"000F"; 
+--                   pagecountvalid <= '1';
+--                   init_counter <= "00000";
+--                   download_state <= S_ERASE;
+--                  end if;
+--               end if;  -- bscan_bit_cntr
+--               
+--          when S_ERASE =>  
+--               -- just wait some time for starterase to assert before deasserting
+--               -- needs to propagte to the SPI clock
+--               starterase <= '1';
+--               init_counter <= init_counter + 1;  
+--               if (init_counter = 31) then
+--                 starterase <= '0';
+--                 if (erasingspi = '0') then 
+--                   sectorcountvalid <= '0';  -- should be done with these by now
+--                   startaddrvalid <= '0';
+--                   pagecountvalid <= '0';
+--                   sectorcountvalid <= '0';
+--                   download_state <= S_ALIGN;    
+--                 end if;
+--               end if;  -- init_counter
+--               
+--          when S_ALIGN => 
+--               init_counter <= init_counter + 1;
+--               if (init_counter = 31) then download_state <= S_DATA;   end if;   
+--                    
+--          when S_DATA =>
+--               bscan_bit_cntr <= bscan_bit_cntr+1;  -- starts at 0
+--               if (bscan_bit_cntr = 31) then  
+--                 fifowren  <= '1';
+--               else 
+--                 fifowren  <= '0';           
+--               end if;
+--        end case;
+--          -- Make FIFO errors sticky
+--          if (overflow = '1') then writeerrreg <= '1'; end if;
+--          if (underflow = '1') then readerrreg <= '1'; end if;
+--         end if;
+--     end if;  -- clk
+-- end process;
 
   -- Error message printing for simulation
 
