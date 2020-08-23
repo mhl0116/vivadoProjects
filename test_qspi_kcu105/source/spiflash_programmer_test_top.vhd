@@ -409,10 +409,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startread <= not startread_gen_d and startread_gen; 
 
   startinfo_gen_d <= startinfo_gen when rising_edge(spiclk); 
-  startinfo <= not startinfo_gen_d and startinfo_gen; 
+  loadbit_startinfo <= not startinfo_gen_d and startinfo_gen; 
 
   startdata_gen_d <= startdata_gen when rising_edge(spiclk); 
-  startdata <= not startdata_gen_d and startdata_gen; 
+  loadbit_startdata <= not startdata_gen_d and startdata_gen; 
 
   starterase_gen_d <= starterase_gen when rising_edge(spiclk); 
   starterase <= not starterase_gen_d and starterase_gen; 
@@ -445,16 +445,23 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   if (rising_edge(loadbit_startinfo)) then
       startinfo <= '1';
       load_bit_cntr <= 0;
-  else  
-  if(rising_edge(spiclk)) then
-    if(load_bit_cntr < 5 and startinfo = '1') then
+  end if;
+  if(rising_edge(spiclk) and startinfo = '1') then
+    if(load_bit_cntr < 5) then
        startaddrvalid  <= '1';
        sectorcountvalid  <= '1';
        pagecountvalid  <= '1';
 
        load_bit_cntr <= load_bit_cntr + 1;
+    else
+       startaddrvalid  <= '0';
+       sectorcountvalid  <= '0';
+       pagecountvalid  <= '0';
+
+       load_bit_cntr <= load_bit_cntr + 1;
+       
+       startinfo <= '0';
     end if;
-  end if;
   end if;
   end process;
 
@@ -463,9 +470,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   if (rising_edge(loadbit_startdata)) then
       startdata <= '1';
       load_data_cntr <= x"00000000";
-  else  
-  if (rising_edge(spiclk)) then
-    if(startdata = '1') then
+  end if;
+  if (rising_edge(spiclk) and startdata = '1') then
        fifowren <= '1';
        load_data_cntr <= load_data_cntr + 1;
        -- write 1 pages, 1 page is 256 bytes
@@ -474,8 +480,6 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
            load_data_cntr <= x"00000000";
        end if;
     end if;
-  end if;
-  end if;
   end process;
 
 ----process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN

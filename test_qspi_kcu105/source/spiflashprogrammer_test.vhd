@@ -490,8 +490,8 @@ processerase : process (Clk)
             er_cmdreg32 <= er_cmdreg32(38 downto 0) & '0';
         else
           er_data_valid_cntr <= er_data_valid_cntr + 1;
-          --er_rddata <= er_rddata(1) & SpiMiso;  -- deser 1:8 
-          er_rddata <= er_rddata(1) & "0";  -- deser 1:8 
+          er_rddata <= er_rddata(1) & SpiMiso;  -- deser 1:8 
+          --er_rddata <= er_rddata(1) & "0";  -- deser 1:8 
           if (er_data_valid_cntr = 7) then  -- Check Status after 8 bits (+1) of status read
             er_status <= er_rddata;   -- Check WE and ERASE in progress one cycle after er_rddate
             if (er_status = 0) then
@@ -605,8 +605,8 @@ processProgram  : process (Clk)
             cmdreg32 <= cmdreg32(38 downto 0) & '0';
           else -- keep reading the status register
             data_valid_cntr <= data_valid_cntr + 1;  -- rolls over to 0
-            --rddata <= rddata(1) & SpiMiso;  -- deser 1:8  
-            rddata <= rddata(1) & "0" ;  -- deser 1:8  
+            rddata <= rddata(1) & SpiMiso;  -- deser 1:8  
+            --rddata <= rddata(1) & "0" ;  -- deser 1:8  
             if (data_valid_cntr = 7) then  -- catch status byte
               StatusDataValid <= '1';    -- copy WE and Write in progress one cycle after rddate
             else 
