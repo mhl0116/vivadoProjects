@@ -78,7 +78,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
-    in_rdAddr: in std_logic_vector(23 downto 0);
+    in_rdAddr: in std_logic_vector(31 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
@@ -119,7 +119,7 @@ architecture behavioral of spiflashprogrammer_top is
     probe_in0 : IN STD_LOGIC := '0';
     probe_out0 : OUT STD_LOGIC := '0';
     probe_out1 : OUT STD_LOGIC_VECTOR(3 downto 0) := (others=> '0');
-    probe_out2 : OUT STD_LOGIC_VECTOR(23 downto 0) := (others=> '0');
+    probe_out2 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
     probe_out3 : OUT STD_LOGIC := '0';
     probe_out4 : OUT STD_LOGIC := '0';
     probe_out5 : OUT STD_LOGIC := '0'
@@ -151,7 +151,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_SpiMosi : std_logic; 
  signal ila_CmdSelect : std_logic_vector(7 downto 0);
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
- signal ila_rdAddr : std_logic_vector(23 downto 0);
+ signal ila_rdAddr : std_logic_vector(31 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
  signal ila_rd_data_valid : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
@@ -217,7 +217,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
   signal probeout1: std_logic_vector(3 downto 0) := (others=> '0'); 
-  signal probeout2: std_logic_vector(23 downto 0) := (others=> '0'); 
+  signal probeout2: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probeout3: std_logic := '0'; 
   signal probeout4: std_logic := '0'; 
   signal probeout5: std_logic := '0'; 
