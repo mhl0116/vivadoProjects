@@ -387,7 +387,7 @@ processread : process (Clk)
         rdstate <= S_RD_RDREG;
           
    when S_RD_RDREG =>     -- read register according to selected command 
-        if (rd_cmdcounter32 >= 31) then rd_cmdcounter32 <= rd_cmdcounter32 - 1;
+        if (rd_cmdcounter32 >= 7) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
             rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
@@ -406,6 +406,8 @@ processread : process (Clk)
           if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
+            rd_nbyte_cntr <= x"000";
+            rd_data_valid_cntr <= "000";
           end if;  -- if rddata valid
         end if; -- cmdcounter /= 32
    end case;  

@@ -219,6 +219,9 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data1: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data2: std_logic_vector(2 downto 0) := (others=> '0'); 
   signal ila_data3: std_logic_vector(7 downto 0) := (others=> '0'); 
+  signal ila_data4: std_logic_vector(11 downto 0) := (others=> '0'); 
+  signal ila_data5: std_logic_vector(39 downto 0) := (others=> '0'); 
+  
 
   signal probein0: std_logic := '0'; 
   signal probeout0: std_logic := '0'; 
