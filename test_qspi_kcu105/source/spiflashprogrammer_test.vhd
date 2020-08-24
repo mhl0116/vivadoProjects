@@ -65,6 +65,7 @@ entity spiflashprogrammer_test is
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
     in_rdAddr: in std_logic_vector(31 downto 0);
+    in_wdlimit: in std_logic_vector(31 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
@@ -395,7 +396,7 @@ processread : process (Clk)
           --rd_rddata <= rd_rddata(46 downto 0) & SpiMiso;  -- deser 1:8 
           --rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
           --if (rd_data_valid_cntr = 47) then  -- Check Status after 8 bits (+1) of status read
-          if (rd_data_valid_cntr = 7) then
+          if (rd_data_valid_cntr = 6) then
               rd_data_valid <= '1';
               rd_nbyte_cntr <= rd_nbyte_cntr + 1;
           else
@@ -403,7 +404,8 @@ processread : process (Clk)
           end if;
           -- this is hardcoded, only able to read one page for now
           --if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
-          if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
+          --if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
+          if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
             rd_nbyte_cntr <= x"000";

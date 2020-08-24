@@ -79,6 +79,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
     in_rdAddr: in std_logic_vector(31 downto 0);
+    in_wdlimit: in std_logic_vector(31 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
@@ -126,7 +127,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe_out2 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
     probe_out3 : OUT STD_LOGIC := '0';
     probe_out4 : OUT STD_LOGIC := '0';
-    probe_out5 : OUT STD_LOGIC := '0'
+    probe_out5 : OUT STD_LOGIC := '0';
+    probe_out6 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0')
 
   );
  END COMPONENT;
@@ -156,6 +158,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_CmdSelect : std_logic_vector(7 downto 0);
  signal ila_CmdIndex : std_logic_vector(3 downto 0);
  signal ila_rdAddr : std_logic_vector(31 downto 0);
+ signal ila_wdlimit : std_logic_vector(31 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
  signal ila_rd_data_valid : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
@@ -230,6 +233,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout3: std_logic := '0'; 
   signal probeout4: std_logic := '0'; 
   signal probeout5: std_logic := '0'; 
+  signal probeout6: std_logic_vector(31 downto 0) := (others=> '0'); 
 
   -- this part is from example design, may not needed in the end
     type init is
@@ -398,6 +402,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data2(2 downto 0) <= ila_rd_data_valid_cntr(2 downto 0);
   ila_data3(7 downto 0) <= ila_rd_rddata(7 downto 0);
   ila_data4(11 downto 0) <= ila_nbyte_cntr(11 downto 0);
+  ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
 
   i_ila : ila_0
   port map(
@@ -414,9 +419,12 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startread_synthesize_i : if in_synthesis generate
   -- generate a clk pulse of startread once having a 1 from vio
   startread_gen <= probeout0; 
+  ila_CmdIndex <= probeout1;
+  ila_rdAddr <= probeout2;
   startinfo_gen <= probeout3; 
   startdata_gen <= probeout4; 
   starterase_gen <= probeout5; 
+  ila_wdlimit <= probeout6; 
   end generate;
   
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
@@ -431,8 +439,6 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   starterase_gen_d <= starterase_gen when rising_edge(spiclk); 
   starterase <= not starterase_gen_d and starterase_gen; 
 
-  ila_CmdIndex <= probeout1;
-  ila_rdAddr <= probeout2;
 
   startaddr <= startaddr_c;
   pagecount <= pagecount_c;
@@ -447,7 +453,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe_out2 => probeout2,
     probe_out3 => probeout3,
     probe_out4 => probeout4,
-    probe_out5 => probeout5
+    probe_out5 => probeout5,
+    probe_out6 => probeout6
 
   );
 
