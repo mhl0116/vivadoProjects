@@ -115,6 +115,7 @@ end component oneshot;
   constant  CmdREAD32        : std_logic_vector(7 downto 0)  := X"13";
   constant  CmdRDID          : std_logic_vector(7 downto 0)  := X"9F";
   constant  CmdRDFlashPara   : std_logic_vector(7 downto 0)  := X"5A";
+  constant  CmdRDFR24Quad    : std_logic_vector(7 downto 0)  := X"6B";
   constant  CmdFLAGStatus    : std_logic_vector(7 downto 0)  := X"70";
   constant  CmdStatus        : std_logic_vector(7 downto 0)  := X"05";
   constant  CmdWE            : std_logic_vector(7 downto 0)  := X"06";
@@ -356,6 +357,7 @@ FIFO36_inst : FIFO36E2
   CmdSelect <= CmdStatus when CmdIndex = x"1" else
                CmdRDID   when CmdIndex = x"2" else
                CmdRDFlashPara   when CmdIndex = x"3" else
+               CmdRDFR24Quad    when CmdIndex = x"4" else
                x"FF";
 -----------------------------  read sectors  --------------------------------------------------
 processread : process (Clk)
@@ -394,8 +396,9 @@ processread : process (Clk)
               rd_data_valid <= '0';
           end if;
           -- this is hardcoded, only able to read one page for now
-          if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
-            rdstate <= S_RD_IDLE;   -- Done. All sectors erased
+          --if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
+          if (rd_nbyte_cntr = x"5F") then  -- Check Status after 8 bits (+1) of status read
+            rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
           end if;  -- if rddata valid
         end if; -- cmdcounter /= 32
@@ -473,7 +476,8 @@ processerase : process (Clk)
                       
    when S_ER_ERASECMD =>     -- send erase command
         er_cmdreg32 <= er_cmdreg32(38 downto 0) & '0';
-        if (er_cmdcounter32 /= 0) then er_cmdcounter32 <= er_cmdcounter32 - 1; -- send erase + 24 bit address
+        if (er_cmdcounter32 /= 0) then er_cmdcounter32 <= er_cmdcounter32 - 1; -- send erase + 24 bit address???? 
+                                                                               -- this comment from example design is wrong, should be erase + 32 bit address, here 4 byte address mode is on
         else
           er_SpiCsB <= '1';   -- turn off SPI
           er_cmdcounter32 <= "100111";
