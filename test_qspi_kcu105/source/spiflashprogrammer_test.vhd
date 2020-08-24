@@ -64,7 +64,7 @@ entity spiflashprogrammer_test is
     out_SpiMiso: out std_logic;
     out_CmdSelect: out std_logic_vector(7 downto 0);
     in_CmdIndex: in std_logic_vector(3 downto 0);
-    in_rdAddr: in std_logic_vector(11 downto 0);
+    in_rdAddr: in std_logic_vector(23 downto 0);
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
@@ -371,7 +371,8 @@ processread : process (Clk)
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"00";
           --rd_cmdreg32 <=  CmdSelect & X"00000000";  
-          rd_cmdreg32 <=  CmdSelect & AddSelect;  
+          --rd_cmdreg32 <=  CmdSelect & AddSelect;  
+          rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           read_inprogress <= '1';
           rdstate <= S_RD_CS1;
          end if;
