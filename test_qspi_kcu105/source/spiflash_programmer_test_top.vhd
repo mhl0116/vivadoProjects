@@ -370,6 +370,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_CmdSelect          => ila_CmdSelect,
     in_CmdIndex           => ila_CmdIndex,
     in_rdAddr           => ila_rdAddr,
+    in_wdlimit           => ila_wdlimit,
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
     out_rd_data_valid => ila_rd_data_valid,
