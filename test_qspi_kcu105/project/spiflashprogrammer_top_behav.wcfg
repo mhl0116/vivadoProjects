@@ -1,0 +1,940 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="spiflashprogrammer_top_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="firmware_pkg" />
+            <top_module name="glbl" />
+            <top_module name="spiflashprogrammer_top" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="378854932fs"></ZoomStartTime>
+      <ZoomEndTime time="379475433fs"></ZoomEndTime>
+      <Cursor1Time time="379017332fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="242"></NameColumnWidth>
+      <ValueColumnWidth column_width="86"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="229" />
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/LEDS">
+      <obj_property name="ElementShortName">LEDS[7:0]</obj_property>
+      <obj_property name="ObjectShortName">LEDS[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/SYSCLK_N">
+      <obj_property name="ElementShortName">SYSCLK_N</obj_property>
+      <obj_property name="ObjectShortName">SYSCLK_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/SYSCLK_P">
+      <obj_property name="ElementShortName">SYSCLK_P</obj_property>
+      <obj_property name="ObjectShortName">SYSCLK_P</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Capture">
+      <obj_property name="ElementShortName">Bscan1Capture</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Capture</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Drck">
+      <obj_property name="ElementShortName">Bscan1Drck</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Drck</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Reset">
+      <obj_property name="ElementShortName">Bscan1Reset</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Sel">
+      <obj_property name="ElementShortName">Bscan1Sel</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Sel</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Shift">
+      <obj_property name="ElementShortName">Bscan1Shift</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Shift</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Tck">
+      <obj_property name="ElementShortName">Bscan1Tck</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Tck</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Tdi">
+      <obj_property name="ElementShortName">Bscan1Tdi</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Tdi</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Update">
+      <obj_property name="ElementShortName">Bscan1Update</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Update</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/Bscan1Tdo">
+      <obj_property name="ElementShortName">Bscan1Tdo</obj_property>
+      <obj_property name="ObjectShortName">Bscan1Tdo</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/clk125">
+      <obj_property name="ElementShortName">clk125</obj_property>
+      <obj_property name="ObjectShortName">clk125</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/shift32b">
+      <obj_property name="ElementShortName">shift32b[31:0]</obj_property>
+      <obj_property name="ObjectShortName">shift32b[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/bscan_bit_cntr">
+      <obj_property name="ElementShortName">bscan_bit_cntr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">bscan_bit_cntr[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/fifofull">
+      <obj_property name="ElementShortName">fifofull</obj_property>
+      <obj_property name="ObjectShortName">fifofull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/almostfull">
+      <obj_property name="ElementShortName">almostfull</obj_property>
+      <obj_property name="ObjectShortName">almostfull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/almostempty">
+      <obj_property name="ElementShortName">almostempty</obj_property>
+      <obj_property name="ObjectShortName">almostempty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/fifoempty">
+      <obj_property name="ElementShortName">fifoempty</obj_property>
+      <obj_property name="ObjectShortName">fifoempty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/fiforst">
+      <obj_property name="ElementShortName">fiforst</obj_property>
+      <obj_property name="ObjectShortName">fiforst</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/fifofullreg">
+      <obj_property name="ElementShortName">fifofullreg</obj_property>
+      <obj_property name="ObjectShortName">fifofullreg</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/overflow">
+      <obj_property name="ElementShortName">overflow</obj_property>
+      <obj_property name="ObjectShortName">overflow</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/writeerrreg">
+      <obj_property name="ElementShortName">writeerrreg</obj_property>
+      <obj_property name="ObjectShortName">writeerrreg</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/underflow">
+      <obj_property name="ElementShortName">underflow</obj_property>
+      <obj_property name="ObjectShortName">underflow</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/readerrreg">
+      <obj_property name="ElementShortName">readerrreg</obj_property>
+      <obj_property name="ObjectShortName">readerrreg</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/erasingspi">
+      <obj_property name="ElementShortName">erasingspi</obj_property>
+      <obj_property name="ObjectShortName">erasingspi</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/init_counter">
+      <obj_property name="ElementShortName">init_counter[4:0]</obj_property>
+      <obj_property name="ObjectShortName">init_counter[4:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/pagecount">
+      <obj_property name="ElementShortName">pagecount[16:0]</obj_property>
+      <obj_property name="ObjectShortName">pagecount[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/pagecountvalid">
+      <obj_property name="ElementShortName">pagecountvalid</obj_property>
+      <obj_property name="ObjectShortName">pagecountvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/startaddr">
+      <obj_property name="ElementShortName">startaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">startaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/startaddrvalid">
+      <obj_property name="ElementShortName">startaddrvalid</obj_property>
+      <obj_property name="ObjectShortName">startaddrvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/sectorcount">
+      <obj_property name="ElementShortName">sectorcount[13:0]</obj_property>
+      <obj_property name="ObjectShortName">sectorcount[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/sectorcountvalid">
+      <obj_property name="ElementShortName">sectorcountvalid</obj_property>
+      <obj_property name="ObjectShortName">sectorcountvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/starterase">
+      <obj_property name="ElementShortName">starterase</obj_property>
+      <obj_property name="ObjectShortName">starterase</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/write_done">
+      <obj_property name="ElementShortName">write_done</obj_property>
+      <obj_property name="ObjectShortName">write_done</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/clk_in_buf">
+      <obj_property name="ElementShortName">clk_in_buf</obj_property>
+      <obj_property name="ObjectShortName">clk_in_buf</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/rst_sim">
+      <obj_property name="ElementShortName">rst_sim</obj_property>
+      <obj_property name="ObjectShortName">rst_sim</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/rst_init">
+      <obj_property name="ElementShortName">rst_init</obj_property>
+      <obj_property name="ObjectShortName">rst_init</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/rst_init_cnt">
+      <obj_property name="ElementShortName">rst_init_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rst_init_cnt[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Clk">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoclk">
+      <obj_property name="ElementShortName">fifoclk</obj_property>
+      <obj_property name="ObjectShortName">fifoclk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/startaddr">
+      <obj_property name="ElementShortName">startaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">startaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/startaddrvalid">
+      <obj_property name="ElementShortName">startaddrvalid</obj_property>
+      <obj_property name="ObjectShortName">startaddrvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/pagecount">
+      <obj_property name="ElementShortName">pagecount[16:0]</obj_property>
+      <obj_property name="ObjectShortName">pagecount[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/pagecountvalid">
+      <obj_property name="ElementShortName">pagecountvalid</obj_property>
+      <obj_property name="ObjectShortName">pagecountvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/sectorcount">
+      <obj_property name="ElementShortName">sectorcount[13:0]</obj_property>
+      <obj_property name="ObjectShortName">sectorcount[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/sectorcountvalid">
+      <obj_property name="ElementShortName">sectorcountvalid</obj_property>
+      <obj_property name="ObjectShortName">sectorcountvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifowren">
+      <obj_property name="ElementShortName">fifowren</obj_property>
+      <obj_property name="ObjectShortName">fifowren</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifofull">
+      <obj_property name="ElementShortName">fifofull</obj_property>
+      <obj_property name="ObjectShortName">fifofull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoempty">
+      <obj_property name="ElementShortName">fifoempty</obj_property>
+      <obj_property name="ObjectShortName">fifoempty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoafull">
+      <obj_property name="ElementShortName">fifoafull</obj_property>
+      <obj_property name="ObjectShortName">fifoafull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifowrerr">
+      <obj_property name="ElementShortName">fifowrerr</obj_property>
+      <obj_property name="ObjectShortName">fifowrerr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fiforderr">
+      <obj_property name="ElementShortName">fiforderr</obj_property>
+      <obj_property name="ObjectShortName">fiforderr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrdata_count">
+      <obj_property name="ElementShortName">wrdata_count[2:0]</obj_property>
+      <obj_property name="ObjectShortName">wrdata_count[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/spi_wrdata">
+      <obj_property name="ElementShortName">spi_wrdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">spi_wrdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/write_done">
+      <obj_property name="ElementShortName">write_done</obj_property>
+      <obj_property name="ObjectShortName">write_done</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_current_sector_addr">
+      <obj_property name="ElementShortName">er_current_sector_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">er_current_sector_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase_inprogress">
+      <obj_property name="ElementShortName">erase_inprogress</obj_property>
+      <obj_property name="ObjectShortName">erase_inprogress</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase_start">
+      <obj_property name="ElementShortName">erase_start</obj_property>
+      <obj_property name="ObjectShortName">erase_start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMosi">
+      <obj_property name="ElementShortName">SpiMosi</obj_property>
+      <obj_property name="ObjectShortName">SpiMosi</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB_N">
+      <obj_property name="ElementShortName">SpiCsB_N</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB_N</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/di_out">
+      <obj_property name="ElementShortName">di_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">di_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/dopin_ts">
+      <obj_property name="ElementShortName">dopin_ts[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dopin_ts[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMosi_int">
+      <obj_property name="ElementShortName">SpiMosi_int</obj_property>
+      <obj_property name="ObjectShortName">SpiMosi_int</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_empty">
+      <obj_property name="ElementShortName">fifo_empty</obj_property>
+      <obj_property name="ObjectShortName">fifo_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_full">
+      <obj_property name="ElementShortName">fifo_full</obj_property>
+      <obj_property name="ObjectShortName">fifo_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_almostfull">
+      <obj_property name="ElementShortName">fifo_almostfull</obj_property>
+      <obj_property name="ObjectShortName">fifo_almostfull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_almostempty">
+      <obj_property name="ElementShortName">fifo_almostempty</obj_property>
+      <obj_property name="ObjectShortName">fifo_almostempty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_unconned">
+      <obj_property name="ElementShortName">fifo_unconned[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fifo_unconned[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/reset_design">
+      <obj_property name="ElementShortName">reset_design</obj_property>
+      <obj_property name="ObjectShortName">reset_design</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrerr">
+      <obj_property name="ElementShortName">wrerr</obj_property>
+      <obj_property name="ObjectShortName">wrerr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/rderr">
+      <obj_property name="ElementShortName">rderr</obj_property>
+      <obj_property name="ObjectShortName">rderr</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/synced_fifo_almostfull">
+      <obj_property name="ElementShortName">synced_fifo_almostfull[1:0]</obj_property>
+      <obj_property name="ObjectShortName">synced_fifo_almostfull[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/synced_erase">
+      <obj_property name="ElementShortName">synced_erase[1:0]</obj_property>
+      <obj_property name="ObjectShortName">synced_erase[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrWidth">
+      <obj_property name="ElementShortName">AddrWidth</obj_property>
+      <obj_property name="ObjectShortName">AddrWidth</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SectorSize">
+      <obj_property name="ElementShortName">SectorSize</obj_property>
+      <obj_property name="ObjectShortName">SectorSize</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SizeSector">
+      <obj_property name="ElementShortName">SizeSector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeSector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SubSectorSize">
+      <obj_property name="ElementShortName">SubSectorSize</obj_property>
+      <obj_property name="ObjectShortName">SubSectorSize</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SizeSubSector">
+      <obj_property name="ElementShortName">SizeSubSector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeSubSector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/NumberofSectors">
+      <obj_property name="ElementShortName">NumberofSectors[8:0]</obj_property>
+      <obj_property name="ObjectShortName">NumberofSectors[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/PageSize">
+      <obj_property name="ElementShortName">PageSize[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PageSize[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/NumberofPages">
+      <obj_property name="ElementShortName">NumberofPages[16:0]</obj_property>
+      <obj_property name="ObjectShortName">NumberofPages[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrStart32">
+      <obj_property name="ElementShortName">AddrStart32[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrStart32[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrEnd32">
+      <obj_property name="ElementShortName">AddrEnd32[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrEnd32[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Idcode25NQ256">
+      <obj_property name="ElementShortName">Idcode25NQ256[23:0]</obj_property>
+      <obj_property name="ObjectShortName">Idcode25NQ256[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdREAD24">
+      <obj_property name="ElementShortName">CmdREAD24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdREAD24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdFASTREAD">
+      <obj_property name="ElementShortName">CmdFASTREAD[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdFASTREAD[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdREAD32">
+      <obj_property name="ElementShortName">CmdREAD32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdREAD32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdRDID">
+      <obj_property name="ElementShortName">CmdRDID[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdRDID[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdFLAGStatus">
+      <obj_property name="ElementShortName">CmdFLAGStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdFLAGStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdStatus">
+      <obj_property name="ElementShortName">CmdStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdWE">
+      <obj_property name="ElementShortName">CmdWE[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdWE[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSE24">
+      <obj_property name="ElementShortName">CmdSE24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSE24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSE32">
+      <obj_property name="ElementShortName">CmdSE32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSE32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSSE24">
+      <obj_property name="ElementShortName">CmdSSE24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSSE24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSSE32">
+      <obj_property name="ElementShortName">CmdSSE32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSSE32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP24">
+      <obj_property name="ElementShortName">CmdPP24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP32">
+      <obj_property name="ElementShortName">CmdPP32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP24Quad">
+      <obj_property name="ElementShortName">CmdPP24Quad[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP24Quad[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP32Quad">
+      <obj_property name="ElementShortName">CmdPP32Quad[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP32Quad[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Cmd4BMode">
+      <obj_property name="ElementShortName">Cmd4BMode[7:0]</obj_property>
+      <obj_property name="ObjectShortName">Cmd4BMode[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdExit4BMode">
+      <obj_property name="ElementShortName">CmdExit4BMode[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdExit4BMode[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Clk">
+      <obj_property name="ElementShortName">Clk</obj_property>
+      <obj_property name="ObjectShortName">Clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoclk">
+      <obj_property name="ElementShortName">fifoclk</obj_property>
+      <obj_property name="ObjectShortName">fifoclk</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/data_to_fifo">
+      <obj_property name="ElementShortName">data_to_fifo[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_to_fifo[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/startaddr">
+      <obj_property name="ElementShortName">startaddr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">startaddr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/startaddrvalid">
+      <obj_property name="ElementShortName">startaddrvalid</obj_property>
+      <obj_property name="ObjectShortName">startaddrvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/pagecount">
+      <obj_property name="ElementShortName">pagecount[16:0]</obj_property>
+      <obj_property name="ObjectShortName">pagecount[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/pagecountvalid">
+      <obj_property name="ElementShortName">pagecountvalid</obj_property>
+      <obj_property name="ObjectShortName">pagecountvalid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/sectorcount">
+      <obj_property name="ElementShortName">sectorcount[13:0]</obj_property>
+      <obj_property name="ObjectShortName">sectorcount[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/sectorcountvalid">
+      <obj_property name="ElementShortName">sectorcountvalid</obj_property>
+      <obj_property name="ObjectShortName">sectorcountvalid</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifowren">
+      <obj_property name="ElementShortName">fifowren</obj_property>
+      <obj_property name="ObjectShortName">fifowren</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifofull">
+      <obj_property name="ElementShortName">fifofull</obj_property>
+      <obj_property name="ObjectShortName">fifofull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoempty">
+      <obj_property name="ElementShortName">fifoempty</obj_property>
+      <obj_property name="ObjectShortName">fifoempty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifoafull">
+      <obj_property name="ElementShortName">fifoafull</obj_property>
+      <obj_property name="ObjectShortName">fifoafull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifowrerr">
+      <obj_property name="ElementShortName">fifowrerr</obj_property>
+      <obj_property name="ObjectShortName">fifowrerr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fiforderr">
+      <obj_property name="ElementShortName">fiforderr</obj_property>
+      <obj_property name="ObjectShortName">fiforderr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/writedone">
+      <obj_property name="ElementShortName">writedone</obj_property>
+      <obj_property name="ObjectShortName">writedone</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/reset">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase">
+      <obj_property name="ElementShortName">erase</obj_property>
+      <obj_property name="ObjectShortName">erase</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/eraseing">
+      <obj_property name="ElementShortName">eraseing</obj_property>
+      <obj_property name="ObjectShortName">eraseing</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/cmdcounter32">
+      <obj_property name="ElementShortName">cmdcounter32[5:0]</obj_property>
+      <obj_property name="ObjectShortName">cmdcounter32[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/cmdreg32">
+      <obj_property name="ElementShortName">cmdreg32[39:0]</obj_property>
+      <obj_property name="ObjectShortName">cmdreg32[39:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/data_valid_cntr">
+      <obj_property name="ElementShortName">data_valid_cntr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">data_valid_cntr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/rddata">
+      <obj_property name="ElementShortName">rddata[1:0]</obj_property>
+      <obj_property name="ObjectShortName">rddata[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrdata_count">
+      <obj_property name="ElementShortName">wrdata_count[2:0]</obj_property>
+      <obj_property name="ObjectShortName">wrdata_count[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/spi_wrdata">
+      <obj_property name="ElementShortName">spi_wrdata[31:0]</obj_property>
+      <obj_property name="ObjectShortName">spi_wrdata[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/page_count">
+      <obj_property name="ElementShortName">page_count[16:0]</obj_property>
+      <obj_property name="ObjectShortName">page_count[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Current_Addr">
+      <obj_property name="ElementShortName">Current_Addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Current_Addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/StatusDataValid">
+      <obj_property name="ElementShortName">StatusDataValid</obj_property>
+      <obj_property name="ObjectShortName">StatusDataValid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/spi_status">
+      <obj_property name="ElementShortName">spi_status[1:0]</obj_property>
+      <obj_property name="ObjectShortName">spi_status[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/write_done">
+      <obj_property name="ElementShortName">write_done</obj_property>
+      <obj_property name="ObjectShortName">write_done</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_cmdcounter32">
+      <obj_property name="ElementShortName">er_cmdcounter32[5:0]</obj_property>
+      <obj_property name="ObjectShortName">er_cmdcounter32[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_cmdreg32">
+      <obj_property name="ElementShortName">er_cmdreg32[39:0]</obj_property>
+      <obj_property name="ObjectShortName">er_cmdreg32[39:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_rddata">
+      <obj_property name="ElementShortName">er_rddata[1:0]</obj_property>
+      <obj_property name="ObjectShortName">er_rddata[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_data_valid_cntr">
+      <obj_property name="ElementShortName">er_data_valid_cntr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">er_data_valid_cntr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_sector_count">
+      <obj_property name="ElementShortName">er_sector_count[13:0]</obj_property>
+      <obj_property name="ObjectShortName">er_sector_count[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_current_sector_addr">
+      <obj_property name="ElementShortName">er_current_sector_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">er_current_sector_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_SpiCsB">
+      <obj_property name="ElementShortName">er_SpiCsB</obj_property>
+      <obj_property name="ObjectShortName">er_SpiCsB</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_status">
+      <obj_property name="ElementShortName">er_status[1:0]</obj_property>
+      <obj_property name="ObjectShortName">er_status[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase_inprogress">
+      <obj_property name="ElementShortName">erase_inprogress</obj_property>
+      <obj_property name="ObjectShortName">erase_inprogress</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase_start">
+      <obj_property name="ElementShortName">erase_start</obj_property>
+      <obj_property name="ObjectShortName">erase_start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMiso">
+      <obj_property name="ElementShortName">SpiMiso</obj_property>
+      <obj_property name="ObjectShortName">SpiMiso</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMosi">
+      <obj_property name="ElementShortName">SpiMosi</obj_property>
+      <obj_property name="ObjectShortName">SpiMosi</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB">
+      <obj_property name="ElementShortName">SpiCsB</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB_N">
+      <obj_property name="ElementShortName">SpiCsB_N</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB_N</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB_FFDin">
+      <obj_property name="ElementShortName">SpiCsB_FFDin</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB_FFDin</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/di_out">
+      <obj_property name="ElementShortName">di_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">di_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/dopin_ts">
+      <obj_property name="ElementShortName">dopin_ts[3:0]</obj_property>
+      <obj_property name="ObjectShortName">dopin_ts[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMosi_int">
+      <obj_property name="ElementShortName">SpiMosi_int</obj_property>
+      <obj_property name="ObjectShortName">SpiMosi_int</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_rden">
+      <obj_property name="ElementShortName">fifo_rden</obj_property>
+      <obj_property name="ObjectShortName">fifo_rden</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_empty">
+      <obj_property name="ElementShortName">fifo_empty</obj_property>
+      <obj_property name="ObjectShortName">fifo_empty</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_full">
+      <obj_property name="ElementShortName">fifo_full</obj_property>
+      <obj_property name="ObjectShortName">fifo_full</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_almostfull">
+      <obj_property name="ElementShortName">fifo_almostfull</obj_property>
+      <obj_property name="ObjectShortName">fifo_almostfull</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_almostempty">
+      <obj_property name="ElementShortName">fifo_almostempty</obj_property>
+      <obj_property name="ObjectShortName">fifo_almostempty</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifodout">
+      <obj_property name="ElementShortName">fifodout[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fifodout[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_unconned">
+      <obj_property name="ElementShortName">fifo_unconned[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fifo_unconned[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/reset_design">
+      <obj_property name="ElementShortName">reset_design</obj_property>
+      <obj_property name="ObjectShortName">reset_design</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrerr">
+      <obj_property name="ElementShortName">wrerr</obj_property>
+      <obj_property name="ObjectShortName">wrerr</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/rderr">
+      <obj_property name="ElementShortName">rderr</obj_property>
+      <obj_property name="ObjectShortName">rderr</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/synced_fifo_almostfull">
+      <obj_property name="ElementShortName">synced_fifo_almostfull[1:0]</obj_property>
+      <obj_property name="ObjectShortName">synced_fifo_almostfull[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/synced_erase">
+      <obj_property name="ElementShortName">synced_erase[1:0]</obj_property>
+      <obj_property name="ObjectShortName">synced_erase[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrstate">
+      <obj_property name="ElementShortName">wrstate</obj_property>
+      <obj_property name="ObjectShortName">wrstate</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erstate">
+      <obj_property name="ElementShortName">erstate</obj_property>
+      <obj_property name="ObjectShortName">erstate</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrWidth">
+      <obj_property name="ElementShortName">AddrWidth</obj_property>
+      <obj_property name="ObjectShortName">AddrWidth</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SectorSize">
+      <obj_property name="ElementShortName">SectorSize</obj_property>
+      <obj_property name="ObjectShortName">SectorSize</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SizeSector">
+      <obj_property name="ElementShortName">SizeSector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeSector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SubSectorSize">
+      <obj_property name="ElementShortName">SubSectorSize</obj_property>
+      <obj_property name="ObjectShortName">SubSectorSize</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SizeSubSector">
+      <obj_property name="ElementShortName">SizeSubSector[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SizeSubSector[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifodout">
+      <obj_property name="ElementShortName">fifodout[63:0]</obj_property>
+      <obj_property name="ObjectShortName">fifodout[63:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/NumberofSectors">
+      <obj_property name="ElementShortName">NumberofSectors[8:0]</obj_property>
+      <obj_property name="ObjectShortName">NumberofSectors[8:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/PageSize">
+      <obj_property name="ElementShortName">PageSize[31:0]</obj_property>
+      <obj_property name="ObjectShortName">PageSize[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/NumberofPages">
+      <obj_property name="ElementShortName">NumberofPages[16:0]</obj_property>
+      <obj_property name="ObjectShortName">NumberofPages[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrStart32">
+      <obj_property name="ElementShortName">AddrStart32[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrStart32[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/AddrEnd32">
+      <obj_property name="ElementShortName">AddrEnd32[31:0]</obj_property>
+      <obj_property name="ObjectShortName">AddrEnd32[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Idcode25NQ256">
+      <obj_property name="ElementShortName">Idcode25NQ256[23:0]</obj_property>
+      <obj_property name="ObjectShortName">Idcode25NQ256[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdREAD24">
+      <obj_property name="ElementShortName">CmdREAD24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdREAD24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdFASTREAD">
+      <obj_property name="ElementShortName">CmdFASTREAD[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdFASTREAD[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdREAD32">
+      <obj_property name="ElementShortName">CmdREAD32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdREAD32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdRDID">
+      <obj_property name="ElementShortName">CmdRDID[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdRDID[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdFLAGStatus">
+      <obj_property name="ElementShortName">CmdFLAGStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdFLAGStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdStatus">
+      <obj_property name="ElementShortName">CmdStatus[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdStatus[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdWE">
+      <obj_property name="ElementShortName">CmdWE[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdWE[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSE24">
+      <obj_property name="ElementShortName">CmdSE24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSE24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSE32">
+      <obj_property name="ElementShortName">CmdSE32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSE32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSSE24">
+      <obj_property name="ElementShortName">CmdSSE24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSSE24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdSSE32">
+      <obj_property name="ElementShortName">CmdSSE32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdSSE32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP24">
+      <obj_property name="ElementShortName">CmdPP24[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP24[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP32">
+      <obj_property name="ElementShortName">CmdPP32[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP32[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP24Quad">
+      <obj_property name="ElementShortName">CmdPP24Quad[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP24Quad[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdPP32Quad">
+      <obj_property name="ElementShortName">CmdPP32Quad[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdPP32Quad[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Cmd4BMode">
+      <obj_property name="ElementShortName">Cmd4BMode[7:0]</obj_property>
+      <obj_property name="ObjectShortName">Cmd4BMode[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/CmdExit4BMode">
+      <obj_property name="ElementShortName">CmdExit4BMode[7:0]</obj_property>
+      <obj_property name="ObjectShortName">CmdExit4BMode[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="divider272" type="divider">
+      <obj_property name="label">key signals</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/download_state">
+      <obj_property name="ElementShortName">download_state</obj_property>
+      <obj_property name="ObjectShortName">download_state</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB_FFDin">
+      <obj_property name="ElementShortName">SpiCsB_FFDin</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB_FFDin</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erase">
+      <obj_property name="ElementShortName">erase</obj_property>
+      <obj_property name="ObjectShortName">erase</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/eraseing">
+      <obj_property name="ElementShortName">eraseing</obj_property>
+      <obj_property name="ObjectShortName">eraseing</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_cmdcounter32">
+      <obj_property name="ElementShortName">er_cmdcounter32[5:0]</obj_property>
+      <obj_property name="ObjectShortName">er_cmdcounter32[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_SpiCsB">
+      <obj_property name="ElementShortName">er_SpiCsB</obj_property>
+      <obj_property name="ObjectShortName">er_SpiCsB</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_cmdreg32">
+      <obj_property name="ElementShortName">er_cmdreg32[39:0]</obj_property>
+      <obj_property name="ObjectShortName">er_cmdreg32[39:0]</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/erstate">
+      <obj_property name="ElementShortName">erstate</obj_property>
+      <obj_property name="ObjectShortName">erstate</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_sector_count">
+      <obj_property name="ElementShortName">er_sector_count[13:0]</obj_property>
+      <obj_property name="ObjectShortName">er_sector_count[13:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_data_valid_cntr">
+      <obj_property name="ElementShortName">er_data_valid_cntr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">er_data_valid_cntr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_status">
+      <obj_property name="ElementShortName">er_status[1:0]</obj_property>
+      <obj_property name="ObjectShortName">er_status[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/er_rddata">
+      <obj_property name="ElementShortName">er_rddata[1:0]</obj_property>
+      <obj_property name="ObjectShortName">er_rddata[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiMiso">
+      <obj_property name="ElementShortName">SpiMiso</obj_property>
+      <obj_property name="ObjectShortName">SpiMiso</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/wrstate">
+      <obj_property name="ElementShortName">wrstate</obj_property>
+      <obj_property name="ObjectShortName">wrstate</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/SpiCsB">
+      <obj_property name="ElementShortName">SpiCsB</obj_property>
+      <obj_property name="ObjectShortName">SpiCsB</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/cmdreg32[39]">
+      <obj_property name="ElementShortName">[39]</obj_property>
+      <obj_property name="ObjectShortName">[39]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiclk">
+      <obj_property name="ElementShortName">spiclk</obj_property>
+      <obj_property name="ObjectShortName">spiclk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/fifowren">
+      <obj_property name="ElementShortName">fifowren</obj_property>
+      <obj_property name="ObjectShortName">fifowren</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/drck">
+      <obj_property name="ElementShortName">drck</obj_property>
+      <obj_property name="ObjectShortName">drck</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifo_rden">
+      <obj_property name="ElementShortName">fifo_rden</obj_property>
+      <obj_property name="ObjectShortName">fifo_rden</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/page_count">
+      <obj_property name="ElementShortName">page_count[16:0]</obj_property>
+      <obj_property name="ObjectShortName">page_count[16:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/spi_status">
+      <obj_property name="ElementShortName">spi_status[1:0]</obj_property>
+      <obj_property name="ObjectShortName">spi_status[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/rddata">
+      <obj_property name="ElementShortName">rddata[1:0]</obj_property>
+      <obj_property name="ObjectShortName">rddata[1:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/StatusDataValid">
+      <obj_property name="ElementShortName">StatusDataValid</obj_property>
+      <obj_property name="ObjectShortName">StatusDataValid</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/data_valid_cntr">
+      <obj_property name="ElementShortName">data_valid_cntr[2:0]</obj_property>
+      <obj_property name="ObjectShortName">data_valid_cntr[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/cmdcounter32">
+      <obj_property name="ElementShortName">cmdcounter32[5:0]</obj_property>
+      <obj_property name="ObjectShortName">cmdcounter32[5:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/Current_Addr">
+      <obj_property name="ElementShortName">Current_Addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">Current_Addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/writedone">
+      <obj_property name="ElementShortName">writedone</obj_property>
+      <obj_property name="ObjectShortName">writedone</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/data_to_fifo">
+      <obj_property name="ElementShortName">data_to_fifo[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_to_fifo[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifodout[2]">
+      <obj_property name="ElementShortName">[2]</obj_property>
+      <obj_property name="ObjectShortName">[2]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifodout[1]">
+      <obj_property name="ElementShortName">[1]</obj_property>
+      <obj_property name="ObjectShortName">[1]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/fifodout[0]">
+      <obj_property name="ElementShortName">[0]</obj_property>
+      <obj_property name="ObjectShortName">[0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/spiflashprogrammer_top/spiflashprogrammer_inst/cmdreg32">
+      <obj_property name="ElementShortName">cmdreg32[39:0]</obj_property>
+      <obj_property name="ObjectShortName">cmdreg32[39:0]</obj_property>
+   </wvobject>
+</wave_config>
