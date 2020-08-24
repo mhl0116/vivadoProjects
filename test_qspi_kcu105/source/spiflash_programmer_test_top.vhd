@@ -82,6 +82,8 @@ architecture behavioral of spiflashprogrammer_top is
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
+    out_nbyte_cntr: out std_logic_vector(11 downto 0);
+    out_cmdreg32: out std_logic_vector(39 downto 0);
     out_rd_rddata: out std_logic_vector(7 downto 0)
    ); 
   end component spiflashprogrammer_test;
@@ -108,7 +110,9 @@ architecture behavioral of spiflashprogrammer_top is
     probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
     probe1 : in std_logic_vector(31 downto 0) := (others=> '0');
     probe2 : in std_logic_vector(2 downto 0) := (others=> '0');
-    probe3 : in std_logic_vector(7 downto 0) := (others=> '0')
+    probe3 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe4 : in std_logic_vector(11 downto 0) := (others=> '0');
+    probe5 : in std_logic_vector(39 downto 0) := (others=> '0')
 
   );
   end component;
@@ -156,6 +160,8 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_rd_data_valid : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
  signal ila_rd_rddata : std_logic_vector(7 downto 0);
+ signal ila_cmdreg32 : std_logic_vector(39 downto 0);
+ signal ila_nbyte_cntr : std_logic_vector(11 downto 0);
 
  --
   signal clk125                   : std_logic;
@@ -360,6 +366,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
     out_rd_data_valid => ila_rd_data_valid,
+    out_nbyte_cntr => ila_nbyte_cntr,
+    out_cmdreg32 => ila_cmdreg32,
     out_rd_rddata => ila_rd_rddata
 );
 
@@ -386,6 +394,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   ila_data2(2 downto 0) <= ila_rd_data_valid_cntr(2 downto 0);
   ila_data3(7 downto 0) <= ila_rd_rddata(7 downto 0);
+  ila_data4(11 downto 0) <= ila_nbyte_cntr(11 downto 0);
 
   i_ila : ila_0
   port map(
@@ -393,7 +402,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe0 => ila_trigger,
     probe1 => ila_data1,
     probe2 => ila_data2,
-    probe3 => ila_data3
+    probe3 => ila_data3,
+    probe4 => ila_data4,
+    probe5 => ila_data5
 
   );
 
