@@ -80,7 +80,7 @@ architecture behavioral of spiflashprogrammer_top is
     in_CmdIndex: in std_logic_vector(3 downto 0);
     in_rdAddr: in std_logic_vector(11 downto 0);
     out_SpiCsB_FFDin: out std_logic;
-    out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
+    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
     out_rd_rddata: out std_logic_vector(7 downto 0)
    ); 
@@ -107,7 +107,7 @@ architecture behavioral of spiflashprogrammer_top is
     clk : in std_logic := '0';
     probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
     probe1 : in std_logic_vector(31 downto 0) := (others=> '0');
-    probe2 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe2 : in std_logic_vector(2 downto 0) := (others=> '0');
     probe3 : in std_logic_vector(7 downto 0) := (others=> '0')
 
   );
@@ -154,7 +154,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_rdAddr : std_logic_vector(11 downto 0);
  signal ila_SpiCsB_FFDin : std_logic; 
  signal ila_rd_data_valid : std_logic; 
- signal ila_rd_data_valid_cntr : std_logic_vector(7 downto 0);
+ signal ila_rd_data_valid_cntr : std_logic_vector(2 downto 0);
  signal ila_rd_rddata : std_logic_vector(7 downto 0);
 
  --
@@ -163,7 +163,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal spiclk                   : std_logic;
   signal spiclk_i                   : std_logic := '1';
   signal spiclk2                   : std_logic; 
-  signal spiclk2_ii                   : std_logic; 
+  signal spiclk_ii                   : std_logic; 
   signal shift32b                 : std_logic_vector(31 downto 0) := X"00000000";
   signal bscan_bit_cntr           : std_logic_vector(4 downto 0) := "00000";
   signal loadbit_startinfo                   : std_logic := '0'; 
@@ -211,7 +211,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal rst_init_cnt : unsigned(31 downto 0) := (others=> '0');
   signal ila_trigger: std_logic_vector(7 downto 0) := (others=> '0'); 
   signal ila_data1: std_logic_vector(31 downto 0) := (others=> '0'); 
-  signal ila_data2: std_logic_vector(7 downto 0) := (others=> '0'); 
+  signal ila_data2: std_logic_vector(2 downto 0) := (others=> '0'); 
   signal ila_data3: std_logic_vector(7 downto 0) := (others=> '0'); 
 
   signal probein0: std_logic := '0'; 
@@ -264,13 +264,13 @@ begin
           );
 
 
-  process (spiclk2)
+  process (spiclk)
   begin
-      if rising_edge(spiclk2) then
-          spiclk2_ii <= spiclk2;
+      if rising_edge(spiclk) then
+          spiclk_ii <= spiclk;
       end if;
       if falling_edge(spiclk2) then
-          spiclk2_ii <= spiclk2;
+          spiclk_ii <= spiclk;
       end if;
   end process;
 
@@ -329,7 +329,7 @@ begin
 spiflashprogrammer_inst: spiflashprogrammer_test port map
   (
     Clk => spiclk,
-    fifoclk => drck,
+    fifoclk => spiclk, --drck,
     data_to_fifo => std_logic_vector(load_data_cntr),
     startaddr    =>  startaddr, 
     startaddrvalid  => startaddrvalid,
@@ -381,10 +381,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
-  ila_data1(21) <= spiclk;
+  --ila_data1(21) <= spiclk_ii;
   ila_data1(22) <= ila_rd_data_valid;
 
-  ila_data2(7 downto 0) <= ila_rd_data_valid_cntr(7 downto 0);
+  ila_data2(2 downto 0) <= ila_rd_data_valid_cntr(2 downto 0);
   ila_data3(7 downto 0) <= ila_rd_rddata(7 downto 0);
 
   i_ila : ila_0

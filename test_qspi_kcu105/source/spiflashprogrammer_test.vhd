@@ -66,7 +66,7 @@ entity spiflashprogrammer_test is
     in_CmdIndex: in std_logic_vector(3 downto 0);
     in_rdAddr: in std_logic_vector(11 downto 0);
     out_SpiCsB_FFDin: out std_logic;
-    out_rd_data_valid_cntr: out std_logic_vector(7 downto 0);
+    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
     out_rd_data_valid: out std_logic;
     out_rd_rddata: out std_logic_vector(7 downto 0)
    ); 	
@@ -115,7 +115,7 @@ end component oneshot;
   constant  CmdREAD32        : std_logic_vector(7 downto 0)  := X"13";
   constant  CmdRDID          : std_logic_vector(7 downto 0)  := X"9F";
   constant  CmdRDFlashPara   : std_logic_vector(7 downto 0)  := X"5A";
-  constant  CmdRDFR24Quad    : std_logic_vector(7 downto 0)  := X"6B";
+  constant  CmdRDFR24Quad    : std_logic_vector(7 downto 0)  := X"0B";
   constant  CmdFLAGStatus    : std_logic_vector(7 downto 0)  := X"70";
   constant  CmdStatus        : std_logic_vector(7 downto 0)  := X"05";
   constant  CmdWE            : std_logic_vector(7 downto 0)  := X"06";
@@ -161,7 +161,7 @@ end component oneshot;
    signal read_start     : std_logic := '0';
    --signal rd_data_valid_cntr       : std_logic_vector(7 downto 0) := x"00";
    signal rd_data_valid       : std_logic := '0';
-   signal rd_data_valid_cntr       : std_logic_vector(7 downto 0) := x"11";
+   signal rd_data_valid_cntr       : std_logic_vector(2 downto 0) := "000";
    -- count 1 page for now
    signal rd_nbyte_limit       : std_logic_vector(11 downto 0) := x"007";
    signal rd_nbyte_cntr       : std_logic_vector(11 downto 0) := x"000";
@@ -367,7 +367,7 @@ processread : process (Clk)
    when S_RD_IDLE =>
         rd_SpiCsB <= '1';
         if (read_start = '1') then  -- one shot based on I/F erase -> synced_erase input going high e.g. "if rising edge erase"
-          rd_data_valid_cntr <= x"00";
+          rd_data_valid_cntr <= "000";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"00";
           --rd_cmdreg32 <=  CmdSelect & X"00000000";  
@@ -397,7 +397,7 @@ processread : process (Clk)
           end if;
           -- this is hardcoded, only able to read one page for now
           --if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
-          if (rd_nbyte_cntr = x"5F") then  -- Check Status after 8 bits (+1) of status read
+          if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
           end if;  -- if rddata valid
