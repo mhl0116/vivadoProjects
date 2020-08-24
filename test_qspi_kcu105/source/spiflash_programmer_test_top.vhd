@@ -381,7 +381,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
-  --ila_data1(21) <= spiclk_ii;
+  ila_data1(21) <= spiclk_ii;
   ila_data1(22) <= ila_rd_data_valid;
 
   ila_data2(2 downto 0) <= ila_rd_data_valid_cntr(2 downto 0);
