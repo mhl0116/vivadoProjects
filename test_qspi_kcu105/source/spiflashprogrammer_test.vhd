@@ -67,7 +67,7 @@ entity spiflashprogrammer_test is
     in_rdAddr: in std_logic_vector(31 downto 0);
     in_wdlimit: in std_logic_vector(31 downto 0);
     out_SpiCsB_FFDin: out std_logic;
-    out_rd_data_valid_cntr: out std_logic_vector(2 downto 0);
+    out_rd_data_valid_cntr: out std_logic_vector(3 downto 0);
     out_rd_data_valid: out std_logic;
     out_nbyte_cntr: out std_logic_vector(11 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
@@ -164,7 +164,7 @@ end component oneshot;
    signal read_start     : std_logic := '0';
    --signal rd_data_valid_cntr       : std_logic_vector(7 downto 0) := x"00";
    signal rd_data_valid       : std_logic := '0';
-   signal rd_data_valid_cntr       : std_logic_vector(2 downto 0) := "000";
+   signal rd_data_valid_cntr       : std_logic_vector(3 downto 0) := "0000";
    -- count 1 page for now
    signal rd_nbyte_limit       : std_logic_vector(11 downto 0) := x"007";
    signal rd_nbyte_cntr       : std_logic_vector(11 downto 0) := x"000";
@@ -372,7 +372,7 @@ processread : process (Clk)
    when S_RD_IDLE =>
         rd_SpiCsB <= '1';
         if (read_start = '1') then  -- one shot based on I/F erase -> synced_erase input going high e.g. "if rising edge erase"
-          rd_data_valid_cntr <= "000";
+          rd_data_valid_cntr <= "0000";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"0000";
           --rd_cmdreg32 <=  CmdSelect & X"00000000";  
@@ -409,7 +409,7 @@ processread : process (Clk)
             rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
             rd_nbyte_cntr <= x"000";
-            rd_data_valid_cntr <= "000";
+            rd_data_valid_cntr <= "0000";
           end if;  -- if rddata valid
         end if; -- cmdcounter /= 32
    end case;  
