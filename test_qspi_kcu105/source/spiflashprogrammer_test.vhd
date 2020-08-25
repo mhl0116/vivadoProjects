@@ -71,7 +71,7 @@ entity spiflashprogrammer_test is
     out_rd_data_valid: out std_logic;
     out_nbyte_cntr: out std_logic_vector(11 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
-    out_rd_rddata: out std_logic_vector(7 downto 0)
+    out_rd_rddata: out std_logic_vector(15 downto 0)
    ); 	
 end spiflashprogrammer_test;
 architecture behavioral of spiflashprogrammer_test is
@@ -171,7 +171,7 @@ end component oneshot;
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
    --signal rd_rddata       : std_logic_vector(47 downto 0) := X"000000000000";
-   signal rd_rddata       : std_logic_vector(7 downto 0) := X"00";
+   signal rd_rddata       : std_logic_vector(15 downto 0) := X"0000";
    signal rd_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    signal read_inprogress: std_logic := '0';
       ------------ StartupE2 signals  ---------------------------
@@ -374,7 +374,7 @@ processread : process (Clk)
         if (read_start = '1') then  -- one shot based on I/F erase -> synced_erase input going high e.g. "if rising edge erase"
           rd_data_valid_cntr <= "000";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
-          rd_rddata <= x"00";
+          rd_rddata <= x"0000";
           --rd_cmdreg32 <=  CmdSelect & X"00000000";  
           --rd_cmdreg32 <=  CmdSelect & AddSelect;  
          --rd_cmdreg32 <=  CmdSelect & x"00000139";  
@@ -392,11 +392,11 @@ processread : process (Clk)
             rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
-          rd_rddata <= rd_rddata(6 downto 0) & SpiMiso;  -- deser 1:8 
+          rd_rddata <= rd_rddata(14 downto 0) & SpiMiso;  -- deser 1:8 
           --rd_rddata <= rd_rddata(46 downto 0) & SpiMiso;  -- deser 1:8 
           --rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
           --if (rd_data_valid_cntr = 47) then  -- Check Status after 8 bits (+1) of status read
-          if (rd_data_valid_cntr = 6) then
+          if (rd_data_valid_cntr = 14) then
               rd_data_valid <= '1';
               rd_nbyte_cntr <= rd_nbyte_cntr + 1;
           else
