@@ -390,8 +390,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger1(1) <= ila_read_start;
   ila_trigger1(2) <= ila_SpiCsB_N;
   ila_trigger1(3) <= startread;
-  ila_trigger1(4) <= startread_gen;
-  ila_trigger1(5) <= ila_rd_data_valid; 
+  --ila_trigger1(4) <= startread_gen;
+  ila_trigger1(4) <= ila_rd_data_valid; 
 
   ila_trigger2(15 downto 0) <= ila_rd_rddata(15 downto 0);
 

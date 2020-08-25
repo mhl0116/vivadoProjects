@@ -166,7 +166,7 @@ end component oneshot;
    signal rd_data_valid       : std_logic := '0';
    signal rd_data_valid_cntr       : std_logic_vector(3 downto 0) := "0000";
    -- count 1 page for now
-   signal rd_nbyte_limit       : std_logic_vector(11 downto 0) := x"007";
+   signal rd_nbyte_limit       : std_logic_vector(31 downto 0) := x"00000000";
    signal rd_nbyte_cntr       : std_logic_vector(11 downto 0) := x"000";
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
@@ -364,6 +364,8 @@ FIFO36_inst : FIFO36E2
                CmdRDFlashPara   when CmdIndex = x"3" else
                CmdRDFR24Quad    when CmdIndex = x"4" else
                x"FF";
+               
+  rd_nbyte_limit(31 downto 0) <= in_wdlimit(31 downto 0); 
 -----------------------------  read sectors  --------------------------------------------------
 processread : process (Clk)
   begin
@@ -403,9 +405,9 @@ processread : process (Clk)
               rd_data_valid <= '0';
           end if;
           -- this is hardcoded, only able to read one page for now
-          --if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
+          if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
-          if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
+          --if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_IDLE;   -- Done. All info read 
             read_inprogress <= '0';
             rd_nbyte_cntr <= x"000";
