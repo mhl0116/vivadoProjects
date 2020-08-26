@@ -417,6 +417,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(31 downto 0) <= ila_currentAddr(31 downto 0);
 
+  -- this line could be useless, it's adding an address to a count of word
   ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
 
   i_ila : ila_0
