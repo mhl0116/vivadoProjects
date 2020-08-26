@@ -411,7 +411,9 @@ processread : process (Clk)
            rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else 
           rd_SpiCsB <= '1';   -- turn off SPI
-          rd_cmdcounter32 <= "100111";  -- 32 bit command
+          --rd_cmdcounter32 <= "100111";  -- 32 bit command
+          --rd_cmdcounter32 <= "100101";  -- 32 bit address + 8 bit command + 5 bit wait
+          rd_cmdcounter32 <= "110001";  -- 32 bit address + 8 bit command + 5 bit wait
           rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           rdstate <= S_RD_CS1;  
         end if;  
@@ -422,8 +424,9 @@ processread : process (Clk)
         rdstate <= S_RD_RDCMD;
 
    when S_RD_RDCMD =>     -- read register according to selected command 
-        rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         if (rd_cmdcounter32 /= 0) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
+           rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
+
         --if (rd_cmdcounter32 >= 7) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
