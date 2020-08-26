@@ -439,7 +439,6 @@ processread : process (Clk)
           --if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_EXIT4BMode_ASSCS1;   -- Done. All info read 
-            read_inprogress <= '0';
             rd_nbyte_cntr <= x"00000000";
             rd_data_valid_cntr <= "0000";
             rd_cmdcounter32 <= "100111";
@@ -457,6 +456,7 @@ processread : process (Clk)
           rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
         else 
           rd_SpiCsB <= '1';   -- turn off SPI 
+          read_inprogress <= '0';
           rdstate <= S_RD_IDLE;  
         end if; 
    end case;  
