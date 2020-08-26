@@ -71,6 +71,7 @@ entity spiflashprogrammer_test is
     out_rd_data_valid: out std_logic;
     out_nbyte_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
+    out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0)
    ); 	
 end spiflashprogrammer_test;
@@ -356,6 +357,7 @@ FIFO36_inst : FIFO36E2
     out_rd_data_valid <= rd_data_valid;
     out_rd_rddata <= rd_rddata;
     out_cmdreg32 <= rd_cmdreg32;
+    out_cmdcntr32 <= rd_cmdcounter32;
     out_nbyte_cntr <= rd_nbyte_cntr;
 
 -----------------------------  select command  --------------------------------------------------

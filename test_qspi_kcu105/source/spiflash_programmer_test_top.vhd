@@ -85,6 +85,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_rd_data_valid: out std_logic;
     out_nbyte_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
+    out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0)
    ); 
   end component spiflashprogrammer_test;
@@ -115,7 +116,7 @@ architecture behavioral of spiflashprogrammer_top is
     probe4 : in std_logic_vector(31 downto 0) := (others=> '0');
     probe5 : in std_logic_vector(39 downto 0) := (others=> '0');
     probe6 : in std_logic_vector(15 downto 0) := (others=> '0');
-    probe7 : in std_logic_vector(31 downto 0) := (others=> '0');
+    probe7 : in std_logic_vector(5 downto 0) := (others=> '0');
     probe8 : in std_logic_vector(31 downto 0) := (others=> '0')
   );
   end component;
@@ -167,6 +168,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_rd_data_valid_cntr : std_logic_vector(3 downto 0);
  signal ila_rd_rddata : std_logic_vector(15 downto 0);
  signal ila_cmdreg32 : std_logic_vector(39 downto 0);
+ signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nbyte_cntr : std_logic_vector(31 downto 0);
 
  --
@@ -229,7 +231,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data3: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data4: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data5: std_logic_vector(39 downto 0) := (others=> '0'); 
-  signal ila_data6: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal ila_data6: std_logic_vector(5 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -382,6 +384,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_rd_data_valid => ila_rd_data_valid,
     out_nbyte_cntr => ila_nbyte_cntr,
     out_cmdreg32 => ila_cmdreg32,
+    out_cmdcntr32 => ila_cmdcntr32,
     out_rd_rddata => ila_rd_rddata
 );
 
@@ -415,10 +418,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data3(15 downto 0) <= ila_rd_rddata(15 downto 0);
   ila_data4(31 downto 0) <= ila_nbyte_cntr(31 downto 0);
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
-  ila_data6(31 downto 0) <= ila_currentAddr(31 downto 0);
+  ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
 
   -- this line could be useless, it's adding an address to a count of word
-  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
+--  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
 
   i_ila : ila_0
   port map(
