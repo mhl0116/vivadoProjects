@@ -118,7 +118,7 @@ end component oneshot;
   constant  CmdREAD32        : std_logic_vector(7 downto 0)  := X"13";
   constant  CmdRDID          : std_logic_vector(7 downto 0)  := X"9F";
   constant  CmdRDFlashPara   : std_logic_vector(7 downto 0)  := X"5A";
-  constant  CmdRDFR24Quad    : std_logic_vector(7 downto 0)  := X"0B";
+  constant  CmdRDFR24Quad    : std_logic_vector(7 downto 0)  := X"0C";
   constant  CmdFLAGStatus    : std_logic_vector(7 downto 0)  := X"70";
   constant  CmdStatus        : std_logic_vector(7 downto 0)  := X"05";
   constant  CmdWE            : std_logic_vector(7 downto 0)  := X"06";
@@ -420,8 +420,9 @@ processread : process (Clk)
         rdstate <= S_RD_RDCMD;
 
    when S_RD_RDCMD =>     -- read register according to selected command 
-        if (rd_cmdcounter32 >= 7) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
-            rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
+        rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
+        if (rd_cmdcounter32 /= 0) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
+        --if (rd_cmdcounter32 >= 7) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
           rd_rddata <= rd_rddata(14 downto 0) & SpiMiso;  -- deser 1:8 
