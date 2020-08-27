@@ -119,7 +119,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe5 : in std_logic_vector(39 downto 0) := (others=> '0');
     probe6 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe7 : in std_logic_vector(5 downto 0) := (others=> '0');
-    probe8 : in std_logic_vector(31 downto 0) := (others=> '0')
+    probe8 : in std_logic_vector(31 downto 0) := (others=> '0');
+    probe9 : in std_logic_vector(31 downto 0) := (others=> '0')
   );
   end component;
 
@@ -229,6 +230,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_trigger1: std_logic_vector(7 downto 0) := (others=> '0'); 
   signal ila_trigger2: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_trigger3: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal ila_trigger4: std_logic_vector(3 downto 0) := (others=> '0'); 
   signal ila_data1: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data2: std_logic_vector(3 downto 0) := (others=> '0'); 
   signal ila_data3: std_logic_vector(15 downto 0) := (others=> '0'); 
@@ -404,6 +406,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   ila_trigger3(31 downto 0) <= ila_nbyte_cntr(31 downto 0);
 
+  ila_trigger4(0) <= erasingspi;
+                      
+
   ila_data1(0) <= ila_read_inprogress;
   ila_data1(1) <= ila_rd_SpiCsB;
   ila_data1(2) <= ila_SpiCsB_N;
@@ -439,7 +444,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe5 => ila_data5,
     probe6 => ila_trigger2,
     probe7 => ila_data6,
-    probe8 => ila_trigger3
+    probe8 => ila_trigger3,
+    probe9 => ila_trigger4
   );
 
   startread_synthesize_i : if in_synthesis generate
