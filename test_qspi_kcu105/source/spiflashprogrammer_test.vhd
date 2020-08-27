@@ -152,7 +152,7 @@ end component oneshot;
    signal spi_status      : std_logic_vector(1 downto 0) := "11";
    signal write_done : std_logic := '0';
       ------- erase ----------------------------
-   signal er_sector_count          : std_logic_vector(13 downto 0) := "11111111111111";    -- subsector count
+   signal er_sector_count          : std_logic_vector(13 downto 0) := "00000000000000";    -- subsector count
    signal er_current_sector_addr   : std_logic_vector(31 downto 0) := X"00000000"; -- start addr of current sector
    signal er_SpiCsB       : std_logic;
    signal erase_start     : std_logic := '0';
@@ -531,7 +531,8 @@ processerase : process (Clk)
            er_cmdreg32 <= er_cmdreg32(38 downto 0) & '0';
          else 
            er_SpiCsB <= '1';   -- turn off SPI
-           er_cmdreg32 <=  CmdSSE24 & er_current_sector_addr;  -- 4-Byte Sector erase 
+           --er_cmdreg32 <=  CmdSSE24 & er_current_sector_addr;  -- 4-Byte Sector erase 
+           er_cmdreg32 <=  CmdSSE32 & er_current_sector_addr;  -- 4-Byte Sector erase 
            er_cmdcounter32 <= "100111";
            erstate <= S_ER_ASSCS2;        
          end if;
