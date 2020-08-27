@@ -120,7 +120,7 @@ architecture behavioral of spiflashprogrammer_top is
     probe6 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe7 : in std_logic_vector(5 downto 0) := (others=> '0');
     probe8 : in std_logic_vector(31 downto 0) := (others=> '0');
-    probe9 : in std_logic_vector(31 downto 0) := (others=> '0')
+    probe9 : in std_logic_vector(3 downto 0) := (others=> '0')
   );
   end component;
 
