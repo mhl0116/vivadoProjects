@@ -72,7 +72,9 @@ entity spiflashprogrammer_test is
     out_nbyte_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
-    out_rd_rddata: out std_logic_vector(15 downto 0)
+    out_rd_rddata: out std_logic_vector(15 downto 0);
+
+    out_er_status: out std_logic_vector(1 downto 0)
    ); 	
 end spiflashprogrammer_test;
 architecture behavioral of spiflashprogrammer_test is
@@ -360,6 +362,7 @@ FIFO36_inst : FIFO36E2
     out_cmdcntr32 <= rd_cmdcounter32;
     out_nbyte_cntr <= rd_nbyte_cntr;
 
+    out_er_status <= er_status;
 -----------------------------  select command  --------------------------------------------------
   CmdSelect <= CmdStatus when CmdIndex = x"1" else
                CmdRDID   when CmdIndex = x"2" else

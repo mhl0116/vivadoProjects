@@ -86,7 +86,9 @@ architecture behavioral of spiflashprogrammer_top is
     out_nbyte_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
-    out_rd_rddata: out std_logic_vector(15 downto 0)
+    out_rd_rddata: out std_logic_vector(15 downto 0);
+
+    out_er_status: out std_logic_vector(1 downto 0)
    ); 
   end component spiflashprogrammer_test;
 
@@ -137,9 +139,9 @@ architecture behavioral of spiflashprogrammer_top is
  END COMPONENT;
 
  -- use a counter to pass these 3 buses
- constant startaddr_c         : std_logic_vector(31 downto 0) := X"00001000";
+ constant startaddr_c         : std_logic_vector(31 downto 0) := X"003CF960";
  constant pagecount_c         : std_logic_vector(16 downto 0) := "00000000000000000";
- constant sectorcount_c       : std_logic_vector(13 downto 0) := "00000000000000";
+ constant sectorcount_c       : std_logic_vector(13 downto 0) := "00000000000001";
 
  signal  Bscan1Capture        : std_logic;
  signal  Bscan1Drck           : std_logic;
@@ -171,6 +173,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nbyte_cntr : std_logic_vector(31 downto 0);
 
+ signal ila_er_status : std_logic_vector(1 downto 0);
  --
   signal clk125                   : std_logic;
   signal drck                     : std_logic;
@@ -385,7 +388,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_nbyte_cntr => ila_nbyte_cntr,
     out_cmdreg32 => ila_cmdreg32,
     out_cmdcntr32 => ila_cmdcntr32,
-    out_rd_rddata => ila_rd_rddata
+    out_rd_rddata => ila_rd_rddata,
+    out_er_status => ila_er_status
 );
 
 
@@ -413,6 +417,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(20) <= ila_SpiMosi;
   ila_data1(21) <= spiclk_ii;
   ila_data1(22) <= ila_rd_data_valid;
+  ila_data1(24 downto 23) <= ila_er_status(1 downto 0);
 
   ila_data2(3 downto 0) <= ila_rd_data_valid_cntr(3 downto 0);
   ila_data3(15 downto 0) <= ila_rd_rddata(15 downto 0);
