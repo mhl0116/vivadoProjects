@@ -506,7 +506,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   end if;
   end process;
   
-  process(spiclk, loadbit_startinfo)
+  process(spiclk)
   begin
   if(rising_edge(spiclk) and startinfo = '1') then
 
@@ -529,12 +529,16 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   end if;
   end process;
 
-  process(spiclk, loadbit_startdata)
+  process(loadbit_startdata)
   begin
   if (rising_edge(loadbit_startdata)) then
       startdata <= '1';
-      load_data_cntr <= x"00000000";
+      --load_data_cntr <= x"00000000";
   end if;
+  end process;
+
+  process(spiclk)
+  begin
   if (rising_edge(spiclk) and startdata = '1') then
        fifowren <= '1';
        load_data_cntr <= load_data_cntr + 1;
