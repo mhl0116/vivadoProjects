@@ -142,7 +142,7 @@ architecture behavioral of spiflashprogrammer_top is
 
  -- use a counter to pass these 3 buses
  constant startaddr_c         : std_logic_vector(31 downto 0) := X"003CF960";
- constant pagecount_c         : std_logic_vector(16 downto 0) := "00000000000000000";
+ constant pagecount_c         : std_logic_vector(16 downto 0) := "00000000000000001";
  constant sectorcount_c       : std_logic_vector(13 downto 0) := "00000000000001";
 
  signal  Bscan1Capture        : std_logic;
