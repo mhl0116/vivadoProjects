@@ -407,7 +407,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger3(31 downto 0) <= ila_nbyte_cntr(31 downto 0);
 
   ila_trigger4(0) <= erasingspi;
-  ila_trigger4(4) <= startaddrvalid;
+  ila_trigger4(4) <= startaddrvalid; --startinfo;
+   --startaddrvalid;
   ila_trigger4(9 downto 8) <= ila_er_status;
                       
 
@@ -497,14 +498,20 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
 -- use a counter to pass initial addr/start sector/start page for spi operation
 -- use 5 spiclk for now
-  process(spiclk, loadbit_startinfo)
+  process(loadbit_startinfo)
   begin
   if (rising_edge(loadbit_startinfo)) then
       startinfo <= '1';
-      load_bit_cntr <= 0;
+      --load_bit_cntr <= 0;
   end if;
+  end process;
+  
+  process(spiclk, loadbit_startinfo)
+  begin
   if(rising_edge(spiclk) and startinfo = '1') then
-    if(load_bit_cntr < 5) then
+
+  --if(rising_edge(spiclk)) then
+    if(load_bit_cntr < 10) then
        startaddrvalid  <= '1';
        sectorcountvalid  <= '1';
        pagecountvalid  <= '1';
@@ -515,9 +522,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
        sectorcountvalid  <= '0';
        pagecountvalid  <= '0';
 
-       load_bit_cntr <= load_bit_cntr + 1;
+       --load_bit_cntr <= load_bit_cntr + 1;
        
-       startinfo <= '0';
+       --startinfo <= '0';
     end if;
   end if;
   end process;

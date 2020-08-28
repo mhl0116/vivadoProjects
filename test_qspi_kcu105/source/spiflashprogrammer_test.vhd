@@ -272,8 +272,8 @@ end component oneshot;
   process (clk)
   begin
       if falling_edge(clk) then
-      --    SpiCsB_N <= SpiCsB_FFDin;
-          SpiCsB_N <= rd_SpiCsB;
+          SpiCsB_N <= SpiCsB_FFDin;
+          --SpiCsB_N <= rd_SpiCsB;
 
       end if;
   end process;
@@ -355,7 +355,8 @@ FIFO36_inst : FIFO36E2
     out_CmdSelect          <= CmdSelect;
     CmdIndex               <= in_CmdIndex;
     out_SpiCsB_FFDin        <= SpiCsB_FFDin; 
-    out_rd_data_valid_cntr <= rd_data_valid_cntr;
+    --out_rd_data_valid_cntr <= rd_data_valid_cntr;
+    out_rd_data_valid_cntr(2 downto 0) <= er_data_valid_cntr;
     out_rd_data_valid <= rd_data_valid;
     out_rd_rddata <= rd_rddata;
     out_cmdreg32 <= er_cmdreg32;
