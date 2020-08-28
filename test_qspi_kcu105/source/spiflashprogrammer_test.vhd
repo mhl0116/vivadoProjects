@@ -56,6 +56,7 @@ entity spiflashprogrammer_test is
     erase        : in std_logic;
     eraseing      : out std_logic;
     ------------------------------------
+    startwrite   : out std_logic;
     out_read_inprogress        : out std_logic;
     out_rd_SpiCsB: out std_logic;
     out_SpiCsB_N: out std_logic;
