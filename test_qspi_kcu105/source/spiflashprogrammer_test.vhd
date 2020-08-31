@@ -622,14 +622,14 @@ processProgram  : process (Clk)
           cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
           cmdcounter32 <= "100111";  -- 40 bit command+addr
           SpiCsB <= '1';   -- turn off SPI 
-          wrstate <= S_S4BMode_ASSCS2; 
+          wrstate <= S_WR_S4BMode_ASSCS2; 
         end if;
         
-   when S_S4BMode_ASSCS2 =>
+   when S_WR_S4BMode_ASSCS2 =>
         SpiCsB <= '0';
-        wrstate <= S_S4BMode_WR4BADDR;
+        wrstate <= S_WR_S4BMode_WR4BADDR;
                         
-   when S_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
+   when S_WR_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
         if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
            cmdreg32 <= cmdreg32(38 downto 0) & '0';
         else 
