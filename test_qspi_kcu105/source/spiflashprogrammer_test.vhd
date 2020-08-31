@@ -225,7 +225,7 @@ end component oneshot;
 
      type wrstates is
    (
-     S_WR_IDLE, S_WR_ASSCS1, S_WR_WRCMD,  
+     S_WR_IDLE, S_WR_S4BMode_ASSCS1, S_WR_S4BMode_WRCMD, S_WR_S4BMode_ASSCS2, S_WR_S4BMode_WR4BADDR, S_WR_ASSCS1, S_WR_WRCMD,  
      S_WR_ASSCS2, S_WR_PROGRAM, S_WR_DATA, S_WR_PPDONE, S_WR_PPDONE_WAIT, S_EXIT4BMode_ASSCS1, 
      S_EXIT4BMODE --  
    );
@@ -610,6 +610,36 @@ processProgram  : process (Clk)
           wrstate <= S_WR_ASSCS1;
         end if;
                        
+-----------------   Set 4 Byte mode first -----------------------------------------------------
+   when S_WR_S4BMode_ASSCS1 =>
+        wr_SpiCsB <= '0';
+        wrstate <= S_WR_S4BMode_WRCMD;
+          
+   when S_WR_S4BMode_WRCMD =>    -- Set WE bit
+        if (wr_cmdcounter32 /= 32) then wr_cmdcounter32 <= wr_cmdcounter32 - 1; 
+          wr_cmdreg32 <= wr_cmdreg32(38 downto 0) & '0'; 
+        else
+          wr_cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
+          wr_cmdcounter32 <= "100111";  -- 40 bit command+addr
+          wr_SpiCsB <= '1';   -- turn off SPI 
+          wrstate <= S_WR_S4BMode_ASSCS2; 
+        end if;
+        
+   when S_WR_S4BMode_ASSCS2 =>
+        wr_SpiCsB <= '0';
+        wrstate <= S_WR_S4BMode_WR4BADDR;
+                        
+   when S_WR_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
+        if (wr_cmdcounter32 /= 32) then wr_cmdcounter32 <= wr_cmdcounter32 - 1;  
+           wr_cmdreg32 <= wr_cmdreg32(38 downto 0) & '0';
+        else 
+          wr_SpiCsB <= '1';   -- turn off SPI
+          wr_cmdcounter32 <= "100111";  -- 32 bit command
+          wr_cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable 
+          wrstate <= S_WR_ASSCS1;  
+        end if;  
+-------------------------  end set 4 byte Mode
+
    when S_WR_ASSCS1 =>
         if (page_count /= 0) then 
           if (synced_fifo_almostfull(1) = '1') then
@@ -626,7 +656,7 @@ processProgram  : process (Clk)
           cmdreg32 <= cmdreg32(38 downto 0) & '0';
         elsif (page_count /= 0) then    -- Next PP
           SpiCsB <= '1';   -- turn off SPI
-          cmdreg32 <=  CmdPP24Quad & Current_Addr;  -- Program Page at Current_Addr
+          cmdreg32 <=  CmdPP32Quad & Current_Addr;  -- Program Page at Current_Addr
           cmdcounter32 <= "100111";
           wrstate <= S_WR_ASSCS2;
         else                              -- Done with writing Program Pages. Turn off 4 byte Mode
