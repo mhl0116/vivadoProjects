@@ -607,35 +607,35 @@ processProgram  : process (Clk)
           fifo_rden <= '0';
           wrdata_count <= "000";
           spi_wrdata <= X"00000000";
-          wrstate <= S_WR_ASSCS1;
+          wrstate <= S_WR_S4BMode_ASSCS1;
         end if;
                        
 -----------------   Set 4 Byte mode first -----------------------------------------------------
    when S_WR_S4BMode_ASSCS1 =>
-        SpiCsB <= '0';
+        wr_SpiCsB <= '0';
         wrstate <= S_WR_S4BMode_WRCMD;
           
    when S_WR_S4BMode_WRCMD =>    -- Set WE bit
-        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1; 
-          cmdreg32 <= cmdreg32(38 downto 0) & '0'; 
+        if (wr_cmdcounter32 /= 32) then wr_cmdcounter32 <= wr_cmdcounter32 - 1; 
+          wr_cmdreg32 <= wr_cmdreg32(38 downto 0) & '0'; 
         else
-          cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
-          cmdcounter32 <= "100111";  -- 40 bit command+addr
-          SpiCsB <= '1';   -- turn off SPI 
+          wr_cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
+          wr_cmdcounter32 <= "100111";  -- 40 bit command+addr
+          wr_SpiCsB <= '1';   -- turn off SPI 
           wrstate <= S_WR_S4BMode_ASSCS2; 
         end if;
         
    when S_WR_S4BMode_ASSCS2 =>
-        SpiCsB <= '0';
+        wr_SpiCsB <= '0';
         wrstate <= S_WR_S4BMode_WR4BADDR;
                         
    when S_WR_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
-        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
-           cmdreg32 <= cmdreg32(38 downto 0) & '0';
+        if (wr_cmdcounter32 /= 32) then wr_cmdcounter32 <= wr_cmdcounter32 - 1;  
+           wr_cmdreg32 <= wr_cmdreg32(38 downto 0) & '0';
         else 
-          SpiCsB <= '1';   -- turn off SPI
-          cmdcounter32 <= "100111";  -- 32 bit command
-          cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable 
+          wr_SpiCsB <= '1';   -- turn off SPI
+          wr_cmdcounter32 <= "100111";  -- 32 bit command
+          wr_cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable 
           wrstate <= S_WR_ASSCS1;  
         end if;  
 -------------------------  end set 4 byte Mode
