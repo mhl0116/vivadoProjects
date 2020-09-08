@@ -136,7 +136,8 @@ end component oneshot;
   constant  CmdPP32Quad      : std_logic_vector(7 downto 0)  := X"34"; 
   constant  Cmd4BMode        : std_logic_vector(7 downto 0)  := X"B7";
   constant  CmdExit4BMode    : std_logic_vector(7 downto 0)  := X"E9";
-  
+
+   ------------- select read command and address -------------------- 
    signal CmdIndex    : std_logic_vector(3 downto 0) := "0001";  
    signal CmdSelect    : std_logic_vector(7 downto 0) := x"FF";  
    signal AddSelect: std_logic_vector(31 downto 0) := x"00000000";  -- 32 bit command/addr
@@ -166,7 +167,6 @@ end component oneshot;
       ------- read ----------------------------
    signal rd_SpiCsB       : std_logic;
    signal read_start     : std_logic := '0';
-   --signal rd_data_valid_cntr       : std_logic_vector(7 downto 0) := x"00";
    signal rd_data_valid       : std_logic := '0';
    signal rd_data_valid_cntr       : std_logic_vector(3 downto 0) := "0000";
    -- count 1 page for now
@@ -174,7 +174,6 @@ end component oneshot;
    signal rd_nbyte_cntr       : std_logic_vector(31 downto 0) := x"00000000";
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
-   --signal rd_rddata       : std_logic_vector(47 downto 0) := X"000000000000";
    signal rd_rddata       : std_logic_vector(15 downto 0) := X"0000";
    signal rd_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    signal read_inprogress: std_logic := '0';
@@ -263,21 +262,21 @@ end component oneshot;
   
   SpiMiso <= di_out(1);  -- Synonym 
   
-  --negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
-  --  port map (
-  --          C => Clk,
-  --          D => SpiCsB_FFDin,  
-  --          Q => SpiCsB_N   
-  --  );
+  negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
+    port map (
+            C => Clk,
+            D => SpiCsB_FFDin,  
+            Q => SpiCsB_N   
+    );
 
-  process (clk)
-  begin
-      if falling_edge(clk) then
-          SpiCsB_N <= SpiCsB_FFDin;
-          --SpiCsB_N <= rd_SpiCsB;
+  --process (clk)
+  --begin
+  --    if falling_edge(clk) then
+  --        SpiCsB_N <= SpiCsB_FFDin;
+  --        --SpiCsB_N <= rd_SpiCsB;
 
-      end if;
-  end process;
+  --    end if;
+  --end process;
     
   oneshot_inst_rd  : oneshot
       port map (
@@ -373,6 +372,7 @@ FIFO36_inst : FIFO36E2
                x"FF";
                
   rd_nbyte_limit(31 downto 0) <= in_wdlimit(31 downto 0); 
+
 -----------------------------  read sectors  --------------------------------------------------
 processread : process (Clk)
   begin
