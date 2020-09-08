@@ -70,7 +70,7 @@ entity spiflashprogrammer_test is
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(3 downto 0);
     out_rd_data_valid: out std_logic;
-    out_nbyte_cntr: out std_logic_vector(31 downto 0);
+    out_nword_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0);
@@ -170,8 +170,8 @@ end component oneshot;
    signal rd_data_valid       : std_logic := '0';
    signal rd_data_valid_cntr       : std_logic_vector(3 downto 0) := "0000";
    -- count 1 page for now
-   signal rd_nbyte_limit       : std_logic_vector(31 downto 0) := x"00000000";
-   signal rd_nbyte_cntr       : std_logic_vector(31 downto 0) := x"00000000";
+   signal rd_nword_limit       : std_logic_vector(31 downto 0) := x"00000000";
+   signal rd_nword_cntr       : std_logic_vector(31 downto 0) := x"00000000";
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
    signal rd_rddata       : std_logic_vector(15 downto 0) := X"0000";
@@ -361,7 +361,7 @@ FIFO36_inst : FIFO36E2
     out_rd_rddata <= rd_rddata;
     out_cmdreg32 <= er_cmdreg32;
     out_cmdcntr32 <= rd_cmdcounter32;
-    out_nbyte_cntr <= rd_nbyte_cntr;
+    out_nword_cntr <= rd_nword_cntr;
 
     out_er_status <= er_status;
 -----------------------------  select command  --------------------------------------------------
@@ -371,7 +371,7 @@ FIFO36_inst : FIFO36E2
                CmdRDFR24Quad    when CmdIndex = x"4" else
                x"FF";
                
-  rd_nbyte_limit(31 downto 0) <= in_wdlimit(31 downto 0); 
+  rd_nword_limit(31 downto 0) <= in_wdlimit(31 downto 0); 
 
 -----------------------------  read sectors  --------------------------------------------------
 processread : process (Clk)
@@ -441,16 +441,16 @@ processread : process (Clk)
           --if (rd_data_valid_cntr = 47) then  -- Check Status after 8 bits (+1) of status read
           if (rd_data_valid_cntr = 14) then
               rd_data_valid <= '1';
-              rd_nbyte_cntr <= rd_nbyte_cntr + 1;
+              rd_nword_cntr <= rd_nword_cntr + 1;
           else
               rd_data_valid <= '0';
           end if;
           -- this is hardcoded, only able to read one page for now
-          if (rd_nbyte_cntr = rd_nbyte_limit) then  -- Check Status after 8 bits (+1) of status read
+          if (rd_nword_cntr = rd_nword_limit) then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
             rdstate <= S_RD_EXIT4BMode_ASSCS1;   -- Done. All info read 
-            rd_nbyte_cntr <= x"00000000";
+            rd_nword_cntr <= x"00000000";
             rd_data_valid_cntr <= "0000";
             rd_cmdcounter32 <= "100111";
             rd_cmdreg32 <= CmdExit4BMode & X"00000000";

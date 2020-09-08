@@ -35,6 +35,7 @@ set files [list \
 "ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
 "ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci"\
 "ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci"\
+"ip/xcku040-ffva1156-2-e/readbackfifo/spi_readback_fifo.xci"\
 "source/spiflashprogrammer.xdc"\
 "source/Firmware_pkg.vhd"
 ]
@@ -58,6 +59,7 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockManager/clockManager.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_0/ila_0.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_0/vio_0.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/readbackfifo/spi_readback_fifo.xci ]
 
 puts "\[Success\] Created project"
 close_project

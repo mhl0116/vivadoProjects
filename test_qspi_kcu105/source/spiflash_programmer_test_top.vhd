@@ -83,7 +83,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_SpiCsB_FFDin: out std_logic;
     out_rd_data_valid_cntr: out std_logic_vector(3 downto 0);
     out_rd_data_valid: out std_logic;
-    out_nbyte_cntr: out std_logic_vector(31 downto 0);
+    out_nword_cntr: out std_logic_vector(31 downto 0);
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0);
@@ -104,8 +104,27 @@ architecture behavioral of spiflashprogrammer_top is
     CLK_IN300 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
     CLK_OUT31p25: out std_logic := '0'; 
-    CLK_OUT62p5: out std_logic := '0' 
+    CLK_OUT62p5: out std_logic := '0'; 
+    CLK_OUT40: out std_logic := '0'; 
+    CLK_OUT80: out std_logic := '0' 
   );
+  end component;
+
+  component spi_readback_fifo
+  port (
+      srst : IN STD_LOGIC;
+      wr_clk : IN STD_LOGIC;
+      rd_clk : IN STD_LOGIC;
+      din : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+      wr_en : IN STD_LOGIC;
+      rd_en : IN STD_LOGIC;
+      dout : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+      full : OUT STD_LOGIC;
+      empty : OUT STD_LOGIC;
+      prog_full : OUT STD_LOGIC;
+      wr_rst_busy : OUT STD_LOGIC;
+      rd_rst_busy : OUT STD_LOGIC
+        );
   end component;
 
   component ila_0 is
@@ -121,7 +140,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe7 : in std_logic_vector(5 downto 0) := (others=> '0');
     probe8 : in std_logic_vector(31 downto 0) := (others=> '0');
     probe9 : in std_logic_vector(11 downto 0) := (others=> '0');
-    probe10 : in std_logic_vector(7 downto 0) := (others=> '0')
+    probe10 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe11 : in std_logic_vector(15 downto 0) := (others=> '0')
   );
   end component;
 
@@ -135,8 +155,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe_out3 : OUT STD_LOGIC := '0';
     probe_out4 : OUT STD_LOGIC := '0';
     probe_out5 : OUT STD_LOGIC := '0';
-    probe_out6 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0')
-
+    probe_out6 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
+    probe_out7 : OUT STD_LOGIC := '0'
   );
  END COMPONENT;
 
@@ -173,7 +193,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_rd_rddata : std_logic_vector(15 downto 0);
  signal ila_cmdreg32 : std_logic_vector(39 downto 0);
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
- signal ila_nbyte_cntr : std_logic_vector(31 downto 0);
+ signal ila_nword_cntr : std_logic_vector(31 downto 0);
 
  signal ila_er_status : std_logic_vector(1 downto 0);
  --
@@ -183,6 +203,8 @@ architecture behavioral of spiflashprogrammer_top is
   signal spiclk_i                   : std_logic := '1';
   signal spiclk2                   : std_logic; 
   signal spiclk_ii                   : std_logic; 
+  signal spiclk_old                   : std_logic;
+  signal spiclk2_old                   : std_logic; 
   signal shift32b                 : std_logic_vector(31 downto 0) := X"00000000";
   signal bscan_bit_cntr           : std_logic_vector(4 downto 0) := "00000";
   signal loadbit_startinfo                   : std_logic := '0'; 
@@ -228,6 +250,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal rst_init                 : std_logic := '0';
   signal rst                      : std_logic := '0';
   signal rst_init_cnt : unsigned(31 downto 0) := (others=> '0');
+  -- ILA and VIO signals
   signal ila_trigger1: std_logic_vector(7 downto 0) := (others=> '0'); 
   signal ila_trigger2: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_trigger3: std_logic_vector(31 downto 0) := (others=> '0'); 
@@ -239,6 +262,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data4: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data5: std_logic_vector(39 downto 0) := (others=> '0'); 
   signal ila_data6: std_logic_vector(5 downto 0) := (others=> '0'); 
+  signal ila_data7: std_logic_vector(15 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -249,6 +273,27 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout4: std_logic := '0'; 
   signal probeout5: std_logic := '0'; 
   signal probeout6: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal probeout7: std_logic := '0'; 
+  -- readback fifo
+  signal rd_fifo_rst: std_logic := '0';
+  signal rd_fifo_wr_en: std_logic := '0';
+  signal rd_fifo_rd_en: std_logic := '0';
+  signal rd_fifo_dout: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal rd_fifo_empty: std_logic := '0';
+  signal rd_fifo_full: std_logic := '0';
+  signal rd_fifo_prog_full: std_logic := '0';
+  signal rd_fifo_wr_rst_busy: std_logic := '0';
+  signal rd_fifo_rd_rst_busy: std_logic := '0';
+
+  signal load_rd_fifo: std_logic := '0';
+  signal read_rd_fifo: std_logic := '0';
+  signal vio_reset: std_logic := '0';
+
+  signal wr_dvalid_cnt: unsigned(31 downto 0) := (others=> '0'); 
+  signal rd_dvalid_cnt: unsigned(31 downto 0) := (others=> '0'); 
+
+  type rd_fifo_states is (S_FIFOIDLE, S_FIFOWRITE_PRE, S_FIFOWRITE, S_FIFOWAIT, S_FIFOREAD);
+  signal rd_fifo_state : rd_fifo_states := S_FIFOIDLE;
 
   -- this part is from example design, may not needed in the end
     type init is
@@ -287,8 +332,10 @@ begin
   port map(
             CLK_IN300=> clk_in_buf,
             CLK_OUT6=> drck,
-            CLK_OUT31p25=> spiclk, 
-            CLK_OUT62p5=> spiclk2           
+            CLK_OUT31p25=> spiclk_old, 
+            CLK_OUT62p5=> spiclk2_old,           
+            CLK_OUT40=> spiclk, 
+            CLK_OUT80=> spiclk2           
           );
 
 
@@ -389,7 +436,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_SpiCsB_FFDin        => ila_SpiCsB_FFDin, 
     out_rd_data_valid_cntr => ila_rd_data_valid_cntr,
     out_rd_data_valid => ila_rd_data_valid,
-    out_nbyte_cntr => ila_nbyte_cntr,
+    out_nword_cntr => ila_nword_cntr,
     out_cmdreg32 => ila_cmdreg32,
     out_cmdcntr32 => ila_cmdcntr32,
     out_rd_rddata => ila_rd_rddata,
@@ -403,10 +450,12 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger1(3) <= startread;
   --ila_trigger1(4) <= startread_gen;
   ila_trigger1(4) <= ila_rd_data_valid; 
+  ila_trigger1(5) <= load_rd_fifo;
+  ila_trigger1(6) <= read_rd_fifo;
 
   ila_trigger2(15 downto 0) <= ila_rd_rddata(15 downto 0);
 
-  ila_trigger3(31 downto 0) <= ila_nbyte_cntr(31 downto 0);
+  ila_trigger3(31 downto 0) <= ila_nword_cntr(31 downto 0);
 
   ila_trigger4(0) <= erasingspi;
   ila_trigger4(4) <= startaddrvalid; --startinfo;
@@ -432,13 +481,17 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(24 downto 23) <= ila_er_status(1 downto 0);
   ila_data1(25) <= startaddrvalid;
   ila_data1(26) <= sectorcountvalid;
+  ila_data1(27) <= rd_fifo_wr_en; 
+  ila_data1(28) <= rd_fifo_rd_en; 
+  ila_data1(29) <= load_rd_fifo;
+  ila_data1(30) <= read_rd_fifo;
 
   ila_data2(3 downto 0) <= ila_rd_data_valid_cntr(3 downto 0);
   ila_data3(15 downto 0) <= ila_rd_rddata(15 downto 0);
-  ila_data4(31 downto 0) <= ila_nbyte_cntr(31 downto 0);
+  ila_data4(31 downto 0) <= ila_nword_cntr(31 downto 0);
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
-
+  ila_data7(15 downto 0) <= rd_fifo_dout(15 downto 0); 
   -- this line could be useless, it's adding an address to a count of word
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
 
@@ -455,7 +508,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe7 => ila_data6,
     probe8 => ila_trigger3,
     probe9 => ila_trigger4,
-    probe10 => ila_trigger5
+    probe10 => ila_trigger5,
+    probe11 => ila_data7
   );
 
   startread_synthesize_i : if in_synthesis generate
@@ -467,6 +521,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   startdata_gen <= probeout4; 
   starterase_gen <= probeout5; 
   ila_wdlimit <= probeout6; 
+  vio_reset <= probeout7; 
   end generate;
   
   startread_gen_d <= startread_gen when rising_edge(spiclk); 
@@ -496,7 +551,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe_out3 => probeout3,
     probe_out4 => probeout4,
     probe_out5 => probeout5,
-    probe_out6 => probeout6
+    probe_out6 => probeout6,
+    probe_out7 => probeout7
 
   );
 
@@ -554,6 +610,74 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
        end if;
     end if;
   end process;
+
+  processrdfifo : process (spiclk)
+  begin
+  if rising_edge(spiclk) then
+  case rd_fifo_state is
+
+   when S_FIFOIDLE =>
+    wr_dvalid_cnt <= x"00000000";
+    rd_dvalid_cnt <= x"00000000";
+    load_rd_fifo <= '0';
+    read_rd_fifo <= '0';
+    if (ila_read_start = '1') then
+	rd_fifo_state <= S_FIFOWRITE_PRE;
+    end if;
+
+   when S_FIFOWRITE_PRE =>
+    load_rd_fifo <= '1';
+    rd_fifo_state <= S_FIFOWRITE;
+
+   when S_FIFOWRITE =>
+    if (ila_rd_data_valid = '1') then
+       wr_dvalid_cnt <= wr_dvalid_cnt + 1;
+    end if; 
+    if (wr_dvalid_cnt = unsigned(ila_wdlimit)) then
+       rd_fifo_state <= S_FIFOWAIT;  
+       load_rd_fifo <= '0';
+       wr_dvalid_cnt <= x"00000000";
+    end if; 
+
+   when S_FIFOWAIT =>
+    rd_dvalid_cnt <= rd_dvalid_cnt + 1;
+    if (rd_dvalid_cnt = 5) then -- this is 5 clk wait, if change this also need to change the 5 in S_READFIFO
+       read_rd_fifo <= '1';
+       rd_fifo_state <= S_FIFOREAD;
+    end if;
+
+   when S_FIFOREAD =>
+    rd_dvalid_cnt <= rd_dvalid_cnt + 1;
+    if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
+       read_rd_fifo <= '0';
+       rd_dvalid_cnt <= x"00000000";
+       rd_fifo_state <= S_FIFOIDLE;
+    end if;
+    
+   end case;
+  end if; --spiclk
+  end process processrdfifo;
+
+  rd_fifo_rst <= rst or vio_reset;
+  rd_fifo_wr_en <= ila_rd_data_valid and load_rd_fifo; -- = '1'); 
+  rd_fifo_rd_en <= read_rd_fifo;
+  -- hook up fifo_dout to ila
+
+  spi_readback_fifo_i : spi_readback_fifo
+  PORT MAP (
+    srst => rd_fifo_rst,
+    wr_clk => spiclk,
+    rd_clk => spiclk,
+    din => ila_rd_rddata,
+    wr_en => rd_fifo_wr_en,
+    rd_en => rd_fifo_rd_en,
+    dout => rd_fifo_dout,
+    full => rd_fifo_full,
+    empty => rd_fifo_empty,
+    prog_full => rd_fifo_prog_full,
+    wr_rst_busy => rd_fifo_wr_rst_busy,
+    rd_rst_busy => rd_fifo_rd_rst_busy
+  );
 
 ----process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
 --process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
