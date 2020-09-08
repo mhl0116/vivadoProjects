@@ -103,8 +103,8 @@ architecture behavioral of spiflashprogrammer_top is
   port (
     CLK_IN300 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
-    CLK_OUT31p25: out std_logic := '0'; 
-    CLK_OUT62p5: out std_logic := '0'; 
+    --CLK_OUT31p25: out std_logic := '0'; 
+    --CLK_OUT62p5: out std_logic := '0'; 
     CLK_OUT40: out std_logic := '0'; 
     CLK_OUT80: out std_logic := '0' 
   );
@@ -121,7 +121,7 @@ architecture behavioral of spiflashprogrammer_top is
       dout : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
       full : OUT STD_LOGIC;
       empty : OUT STD_LOGIC;
-      prog_full : OUT STD_LOGIC;
+      --prog_full : OUT STD_LOGIC;
       wr_rst_busy : OUT STD_LOGIC;
       rd_rst_busy : OUT STD_LOGIC
         );
@@ -332,8 +332,8 @@ begin
   port map(
             CLK_IN300=> clk_in_buf,
             CLK_OUT6=> drck,
-            CLK_OUT31p25=> spiclk_old, 
-            CLK_OUT62p5=> spiclk2_old,           
+            --CLK_OUT31p25=> spiclk_old, 
+            --CLK_OUT62p5=> spiclk2_old,           
             CLK_OUT40=> spiclk, 
             CLK_OUT80=> spiclk2           
           );
@@ -674,7 +674,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     dout => rd_fifo_dout,
     full => rd_fifo_full,
     empty => rd_fifo_empty,
-    prog_full => rd_fifo_prog_full,
+    --prog_full => rd_fifo_prog_full,
     wr_rst_busy => rd_fifo_wr_rst_busy,
     rd_rst_busy => rd_fifo_rd_rst_busy
   );
