@@ -1,3 +1,4 @@
+
 *.jou
 *.log
 *.str
@@ -11,6 +12,9 @@ test_qspi_kcu105/ip/xcku040-ffva1156-2-e/ila_0/*
 
 test_qspi_kcu105/ip/xcku040-ffva1156-2-e/vio_0/*
 !test_qspi_kcu105/ip/xcku040-ffva1156-2-e/vio_0/*xci
+
+test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/
+!test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/*xci
 
 test_qspi_kcu105/project/test_qspi_kcu105.cache/
 test_qspi_kcu105/project/test_qspi_kcu105.hw/
@@ -74,4 +78,5 @@ gth_wizard_ex_miniHelper/
 
 kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.cache/
 kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.hw/
+kcu105_ibert_example/ip/xcku040-ffva1156-2-e/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xml
 
