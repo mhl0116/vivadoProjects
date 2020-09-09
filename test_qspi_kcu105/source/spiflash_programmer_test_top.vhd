@@ -202,7 +202,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_cmdreg32 : std_logic_vector(39 downto 0);
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nword_cntr : std_logic_vector(31 downto 0);
- signal ila_nbyte_cntr : std_logic_vector(31 downto 0);
+ signal rd_nbyte_cntr : std_logic_vector(31 downto 0);
 
  signal ila_er_status : std_logic_vector(1 downto 0);
  --
@@ -296,7 +296,7 @@ architecture behavioral of spiflashprogrammer_top is
   type   rd_fifo_data_type is array (7 downto 0) of std_logic_vector(15 downto 0);
   signal rd_fifo_dout: rd_fifo_data_type; 
 
-  signal rd_fifo_rst: std_logic := '0';
+  signal rd_fifo_rst: std_logic_vector(7 downto 0) := (others=>'0');
   signal rd_fifo_wr_en: std_logic_vector(7 downto 0) := (others=> '0');
   signal rd_fifo_rd_en: std_logic_vector(7 downto 0) := (others=> '0');
   signal rd_fifo_empty: std_logic_vector(7 downto 0) := (others=> '0') ;
@@ -501,10 +501,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(24 downto 23) <= ila_er_status(1 downto 0);
   ila_data1(25) <= startaddrvalid;
   ila_data1(26) <= sectorcountvalid;
-  ila_data1(27) <= rd_fifo_wr_en; 
-  ila_data1(28) <= rd_fifo_rd_en; 
-  ila_data1(29) <= load_rd_fifo;
-  ila_data1(30) <= read_rd_fifo;
+  ila_data1(27) <= rd_fifo_wr_en(0); 
+  ila_data1(28) <= rd_fifo_rd_en(0); 
+  --ila_data1(29) <= load_rd_fifo;
+  --ila_data1(30) <= read_rd_fifo;
 
   ila_data2(3 downto 0) <= ila_rd_data_valid_cntr(3 downto 0);
   ila_data3(15 downto 0) <= ila_rd_rddata(15 downto 0);
@@ -695,18 +695,18 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   end if; --spiclk
   end process processrdfifo;
 
-  rd_fifo_rst <= rst or vio_reset;
   -- hook up fifo_dout to ila
 
   gen_rd_promdata : for I in 7 downto 0 generate
   begin
 
-      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(out_nword_cntr(7 downto 0)) = I) else '0'; 
+      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(7 downto 0)) = I) else '0'; 
       rd_fifo_rd_en(I) <= read_rd_fifo;
+      rd_fifo_rst(I) <= rst or vio_reset;
 
       spi_readback_fifo_i : spi_readback_fifo
       PORT MAP (
-        srst => rd_fifo_rst,
+        srst => rd_fifo_rst(I),
         wr_clk => spiclk,
         rd_clk => spiclk,
         din => ila_rd_rddata,
