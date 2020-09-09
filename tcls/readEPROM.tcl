@@ -20,6 +20,8 @@ set wordlimit [lindex $argv 2]
 #note the 7th bit is start to read readback fifo in trigger
 set_property TRIGGER_COMPARE_VALUE eq8'bX1XX_XXXX [get_hw_probes ila_trigger1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 
+#set trigger position
+set_property CONTROL.TRIGGER_POSITION 0 [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
 #set vio value
 set_property OUTPUT_VALUE $cmdIndex [get_hw_probes ila_CmdIndex -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {ila_CmdIndex} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
@@ -55,7 +57,7 @@ current_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices
 display_hw_ila_data [current_hw_ila_data]
 
 #write_hw_ila_data -csv_file my_hw_ila_data [current_hw_ila_data]
-write_hw_ila_data -csv_file ila_data_addr_${startaddr}_nwd_${wordlimit} [current_hw_ila_data]
+write_hw_ila_data -csv_file promcontent/ila_data_addr_${startaddr}_nwd_${wordlimit} [current_hw_ila_data]
 
 #display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 #write_hw_ila_data -csv_file my_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
