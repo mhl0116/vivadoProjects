@@ -141,7 +141,15 @@ architecture behavioral of spiflashprogrammer_top is
     probe8 : in std_logic_vector(31 downto 0) := (others=> '0');
     probe9 : in std_logic_vector(11 downto 0) := (others=> '0');
     probe10 : in std_logic_vector(7 downto 0) := (others=> '0');
-    probe11 : in std_logic_vector(15 downto 0) := (others=> '0')
+    probe11 : in std_logic_vector(27 downto 0) := (others=> '0');
+    probe12 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe13 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe14 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe15 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe16 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe17 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe18 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe19 : in std_logic_vector(15 downto 0) := (others=> '0')
   );
   end component;
 
@@ -194,6 +202,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_cmdreg32 : std_logic_vector(39 downto 0);
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nword_cntr : std_logic_vector(31 downto 0);
+ signal ila_nbyte_cntr : std_logic_vector(31 downto 0);
 
  signal ila_er_status : std_logic_vector(1 downto 0);
  --
@@ -262,7 +271,15 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data4: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal ila_data5: std_logic_vector(39 downto 0) := (others=> '0'); 
   signal ila_data6: std_logic_vector(5 downto 0) := (others=> '0'); 
-  signal ila_data7: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data7: std_logic_vector(27 downto 0) := (others=> '0'); 
+  signal ila_data8: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data9: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data10: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data11: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data12: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data13: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data14: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data15: std_logic_vector(15 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -275,15 +292,18 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout6: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probeout7: std_logic := '0'; 
   -- readback fifo
+  -- want to readout 8 word at the same time from fifos and dump to ILA
+  type   rd_fifo_data_type is array (7 downto 0) of std_logic_vector(15 downto 0);
+  signal rd_fifo_dout: rd_fifo_data_type; 
+
   signal rd_fifo_rst: std_logic := '0';
-  signal rd_fifo_wr_en: std_logic := '0';
-  signal rd_fifo_rd_en: std_logic := '0';
-  signal rd_fifo_dout: std_logic_vector(15 downto 0) := (others=> '0'); 
-  signal rd_fifo_empty: std_logic := '0';
-  signal rd_fifo_full: std_logic := '0';
-  signal rd_fifo_prog_full: std_logic := '0';
-  signal rd_fifo_wr_rst_busy: std_logic := '0';
-  signal rd_fifo_rd_rst_busy: std_logic := '0';
+  signal rd_fifo_wr_en: std_logic_vector(7 downto 0) := (others=> '0');
+  signal rd_fifo_rd_en: std_logic_vector(7 downto 0) := (others=> '0');
+  signal rd_fifo_empty: std_logic_vector(7 downto 0) := (others=> '0') ;
+  signal rd_fifo_full: std_logic_vector(7 downto 0) := (others=> '0') ;
+  signal rd_fifo_prog_full: std_logic_vector(7 downto 0) := (others=> '0') ;
+  signal rd_fifo_wr_rst_busy: std_logic_vector(7 downto 0) := (others=> '0') ;
+  signal rd_fifo_rd_rst_busy: std_logic_vector(7 downto 0) := (others=> '0') ;
 
   signal load_rd_fifo: std_logic := '0';
   signal read_rd_fifo: std_logic := '0';
@@ -491,7 +511,15 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data4(31 downto 0) <= ila_nword_cntr(31 downto 0);
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
-  ila_data7(15 downto 0) <= rd_fifo_dout(15 downto 0); 
+  ila_data7(27 downto 0) <= rd_nbyte_cntr(27 downto 0); 
+  ila_data8(15 downto 0) <= rd_fifo_dout(0)(15 downto 0); 
+  ila_data9(15 downto 0) <= rd_fifo_dout(1)(15 downto 0); 
+  ila_data10(15 downto 0) <= rd_fifo_dout(2)(15 downto 0); 
+  ila_data11(15 downto 0) <= rd_fifo_dout(3)(15 downto 0); 
+  ila_data12(15 downto 0) <= rd_fifo_dout(4)(15 downto 0); 
+  ila_data13(15 downto 0) <= rd_fifo_dout(5)(15 downto 0); 
+  ila_data14(15 downto 0) <= rd_fifo_dout(6)(15 downto 0); 
+  ila_data15(15 downto 0) <= rd_fifo_dout(7)(15 downto 0); 
   -- this line could be useless, it's adding an address to a count of word
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
 
@@ -509,7 +537,15 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe8 => ila_trigger3,
     probe9 => ila_trigger4,
     probe10 => ila_trigger5,
-    probe11 => ila_data7
+    probe11 => ila_data7,
+    probe12 => ila_data8,
+    probe13 => ila_data9,
+    probe14 => ila_data10,
+    probe15 => ila_data11,
+    probe16 => ila_data12,
+    probe17 => ila_data13,
+    probe18 => ila_data14,
+    probe19 => ila_data15
   );
 
   startread_synthesize_i : if in_synthesis generate
@@ -648,6 +684,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
+    rd_nbyte_cntr <= ila_rdAddr + x"00000010"; 
     if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
        read_rd_fifo <= '0';
        rd_dvalid_cnt <= x"00000000";
@@ -659,132 +696,31 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   end process processrdfifo;
 
   rd_fifo_rst <= rst or vio_reset;
-  rd_fifo_wr_en <= ila_rd_data_valid and load_rd_fifo; -- = '1'); 
-  rd_fifo_rd_en <= read_rd_fifo;
   -- hook up fifo_dout to ila
 
-  spi_readback_fifo_i : spi_readback_fifo
-  PORT MAP (
-    srst => rd_fifo_rst,
-    wr_clk => spiclk,
-    rd_clk => spiclk,
-    din => ila_rd_rddata,
-    wr_en => rd_fifo_wr_en,
-    rd_en => rd_fifo_rd_en,
-    dout => rd_fifo_dout,
-    full => rd_fifo_full,
-    empty => rd_fifo_empty,
-    --prog_full => rd_fifo_prog_full,
-    wr_rst_busy => rd_fifo_wr_rst_busy,
-    rd_rst_busy => rd_fifo_rd_rst_busy
-  );
+  gen_rd_promdata : for I in 7 downto 0 generate
+  begin
 
-----process (drck,Bscan1Reset)  -- Bscan serial to 32 bits for FIFO IN
---process (drck,rst)  -- Bscan serial to 32 bits for FIFO IN
---  begin
---      --if (Bscan1Reset = '1') then
---      if (rst = '1') then
---         fifowren <= '0';
---         bscan_bit_cntr <= "00000";
---         download_state  <= S_INIT;
---      else
---      if rising_edge(drck) then  
---        --shift32b <= shift32b(30 downto 0) & Bscan1Tdi;  -- shift left
---        --shift32b<= Bscan1Tdi & shift32b(31 downto 1);  -- shift right
---        shift32b<= x"FFFFFFFF"; 
---        case download_state is 
---          when S_INIT =>
---               writeerrreg <= '0';   -- clear sticky registers
---               readerrreg <= '0';
---               bscan_bit_cntr <= bscan_bit_cntr + 1;
---               if (bscan_bit_cntr = 0) then
---                  -- The below should not require synchronization to the SPI clock
---                  -- Very slow DRCK clock and the FIFO fills to AF first anyway 
---                 init_counter <= init_counter + 1;
---                 --if (init_counter = "00000") then sectorcount <= shift32b(13 downto 0);  -- NOOP. Aligncounter and clock cycles
---                 if (init_counter = "00000") then sectorcount <= "11" & x"111"; 
---                 elsif (init_counter = "00001") then 
---                   --sectorcount <= shift32b(13 downto 0); 
---                   sectorcount <= "00" & x"002"; 
---                   sectorcountvalid <= '1'; -- sector count first
---                 elsif (init_counter = "00010") then 
---                   --startaddr <= shift32b(31 downto 0); 
---                   startaddr <= x"00000000"; 
---                   startaddrvalid <= '1';
---                 elsif (init_counter = "00011") then 
---                   --pagecount <= shift32b(16 downto 0); 
---                   pagecount <= '0' & x"000F"; 
---                   pagecountvalid <= '1';
---                   init_counter <= "00000";
---                   download_state <= S_ERASE;
---                  end if;
---               end if;  -- bscan_bit_cntr
---               
---          when S_ERASE =>  
---               -- just wait some time for starterase to assert before deasserting
---               -- needs to propagte to the SPI clock
---               starterase <= '1';
---               init_counter <= init_counter + 1;  
---               if (init_counter = 31) then
---                 starterase <= '0';
---                 if (erasingspi = '0') then 
---                   sectorcountvalid <= '0';  -- should be done with these by now
---                   startaddrvalid <= '0';
---                   pagecountvalid <= '0';
---                   sectorcountvalid <= '0';
---                   download_state <= S_ALIGN;    
---                 end if;
---               end if;  -- init_counter
---               
---          when S_ALIGN => 
---               init_counter <= init_counter + 1;
---               if (init_counter = 31) then download_state <= S_DATA;   end if;   
---                    
---          when S_DATA =>
---               bscan_bit_cntr <= bscan_bit_cntr+1;  -- starts at 0
---               if (bscan_bit_cntr = 31) then  
---                 fifowren  <= '1';
---               else 
---                 fifowren  <= '0';           
---               end if;
---        end case;
---          -- Make FIFO errors sticky
---          if (overflow = '1') then writeerrreg <= '1'; end if;
---          if (underflow = '1') then readerrreg <= '1'; end if;
---         end if;
---     end if;  -- clk
--- end process;
+      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(out_nword_cntr(7 downto 0)) = I) else '0'; 
+      rd_fifo_rd_en(I) <= read_rd_fifo;
 
-  -- Error message printing for simulation
+      spi_readback_fifo_i : spi_readback_fifo
+      PORT MAP (
+        srst => rd_fifo_rst,
+        wr_clk => spiclk,
+        rd_clk => spiclk,
+        din => ila_rd_rddata,
+        wr_en => rd_fifo_wr_en(I),
+        rd_en => rd_fifo_rd_en(I),
+        dout => rd_fifo_dout(I),
+        full => rd_fifo_full(I),
+        empty => rd_fifo_empty(I),
+        --prog_full => rd_fifo_prog_full,
+        wr_rst_busy => rd_fifo_wr_rst_busy(I),
+        rd_rst_busy => rd_fifo_rd_rst_busy(I)
+      );
 
-  --PROCESS(status)
-  --BEGIN
-  --  IF(status /= "0" AND status /= "1") THEN
-  --    disp_str("STATUS:");
-  --    disp_hex(status);
-  --  END IF;
-
-  --  IF(status(7) = '1') THEN
-  --    assert false
-  --     report "Data mismatch found"
-  --     severity error;
-  --  END IF;
-
-  --  IF(status(1) = '1') THEN
-  --  END IF;
-  --  
-  --  IF(status(5) = '1') THEN
-  --    assert false
-  --     report "Empty flag Mismatch/timeout"
-  --     severity error;
-  --  END IF;
-
-  --  IF(status(6) = '1') THEN
-  --    assert false
-  --     report "Full Flag Mismatch/timeout"
-  --     severity error;
-  --  END IF;
-  --END PROCESS;
+  end generate gen_rd_promdata;
 
   PROCESS 
   BEGIN
