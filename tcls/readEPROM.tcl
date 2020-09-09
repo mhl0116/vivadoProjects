@@ -10,34 +10,24 @@ set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi
 current_hw_device [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
 
+set cmdIndex [lindex $argv 0]
+# xxxxxxxx
+set startaddr [lindex $argv 1] 
+# xxxxxxxx
+set wordlimit [lindex $argv 2]
+
 #display_hw_ila_data [ get_hw_ila_data hw_ila_data_1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
-#set_property TRIGGER_COMPARE_VALUE eq8'bXXXX_XXXX [get_hw_probes ila_trigger1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
+#note the 7th bit is start to read readback fifo in trigger
 set_property TRIGGER_COMPARE_VALUE eq8'bX1XX_XXXX [get_hw_probes ila_trigger1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 
-set_property OUTPUT_VALUE 4 [get_hw_probes ila_CmdIndex -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+#set vio value
+set_property OUTPUT_VALUE $cmdIndex [get_hw_probes ila_CmdIndex -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {ila_CmdIndex} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-set_property OUTPUT_VALUE 00000050 [get_hw_probes in_rdAddr -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+set_property OUTPUT_VALUE $startaddr [get_hw_probes in_rdAddr -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {in_rdAddr} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-set_property OUTPUT_VALUE 00000010 [get_hw_probes ila_wdlimit -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+set_property OUTPUT_VALUE $wordlimit [get_hw_probes ila_wdlimit -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {ila_wdlimit} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-
-run_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
-
-startgroup
-set_property OUTPUT_VALUE 0 [get_hw_probes startread_gen -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-commit_hw_vio [get_hw_probes {startread_gen} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-endgroup
-startgroup
-set_property OUTPUT_VALUE 1 [get_hw_probes startread_gen -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-commit_hw_vio [get_hw_probes {startread_gen} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-endgroup
-
-wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
-display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
-
-#write_hw_ila_data my_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
-write_hw_ila_data -csv_file my_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
-
+#reset readback fifo
 startgroup
 set_property OUTPUT_VALUE 1 [get_hw_probes vio_reset -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {vio_reset} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
@@ -47,9 +37,10 @@ startgroup
 set_property OUTPUT_VALUE 0 [get_hw_probes vio_reset -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {vio_reset} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 endgroup
-
+# run ila 
 run_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
 
+# inject read eprom signal
 startgroup
 set_property OUTPUT_VALUE 0 [get_hw_probes startread_gen -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {startread_gen} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
@@ -58,5 +49,17 @@ startgroup
 set_property OUTPUT_VALUE 1 [get_hw_probes startread_gen -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 commit_hw_vio [get_hw_probes {startread_gen} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 endgroup
+
 wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
-display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
+current_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
+display_hw_ila_data [current_hw_ila_data]
+
+#write_hw_ila_data -csv_file my_hw_ila_data [current_hw_ila_data]
+write_hw_ila_data -csv_file ila_data_addr_${startaddr}_nwd_${wordlimit} [current_hw_ila_data]
+
+#display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
+#write_hw_ila_data -csv_file my_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
+#
+#current_hw_ila_data [upload_hw_ila_data hw_ila_1]
+#display_hw_ila_data [current_hw_ila_data]
+#write_hw_ila_data my_hw_ila_data [current_hw_ila_data]
