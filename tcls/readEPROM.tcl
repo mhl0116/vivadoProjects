@@ -9,7 +9,7 @@ set_property PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu1
 set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
 current_hw_device [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
-
+#
 set cmdIndex  [lindex $argv 0]
 set startaddr [lindex $argv 1] 
 set wordlimit [lindex $argv 2]
@@ -27,10 +27,13 @@ set endaddr   [lindex $argv 3]
 #    set hexbyte [string range $line $X [expr {$X + 1}]]
 #    set sum1 [format %x [expr 0x$hexbyte + 0x$sum1]]
 #}
+reset_hw_vio_outputs [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]
+refresh_hw_vio -update_output_values [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]
 
 puts "start to read eprom"
 while { $startaddr < $endaddr } {
 	puts "startaddr: ${startaddr}, endaddr: ${endaddr}"
+
 
 	display_hw_ila_data [ get_hw_ila_data hw_ila_data_1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 	#note the 7th bit is start to read readback fifo in trigger
@@ -38,11 +41,17 @@ while { $startaddr < $endaddr } {
 
 	#set trigger position
 	set_property CONTROL.TRIGGER_POSITION 0 [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
-	#set vio value
+	set vio value
+
 	set_property OUTPUT_VALUE $cmdIndex [get_hw_probes ila_CmdIndex -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 	commit_hw_vio [get_hw_probes {ila_CmdIndex} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-	set_property OUTPUT_VALUE $startaddr [get_hw_probes in_rdAddr -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
-	commit_hw_vio [get_hw_probes {in_rdAddr} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+
+set_property OUTPUT_VALUE $startaddr [get_hw_probes ila_rdAddr -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+commit_hw_vio [get_hw_probes {ila_rdAddr} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+
+#	set_property OUTPUT_VALUE $startaddr [get_hw_probes ila_rdAddr -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+#	commit_hw_vio [get_hw_probes {in_rdAddr} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
+puts "start to read eprom"
 	set_property OUTPUT_VALUE $wordlimit [get_hw_probes ila_wdlimit -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 	commit_hw_vio [get_hw_probes {ila_wdlimit} -of_objects [get_hw_vios -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_vio"}]]
 	#reset readback fifo
