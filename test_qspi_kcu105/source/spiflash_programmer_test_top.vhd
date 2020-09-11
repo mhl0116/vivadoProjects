@@ -498,7 +498,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
-  ila_data1(21) <= spiclk_ii;
+  --ila_data1(21) <= spiclk_ii;
   ila_data1(22) <= ila_rd_data_valid;
   ila_data1(24 downto 23) <= ila_er_status(1 downto 0);
   ila_data1(25) <= startaddrvalid;
@@ -527,7 +527,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_ila : ila_0
   port map(
-    clk => spiclk2,
+    clk => spiclk,
     probe0 => ila_trigger1,
     probe1 => ila_data1,
     probe2 => ila_data2,
@@ -581,7 +581,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_vio : vio_0
   PORT MAP (
-    clk => spiclk2,
+    clk => spiclk,
     probe_in0 => probein0,
     probe_out0 => probeout0,
     probe_out1 => probeout1,
@@ -659,6 +659,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     rd_dvalid_cnt <= x"00000000";
     load_rd_fifo <= '0';
     read_rd_fifo <= '0';
+    rd_nbyte_cntr <= ila_rdAddr; 
     if (ila_read_start = '1') then
 	rd_fifo_state <= S_FIFOWRITE_PRE;
     end if;
@@ -687,7 +688,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
-    rd_nbyte_cntr <= ila_rdAddr + x"00000010"; 
+    rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010"; 
     if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
        read_rd_fifo <= '0';
        read_rd_fifo_pre <= '0';
