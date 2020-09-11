@@ -172,6 +172,7 @@ end component oneshot;
    -- count 1 page for now
    signal rd_nword_limit       : std_logic_vector(31 downto 0) := x"00000000";
    signal rd_nword_cntr       : std_logic_vector(31 downto 0) := x"00000000";
+   signal rd_nword_cntr_dly       : std_logic_vector(31 downto 0) := x"00000000";
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
    signal rd_rddata       : std_logic_vector(15 downto 0) := X"0000";
@@ -361,7 +362,7 @@ FIFO36_inst : FIFO36E2
     out_rd_rddata <= rd_rddata;
     out_cmdreg32 <= er_cmdreg32;
     out_cmdcntr32 <= rd_cmdcounter32;
-    out_nword_cntr <= rd_nword_cntr;
+    out_nword_cntr <= rd_nword_cntr_dly;
 
     out_er_status <= er_status;
 -----------------------------  select command  --------------------------------------------------
@@ -442,6 +443,7 @@ processread : process (Clk)
           if (rd_data_valid_cntr = 14) then
               rd_data_valid <= '1';
               rd_nword_cntr <= rd_nword_cntr + 1;
+              rd_nword_cntr_dly <= rd_nword_cntr;
           else
               rd_data_valid <= '0';
           end if;
