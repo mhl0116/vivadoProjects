@@ -505,8 +505,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(26) <= sectorcountvalid;
   ila_data1(27) <= rd_fifo_wr_en(0); 
   ila_data1(28) <= rd_fifo_rd_en(0); 
-  --ila_data1(29) <= load_rd_fifo;
-  --ila_data1(30) <= read_rd_fifo;
+  ila_data1(29) <= load_rd_fifo;
+  ila_data1(30) <= read_rd_fifo;
 
   ila_data2(3 downto 0) <= ila_rd_data_valid_cntr(3 downto 0);
   ila_data3(15 downto 0) <= ila_rd_rddata(15 downto 0);
@@ -704,7 +704,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   gen_rd_promdata : for I in 7 downto 0 generate
   begin
 
-      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(7 downto 0)) = I) else '0'; 
+      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(3 downto 0)) = I+1) else '0'; 
       rd_fifo_rd_en(I) <= read_rd_fifo;
       rd_fifo_rst(I) <= rst or vio_reset;
       rd_fifo_din(I) <= ila_rd_rddata;
