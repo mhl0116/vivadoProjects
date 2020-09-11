@@ -203,6 +203,8 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nword_cntr : std_logic_vector(31 downto 0);
  signal rd_nbyte_cntr : std_logic_vector(31 downto 0);
+ signal rd_nbyte_cntr_dly : std_logic_vector(31 downto 0);
+
 
  signal ila_er_status : std_logic_vector(1 downto 0);
  --
@@ -513,7 +515,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data4(31 downto 0) <= ila_nword_cntr(31 downto 0);
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
-  ila_data7(27 downto 0) <= rd_nbyte_cntr(27 downto 0); 
+  ila_data7(27 downto 0) <= rd_nbyte_cntr_dly(27 downto 0); 
   ila_data8(15 downto 0) <= rd_fifo_dout(0)(15 downto 0); 
   ila_data9(15 downto 0) <= rd_fifo_dout(1)(15 downto 0); 
   ila_data10(15 downto 0) <= rd_fifo_dout(2)(15 downto 0); 
@@ -688,7 +690,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
-    rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010"; 
+    rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010";
+    rd_nbyte_cntr_dly <= rd_nbyte_cntr; 
     if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
        read_rd_fifo <= '0';
        read_rd_fifo_pre <= '0';
@@ -705,7 +708,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   gen_rd_promdata : for I in 7 downto 0 generate
   begin
 
-      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(3 downto 0)) = I+1) else '0'; 
+      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(2 downto 0)) = I+1) else '0'; 
       rd_fifo_rd_en(I) <= read_rd_fifo;
       rd_fifo_rst(I) <= rst or vio_reset;
       rd_fifo_din(I) <= ila_rd_rddata;
