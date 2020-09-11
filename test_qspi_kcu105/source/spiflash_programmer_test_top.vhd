@@ -708,7 +708,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   gen_rd_promdata : for I in 7 downto 0 generate
   begin
 
-      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(2 downto 0)) = I+1) else '0'; 
+      rd_fifo_wr_en(I) <= '1' when (ila_rd_data_valid = '1' and load_rd_fifo = '1' and unsigned(ila_nword_cntr(2 downto 0)) = I) else '0'; 
       rd_fifo_rd_en(I) <= read_rd_fifo;
       rd_fifo_rst(I) <= rst or vio_reset;
       rd_fifo_din(I) <= ila_rd_rddata;
