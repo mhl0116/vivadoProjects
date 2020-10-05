@@ -101,7 +101,7 @@ architecture behavioral of spiflashprogrammer_top is
   
   component clockManager is
   port (
-    CLK_IN300 : in std_logic := '0';
+    CLK_IN40 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
     --CLK_OUT31p25: out std_logic := '0'; 
     --CLK_OUT62p5: out std_logic := '0'; 
@@ -354,7 +354,7 @@ begin
 
   ClockManager_i : clockManager
   port map(
-            CLK_IN300=> clk_in_buf,
+            CLK_IN40=> clk_in_buf,
             CLK_OUT6=> drck,
             --CLK_OUT31p25=> spiclk_old, 
             --CLK_OUT62p5=> spiclk2_old,           
