@@ -18,8 +18,17 @@ test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/
 
 test_qspi_kcu105/project/test_qspi_kcu105.cache/
 test_qspi_kcu105/project/test_qspi_kcu105.hw/
+test_qspi_kcu105/project/test_qspi_kcu105.runs/
+test_qspi_kcu105/project/test_qspi_kcu105.ip_user_files/
 
 tcls/othertcls/
+tcls/plots
+tcls/reports
+tcls/*bin
+tcls/*txt
+
+tcls/promcotent
+gth_wizard_ex/project/project_gth_wizard_ex.runs/
 
 gth_wizard_ex_clean/ip/xcku040-ffva1156-2-e/clockManager/*
 !gth_wizard_ex_clean/ip/xcku040-ffva1156-2-e/clockManager/*xci
@@ -47,8 +56,12 @@ gth_wizard_ex/ip/xcku040-ffva1156-2-e/ila_0/*
 
 KitexUltrascale_Template_fifo/tb_project/tb_project.cache/
 KitexUltrascale_Template_fifo/tb_project/tb_project.hw/
+KitexUltrascale_Template_fifo/tb_project/tb_project.runs/
+KitexUltrascale_Template_fifo/tb_project/tb_project.sim/
 KitexUltrascale_Template_fifo/tb_project/tb_project.ip_user_files/
 KitexUltrascale_Template_fifo/tb_project/tb_project.srcs/
+KitexUltrascale_Template_fifo/ip/*
+!KitexUltrascale_Template_fifo/ip/xcku040-ffva1156-2-e/clockManager/xci*
 
 fifo_generator_0_ex/
 
@@ -66,6 +79,8 @@ gth_wizard_ex_clean/project/project_gth_wizard_ex.cache/
 gth_wizard_ex_clean/project/project_gth_wizard_ex.hw/
 gth_wizard_ex_clean/project/project_gth_wizard_ex.ip_user_files/
 gth_wizard_ex_clean/project/project_gth_wizard_ex.sim/
+gth_wizard_ex_clean/project/project_gth_wizard_ex.runs/
+gth_wizard_ex_clean/project/iladata.ila/
 
 gth_wizard_ex_clean/source/gtwizard_ultrascale_1_example_checking_8b10b.v
 gth_wizard_ex_clean/source/gtwizard_ultrascale_1_example_stimulus_8b10b.v
@@ -78,5 +93,9 @@ gth_wizard_ex_miniHelper/
 
 kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.cache/
 kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.hw/
-kcu105_ibert_example/ip/xcku040-ffva1156-2-e/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xml
+kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.runs/
+kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.srcs/
+kcu105_ibert_example/project/example_ibert_ultrascale_gth_0.ip_user_files/
+kcu105_ibert_example/ip/xcku040-ffva1156-2-e/ibert_ultrascale_gth_0/*
+!kcu105_ibert_example/ip/xcku040-ffva1156-2-e/ibert_ultrascale_gth_0/*xci
 
