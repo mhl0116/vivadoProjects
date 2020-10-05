@@ -74,7 +74,7 @@ entity spiflashprogrammer_test is
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0);
-
+    out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0)
    ); 	
 end spiflashprogrammer_test;
@@ -176,6 +176,7 @@ end component oneshot;
    signal rd_data_wait_clk       : integer := 48;
    signal rd_cmdcounter32 : std_logic_vector(5 downto 0) := "111111";  -- 32 bit command/addr
    signal rd_rddata       : std_logic_vector(15 downto 0) := X"0000";
+   signal rd_rddata_all       : std_logic_vector(15 downto 0) := X"0000";
    signal rd_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    signal read_inprogress: std_logic := '0';
       ------------ StartupE2 signals  ---------------------------
@@ -360,6 +361,7 @@ FIFO36_inst : FIFO36E2
     out_rd_data_valid_cntr(2 downto 0) <= er_data_valid_cntr;
     out_rd_data_valid <= rd_data_valid;
     out_rd_rddata <= rd_rddata;
+    out_rd_rddata_all <= rd_rddata_all;
     out_cmdreg32 <= er_cmdreg32;
     out_cmdcntr32 <= rd_cmdcounter32;
     out_nword_cntr <= rd_nword_cntr_dly;
@@ -385,6 +387,7 @@ processread : process (Clk)
           rd_data_valid_cntr <= "0000";
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"0000";
+          rd_rddata_all <= x"0000";
           --rd_cmdreg32 <=  CmdSelect & X"00000000";  
           --rd_cmdreg32 <=  CmdSelect & AddSelect;  
           --rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
@@ -418,8 +421,8 @@ processread : process (Clk)
         else 
           rd_SpiCsB <= '1';   -- turn off SPI
           --rd_cmdcounter32 <= "100111";  -- 32 bit command
-          --rd_cmdcounter32 <= "100101";  -- 32 bit address + 8 bit command + 5 bit wait
-          rd_cmdcounter32 <= "110001";  -- 32 bit address + 8 bit command + 5 bit wait
+          --rd_cmdcounter32 <= "110001";  -- 32 bit address + 8 bit command + 5 bit wait
+          rd_cmdcounter32 <= "110000";  -- 32 bit address + 8 bit command + 5 bit wait
           rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           rdstate <= S_RD_CS1;  
         end if;  
@@ -433,6 +436,7 @@ processread : process (Clk)
         if (rd_cmdcounter32 /= 0) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
            rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
 
+           rd_rddata_all <= rd_rddata_all(14 downto 0) & SpiMiso;  -- deser 1:8 
         --if (rd_cmdcounter32 >= 7) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; -- set to 7: 39 - 8 - 24 (8 bits command, 24 bits addr in 3 bytes mode)
         else
           rd_data_valid_cntr <= rd_data_valid_cntr + 1;
@@ -440,7 +444,8 @@ processread : process (Clk)
           --rd_rddata <= rd_rddata(46 downto 0) & SpiMiso;  -- deser 1:8 
           --rd_rddata <= rd_rddata(6 downto 0) & "0";  -- deser 1:8 
           --if (rd_data_valid_cntr = 47) then  -- Check Status after 8 bits (+1) of status read
-          if (rd_data_valid_cntr = 14) then
+          --if (rd_data_valid_cntr = 14) then
+          if (rd_data_valid_cntr = 15) then
               rd_data_valid <= '1';
               rd_nword_cntr <= rd_nword_cntr + 1;
               rd_nword_cntr_dly <= rd_nword_cntr;

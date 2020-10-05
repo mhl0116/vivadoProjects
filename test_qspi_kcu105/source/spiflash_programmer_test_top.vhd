@@ -87,7 +87,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_cmdreg32: out std_logic_vector(39 downto 0);
     out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0);
-
+    out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0)
    ); 
   end component spiflashprogrammer_test;
@@ -149,7 +149,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe16 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe17 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe18 : in std_logic_vector(15 downto 0) := (others=> '0');
-    probe19 : in std_logic_vector(15 downto 0) := (others=> '0')
+    probe19 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe20 : in std_logic_vector(15 downto 0) := (others=> '0')
   );
   end component;
 
@@ -199,6 +200,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal ila_rd_data_valid : std_logic; 
  signal ila_rd_data_valid_cntr : std_logic_vector(3 downto 0);
  signal ila_rd_rddata : std_logic_vector(15 downto 0);
+ signal ila_rd_rddata_all : std_logic_vector(15 downto 0);
  signal ila_cmdreg32 : std_logic_vector(39 downto 0);
  signal ila_cmdcntr32 : std_logic_vector(5 downto 0);
  signal ila_nword_cntr : std_logic_vector(31 downto 0);
@@ -282,6 +284,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data13: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data14: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data15: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data16: std_logic_vector(15 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -365,7 +368,7 @@ begin
 
   process (spiclk)
   begin
-      if rising_edge(spiclk) then
+      if rising_edge(spiclk2) then
           spiclk_ii <= spiclk;
       end if;
       if falling_edge(spiclk2) then
@@ -464,6 +467,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_cmdreg32 => ila_cmdreg32,
     out_cmdcntr32 => ila_cmdcntr32,
     out_rd_rddata => ila_rd_rddata,
+    out_rd_rddata_all => ila_rd_rddata_all,
     out_er_status => ila_er_status
 );
 
@@ -525,11 +529,12 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data14(15 downto 0) <= rd_fifo_dout(6)(15 downto 0); 
   ila_data15(15 downto 0) <= rd_fifo_dout(7)(15 downto 0); 
   -- this line could be useless, it's adding an address to a count of word
+  ila_data16(15 downto 0) <= ila_rd_rddata_all(15 downto 0);
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
 
   i_ila : ila_0
   port map(
-    clk => spiclk,
+    clk => spiclk2,
     probe0 => ila_trigger1,
     probe1 => ila_data1,
     probe2 => ila_data2,
@@ -549,7 +554,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe16 => ila_data12,
     probe17 => ila_data13,
     probe18 => ila_data14,
-    probe19 => ila_data15
+    probe19 => ila_data15,
+    probe20 => ila_data16
   );
 
   startread_synthesize_i : if in_synthesis generate
@@ -583,7 +589,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_vio : vio_0
   PORT MAP (
-    clk => spiclk,
+    clk => spiclk2,
     probe_in0 => probein0,
     probe_out0 => probeout0,
     probe_out1 => probeout1,
