@@ -34,7 +34,7 @@ use work.Firmware_pkg.all;
 entity spiflashprogrammer_top is
   port
   (
-    LEDS                : out std_logic_vector(7 downto 0);
+    --LEDS                : out std_logic_vector(7 downto 0);
     SYSCLK_N            : in  std_logic;
     SYSCLK_P            : in  std_logic
   );
@@ -92,12 +92,12 @@ architecture behavioral of spiflashprogrammer_top is
    ); 
   end component spiflashprogrammer_test;
 
-  component leds_0to7 
-  port  (
-    sysclk   : in  std_logic;
-    leds     : out std_logic_vector(7 downto 0) 
-  );
-  end component leds_0to7;
+--  component leds_0to7 
+--  port  (
+--    sysclk   : in  std_logic;
+--    leds     : out std_logic_vector(7 downto 0) 
+--  );
+--  end component leds_0to7;
   
   component clockManager is
   port (
@@ -419,11 +419,11 @@ begin
   
   rst <= rst_sim or rst_init;
 
- led_inst: leds_0to7 port map
-  (
-  sysclk => spiclk,
-  leds => LEDS
- );
+-- led_inst: leds_0to7 port map
+--  (
+--  sysclk => spiclk,
+--  leds => LEDS
+-- );
    
 spiflashprogrammer_inst: spiflashprogrammer_test port map
   (
