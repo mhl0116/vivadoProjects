@@ -55,6 +55,7 @@ entity spiflashprogrammer_test is
     read         : in std_logic;
     erase        : in std_logic;
     eraseing      : out std_logic;
+    erasedone      : out std_logic;
     ------------------------------------
     startwrite   : out std_logic;
     out_read_inprogress        : out std_logic;
@@ -164,6 +165,7 @@ end component oneshot;
    signal er_cmdreg32     : std_logic_vector(39 downto 0) := X"1111111111";  -- avoid LSB removal
    signal er_status       : std_logic_vector(1 downto 0) := "11";
    signal erase_inprogress: std_logic := '0';
+   signal erase_done: std_logic := '0';
       ------- read ----------------------------
    signal rd_SpiCsB       : std_logic;
    signal read_start     : std_logic := '0';
@@ -497,6 +499,7 @@ processerase : process (Clk)
           er_rddata <= "00";
           er_cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable
           erase_inprogress <= '1';
+          erase_done <= '0';
           erstate <= S_S4BMode_ASSCS1;
          end if;
                        
@@ -578,6 +581,7 @@ processerase : process (Clk)
               if (er_sector_count = 0) then 
                 erstate <= S_ER_IDLE;   -- Done. All sectors erased
                 erase_inprogress <= '0';
+                erase_done <= '1';
               else 
                 er_current_sector_addr <= er_current_sector_addr + SubSectorSize;
                 er_sector_count <= er_sector_count - 1;
@@ -801,6 +805,7 @@ fifoafull   <= fifo_almostfull;   -- May require synconizer when used
 fifowrerr   <= wrerr;
 fiforderr   <= rderr;             -- May require synconizer when used
 eraseing    <= erase_inprogress;
+erasedone    <= erase_done;
 writedone   <= write_done;        -- Done with writing to SPI
 
 end behavioral;

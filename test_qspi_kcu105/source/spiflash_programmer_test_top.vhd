@@ -69,6 +69,7 @@ architecture behavioral of spiflashprogrammer_top is
     read       : in std_logic;
     erase     : in std_logic; 
     eraseing     : out std_logic; 
+    erasedone     : out std_logic; 
     ------------------------------------
     out_read_inprogress        : out std_logic;
     out_rd_SpiCsB: out std_logic;
@@ -241,6 +242,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal underflow                : std_logic := '0';
   signal readerrreg               : std_logic := '0';
   signal erasingspi               : std_logic := '0';
+  signal erasespidone               : std_logic := '0';
   signal init_counter             : std_logic_vector(4 downto 0) := "00000";
   signal pagecount                : std_logic_vector(16 downto 0) := "00000000000000000";
   signal pagecountvalid           : std_logic := '0';
@@ -455,6 +457,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     reset => '0',
     read => startread,
     eraseing => erasingspi,   
+    erasedone => erasespidone,   
     erase => starterase,
     out_read_inprogress     => ila_read_inprogress,
     out_rd_SpiCsB           => ila_rd_SpiCsB,
@@ -492,6 +495,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_trigger3(31 downto 0) <= ila_nword_cntr(31 downto 0);
 
   ila_trigger4(0) <= erasingspi;
+  ila_trigger4(1) <= erasespidone;
   ila_trigger4(4) <= startaddrvalid; --startinfo;
    --startaddrvalid;
   ila_trigger4(9 downto 8) <= ila_er_status;
@@ -540,7 +544,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_ila : ila_0
   port map(
-    clk => spiclk2,
+    clk => spiclk,
     probe0 => ila_trigger1,
     probe1 => ila_data1,
     probe2 => ila_data2,
@@ -599,7 +603,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_vio : vio_0
   PORT MAP (
-    clk => spiclk2,
+    clk => spiclk,
     probe_in0 => probein0,
     probe_out0 => probeout0,
     probe_out1 => probeout1,
@@ -662,7 +666,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
        fifowren <= '1';
        load_data_cntr <= load_data_cntr + 1;
        -- write 1 pages, 1 page is 256 bytes
-       if (load_data_cntr = x"40") then
+       if (load_data_cntr = x"80") then
            fifowren <= '0';
            load_data_cntr <= x"00000000";
        end if;
