@@ -164,7 +164,10 @@ architecture behavioral of spiflashprogrammer_top is
     probe_out4 : OUT STD_LOGIC := '0';
     probe_out5 : OUT STD_LOGIC := '0';
     probe_out6 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
-    probe_out7 : OUT STD_LOGIC := '0'
+    probe_out7 : OUT STD_LOGIC := '0';
+    probe_out8 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
+    probe_out9 : OUT STD_LOGIC_VECTOR(16 downto 0) := (others=> '0');
+    probe_out10 : OUT STD_LOGIC_VECTOR(13 downto 0) := (others=> '0')
   );
  END COMPONENT;
 
@@ -293,6 +296,9 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout5: std_logic := '0'; 
   signal probeout6: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probeout7: std_logic := '0'; 
+  signal probeout8: std_logic_vector(31 downto 0) := (others=> '0'); 
+  signal probeout9: std_logic_vector(16 downto 0) := (others=> '0'); 
+  signal probeout10: std_logic_vector(13 downto 0) := (others=> '0'); 
   -- readback fifo
   -- want to readout 8 word at the same time from fifos and dump to ILA
   type   rd_fifo_data_type is array (7 downto 0) of std_logic_vector(15 downto 0);
@@ -577,9 +583,13 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   starterase <= not starterase_gen_d and starterase_gen; 
 
 
-  startaddr <= startaddr_c;
-  pagecount <= pagecount_c;
-  sectorcount <= sectorcount_c;
+  startaddr <= probeout8;
+  pagecount <= probeout9;
+  sectorcount <= probeout10;
+
+  --startaddr <= startaddr_c;
+  --pagecount <= pagecount_c;
+  --sectorcount <= sectorcount_c;
 
   i_vio : vio_0
   PORT MAP (
@@ -592,8 +602,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe_out4 => probeout4,
     probe_out5 => probeout5,
     probe_out6 => probeout6,
-    probe_out7 => probeout7
-
+    probe_out7 => probeout7,
+    probe_out8 => probeout8,
+    probe_out9 => probeout9,
+    probe_out10 => probeout10
   );
 
 

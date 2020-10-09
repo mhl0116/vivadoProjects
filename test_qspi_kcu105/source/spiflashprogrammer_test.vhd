@@ -418,7 +418,6 @@ processread : process (Clk)
         else 
           rd_SpiCsB <= '1';   -- turn off SPI
           --rd_cmdcounter32 <= "100111";  -- 32 bit command
-          --rd_cmdcounter32 <= "100101";  -- 32 bit address + 8 bit command + 5 bit wait
           rd_cmdcounter32 <= "110001";  -- 32 bit address + 8 bit command + 5 bit wait
           rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           rdstate <= S_RD_CS1;  
