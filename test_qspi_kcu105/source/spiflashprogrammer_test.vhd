@@ -543,8 +543,8 @@ processerase : process (Clk)
            er_cmdreg32 <= er_cmdreg32(38 downto 0) & '0';
          else 
            er_SpiCsB <= '1';   -- turn off SPI
-           --er_cmdreg32 <=  CmdSSE24 & er_current_sector_addr;  -- 4-Byte Sector erase 
-           er_cmdreg32 <=  CmdSSE32 & er_current_sector_addr;  -- 4-Byte Sector erase 
+           er_cmdreg32 <=  CmdSSE24 & er_current_sector_addr;  -- 4-Byte Sector erase 
+           --er_cmdreg32 <=  CmdSSE32 & er_current_sector_addr;  -- 4-Byte Sector erase 
            er_cmdcounter32 <= "100111";
            erstate <= S_ER_ASSCS2;        
          end if;
