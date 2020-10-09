@@ -376,10 +376,10 @@ begin
 
   process (spiclk)
   begin
-      if rising_edge(spiclk2) then
+      if rising_edge(spiclk) then
           spiclk_ii <= spiclk;
       end if;
-      if falling_edge(spiclk2) then
+      if falling_edge(spiclk) then
           spiclk_ii <= spiclk;
       end if;
   end process;
@@ -514,7 +514,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data1(18) <= startread;
   ila_data1(19) <= startread_gen;
   ila_data1(20) <= ila_SpiMosi;
-  --ila_data1(21) <= spiclk_ii;
+  ila_data1(21) <= spiclk_ii;
   ila_data1(22) <= ila_rd_data_valid;
   ila_data1(24 downto 23) <= ila_er_status(1 downto 0);
   ila_data1(25) <= startaddrvalid;
@@ -544,7 +544,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_ila : ila_0
   port map(
-    clk => spiclk,
+    clk => spiclk2,
     probe0 => ila_trigger1,
     probe1 => ila_data1,
     probe2 => ila_data2,
@@ -603,7 +603,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
   i_vio : vio_0
   PORT MAP (
-    clk => spiclk,
+    clk => spiclk2,
     probe_in0 => probein0,
     probe_out0 => probeout0,
     probe_out1 => probeout1,
