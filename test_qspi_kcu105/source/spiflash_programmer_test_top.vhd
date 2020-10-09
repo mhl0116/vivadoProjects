@@ -374,12 +374,12 @@ begin
           );
 
 
-  process (spiclk)
+  process (spiclk2)
   begin
-      if rising_edge(spiclk) then
+      if rising_edge(spiclk2) then
           spiclk_ii <= spiclk;
       end if;
-      if falling_edge(spiclk) then
+      if falling_edge(spiclk2) then
           spiclk_ii <= spiclk;
       end if;
   end process;
