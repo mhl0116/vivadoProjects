@@ -560,7 +560,8 @@ processerase : process (Clk)
         else
           er_SpiCsB <= '1';   -- turn off SPI
           er_cmdcounter32 <= "100111";
-          er_cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register
+          er_cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register
+          --er_cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register
           erstate <= S_ER_ASSCS3;
         end if;
                                       
@@ -577,7 +578,7 @@ processerase : process (Clk)
           --er_rddata <= er_rddata(1) & "0";  -- deser 1:8 
           if (er_data_valid_cntr = 7) then  -- Check Status after 8 bits (+1) of status read
             er_status <= er_rddata;   -- Check WE and ERASE in progress one cycle after er_rddate
-            if (er_status = 0) then
+            if (er_status = 1) then
               if (er_sector_count = 0) then 
                 erstate <= S_ER_IDLE;   -- Done. All sectors erased
                 erase_inprogress <= '0';
@@ -699,7 +700,8 @@ processProgram  : process (Clk)
             SpiCsB <= '1';
             fifo_rden <= '0';
             dopin_ts <= "1110";
-            cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register next
+            --cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register next
+            cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register next
             wrstate <= S_WR_PPDONE;  -- one PP done
           end if;
         end if;
@@ -727,7 +729,8 @@ processProgram  : process (Clk)
               StatusDataValid <= '0';
             end if;
             if (StatusDataValid = '1') then spi_status <= rddata; end if;  --  rddata valid from previous cycle
-            if spi_status = 0 then    -- Done with page program
+            --if spi_status = 0 then    -- Done with page program
+            if spi_status = 1 then    -- Done with page program
               SpiCsB <= '1';   -- turn off SPI
               cmdcounter32 <= "100111";
               cmdreg32 <=  CmdWE & X"00000000";  -- Set WE bit

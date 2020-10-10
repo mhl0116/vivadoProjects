@@ -666,7 +666,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
        fifowren <= '1';
        load_data_cntr <= load_data_cntr + 1;
        -- write 1 pages, 1 page is 256 bytes
-       if (load_data_cntr = x"80") then
+       if (load_data_cntr = x"800") then
            fifowren <= '0';
            load_data_cntr <= x"00000000";
        end if;
