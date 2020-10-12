@@ -215,6 +215,7 @@ architecture behavioral of spiflashprogrammer_top is
  signal rd_nbyte_cntr_dly : std_logic_vector(31 downto 0);
 
 
+ signal ila_wrfifo_rden : std_logic;
  signal ila_er_status : std_logic_vector(1 downto 0);
  --
   signal clk125                   : std_logic;
@@ -483,7 +484,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_cmdcntr32 => ila_cmdcntr32,
     out_rd_rddata => ila_rd_rddata,
     out_rd_rddata_all => ila_rd_rddata_all,
-    out_er_status => ila_er_status
+    out_er_status => ila_er_status,
+    out_wrfifo_rden => ila_wrfifo_rden
 );
 
 
