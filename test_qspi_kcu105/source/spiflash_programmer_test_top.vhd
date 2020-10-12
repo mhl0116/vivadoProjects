@@ -485,7 +485,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_cmdcntr32 => ila_cmdcntr32,
     out_rd_rddata => ila_rd_rddata,
     out_rd_rddata_all => ila_rd_rddata_all,
-    out_er_status => ila_er_status
+    out_er_status => ila_er_status,
+    out_wrfifo_rden => ila_wrfifo_rden
 );
 
 
