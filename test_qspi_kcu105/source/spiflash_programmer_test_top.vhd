@@ -89,7 +89,8 @@ architecture behavioral of spiflashprogrammer_top is
     out_cmdcntr32: out std_logic_vector(5 downto 0);
     out_rd_rddata: out std_logic_vector(15 downto 0);
     out_rd_rddata_all: out std_logic_vector(15 downto 0);
-    out_er_status: out std_logic_vector(1 downto 0)
+    out_er_status: out std_logic_vector(1 downto 0);
+    out_wrfifo_rden: out std_logic
    ); 
   end component spiflashprogrammer_test;
 
@@ -151,7 +152,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe17 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe18 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe19 : in std_logic_vector(15 downto 0) := (others=> '0');
-    probe20 : in std_logic_vector(15 downto 0) := (others=> '0')
+    probe20 : in std_logic_vector(15 downto 0) := (others=> '0');
+    probe21 : in std_logic_vector(7 downto 0) := (others=> '0')
   );
   end component;
 
@@ -169,7 +171,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe_out7 : OUT STD_LOGIC := '0';
     probe_out8 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
     probe_out9 : OUT STD_LOGIC_VECTOR(16 downto 0) := (others=> '0');
-    probe_out10 : OUT STD_LOGIC_VECTOR(13 downto 0) := (others=> '0')
+    probe_out10 : OUT STD_LOGIC_VECTOR(13 downto 0) := (others=> '0');
+    probe_out11 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0')
   );
  END COMPONENT;
 
@@ -230,6 +233,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal startata                   : std_logic := '0'; 
   signal load_bit_cntr           : integer := 0;
   signal load_data_cntr           : std_logic_vector(31 downto 0) := X"00000000";
+  signal load_data_size           : std_logic_vector(31 downto 0) := X"00000000";
   signal fifowren                 : std_logic := '0';
   signal fifofull                 : std_logic := '0';
   signal almostfull               : std_logic := '0';
@@ -290,6 +294,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data14: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data15: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data16: std_logic_vector(15 downto 0) := (others=> '0'); 
+  signal ila_data17: std_logic_vector(7 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -304,6 +309,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout8: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probeout9: std_logic_vector(16 downto 0) := (others=> '0'); 
   signal probeout10: std_logic_vector(13 downto 0) := (others=> '0'); 
+  signal probeout11: std_logic_vector(31 downto 0) := (others=> '0'); 
   -- readback fifo
   -- want to readout 8 word at the same time from fifos and dump to ILA
   type   rd_fifo_data_type is array (7 downto 0) of std_logic_vector(15 downto 0);
@@ -529,6 +535,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data4(31 downto 0) <= ila_nword_cntr(31 downto 0);
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
+
   ila_data7(27 downto 0) <= rd_nbyte_cntr_dly(27 downto 0); 
   ila_data8(15 downto 0) <= rd_fifo_dout(0)(15 downto 0); 
   ila_data9(15 downto 0) <= rd_fifo_dout(1)(15 downto 0); 
@@ -541,6 +548,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   -- this line could be useless, it's adding an address to a count of word
   ila_data16(15 downto 0) <= ila_rd_rddata_all(15 downto 0);
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
+  ila_data17 <= out_wrfifo_rden;
 
   i_ila : ila_0
   port map(
@@ -565,7 +573,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe17 => ila_data13,
     probe18 => ila_data14,
     probe19 => ila_data15,
-    probe20 => ila_data16
+    probe20 => ila_data16,
+    probe21 => ila_data17
   );
 
   startread_synthesize_i : if in_synthesis generate
@@ -597,6 +606,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   pagecount <= probeout9;
   sectorcount <= probeout10;
 
+  load_data_size <= probeout11;
   --startaddr <= startaddr_c;
   --pagecount <= pagecount_c;
   --sectorcount <= sectorcount_c;
@@ -615,7 +625,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe_out7 => probeout7,
     probe_out8 => probeout8,
     probe_out9 => probeout9,
-    probe_out10 => probeout10
+    probe_out10 => probeout10,
+    probe_out11 => probeout11
   );
 
 
@@ -666,7 +677,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
        fifowren <= '1';
        load_data_cntr <= load_data_cntr + 1;
        -- write 1 pages, 1 page is 256 bytes
-       if (load_data_cntr = x"800") then
+       --if (load_data_cntr = x"800") then
+       if (load_data_cntr = load_data_size) then
            fifowren <= '0';
            load_data_cntr <= x"00000000";
        end if;
