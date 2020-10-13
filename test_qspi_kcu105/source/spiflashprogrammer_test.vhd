@@ -365,7 +365,7 @@ FIFO36_inst : FIFO36E2
     out_rd_data_valid <= rd_data_valid;
     out_rd_rddata <= rd_rddata;
     out_rd_rddata_all <= rd_rddata_all;
-    out_cmdreg32 <= wr_cmdreg32;
+    out_cmdreg32 <= cmdreg32;
     out_cmdcntr32 <= rd_cmdcounter32;
     out_nword_cntr <= rd_nword_cntr_dly;
 
