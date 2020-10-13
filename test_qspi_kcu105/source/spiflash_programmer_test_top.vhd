@@ -90,6 +90,7 @@ architecture behavioral of spiflashprogrammer_top is
     out_rd_rddata: out std_logic_vector(15 downto 0);
     out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0);
+    out_wrfifo_dout: out std_logic_vector(3 downto 0);
     out_wrfifo_rden: out std_logic
    ); 
   end component spiflashprogrammer_test;
@@ -153,7 +154,8 @@ architecture behavioral of spiflashprogrammer_top is
     probe18 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe19 : in std_logic_vector(15 downto 0) := (others=> '0');
     probe20 : in std_logic_vector(15 downto 0) := (others=> '0');
-    probe21 : in std_logic_vector(7 downto 0) := (others=> '0')
+    probe21 : in std_logic_vector(7 downto 0) := (others=> '0');
+    probe22 : in std_logic_vector(3 downto 0) := (others=> '0')
   );
   end component;
 
@@ -216,7 +218,8 @@ architecture behavioral of spiflashprogrammer_top is
 
 
  signal ila_er_status : std_logic_vector(1 downto 0);
-  signal ila_wrfifo_rden : std_logic;
+ signal ila_wrfifo_dout : std_logic_vector(3 downto 0);
+ signal ila_wrfifo_rden : std_logic;
 
  --
   signal clk125                   : std_logic;
@@ -297,6 +300,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal ila_data15: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data16: std_logic_vector(15 downto 0) := (others=> '0'); 
   signal ila_data17: std_logic_vector(7 downto 0) := (others=> '0'); 
+  signal ila_data18: std_logic_vector(3 downto 0) := (others=> '0'); 
   
 
   signal probein0: std_logic := '0'; 
@@ -486,7 +490,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_rd_rddata => ila_rd_rddata,
     out_rd_rddata_all => ila_rd_rddata_all,
     out_er_status => ila_er_status,
-    out_wrfifo_rden => ila_wrfifo_rden
+    out_wrfifo_rden => ila_wrfifo_rden,
+    out_wrfifo_dout => ila_wrfifo_dout
 );
 
 
@@ -552,6 +557,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data16(15 downto 0) <= ila_rd_rddata_all(15 downto 0);
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
   ila_data17(0) <= ila_wrfifo_rden;
+  ila_data18(3 downto 0) <= ila_wrfifo_dout(3 downto 0);
 
   i_ila : ila_0
   port map(
@@ -577,7 +583,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe18 => ila_data14,
     probe19 => ila_data15,
     probe20 => ila_data16,
-    probe21 => ila_data17
+    probe21 => ila_data17,
+    probe22 => ila_data18
   );
 
   startread_synthesize_i : if in_synthesis generate

@@ -77,6 +77,7 @@ entity spiflashprogrammer_test is
     out_rd_rddata: out std_logic_vector(15 downto 0);
     out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0);
+    out_wrfifo_dout: out std_logic_vector(3 downto 0);
     out_wrfifo_rden: out std_logic
    ); 	
 end spiflashprogrammer_test;
