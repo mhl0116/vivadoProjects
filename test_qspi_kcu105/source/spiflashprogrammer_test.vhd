@@ -267,7 +267,9 @@ end component oneshot;
   );
   
   SpiMiso <= di_out(1);  -- Synonym 
-  
+ 
+  out_wrfifo_dout <= fifodout(3 downto 0); 
+ 
   negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
     port map (
             C => Clk,
@@ -703,8 +705,8 @@ processProgram  : process (Clk)
             SpiCsB <= '1';
             fifo_rden <= '0';
             dopin_ts <= "1110";
-            --cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register next
-            cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register next
+            cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register next
+            --cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register next
             wrstate <= S_WR_PPDONE;  -- one PP done
           end if;
         end if;
@@ -732,8 +734,8 @@ processProgram  : process (Clk)
               StatusDataValid <= '0';
             end if;
             if (StatusDataValid = '1') then spi_status <= rddata; end if;  --  rddata valid from previous cycle
-            --if spi_status = 0 then    -- Done with page program
-            if spi_status = 1 then    -- Done with page program
+            if spi_status = 0 then    -- Done with page program
+            --if spi_status = 1 then    -- Done with page program
               SpiCsB <= '1';   -- turn off SPI
               cmdcounter32 <= "100111";
               cmdreg32 <=  CmdWE & X"00000000";  -- Set WE bit
