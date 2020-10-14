@@ -565,8 +565,8 @@ processerase : process (Clk)
         else
           er_SpiCsB <= '1';   -- turn off SPI
           er_cmdcounter32 <= "100111";
-          er_cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register
-          --er_cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register
+          --er_cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register
+          er_cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register
           erstate <= S_ER_ASSCS3;
         end if;
                                       
@@ -583,7 +583,7 @@ processerase : process (Clk)
           --er_rddata <= er_rddata(1) & "0";  -- deser 1:8 
           if (er_data_valid_cntr = 7) then  -- Check Status after 8 bits (+1) of status read
             er_status <= er_rddata;   -- Check WE and ERASE in progress one cycle after er_rddate
-            if (er_status = 1) then
+            if (er_status = 0) then
               if (er_sector_count = 0) then 
                 erstate <= S_ER_IDLE;   -- Done. All sectors erased
                 erase_inprogress <= '0';
@@ -624,38 +624,38 @@ processProgram  : process (Clk)
           fifo_rden <= '0';
           wrdata_count <= "000";
           spi_wrdata <= X"00000000";
-          --wrstate <= S_WR_S4BMode_ASSCS1;
-          wrstate <= S_WR_ASSCS1;
+          wrstate <= S_WR_S4BMode_ASSCS1;
+          --wrstate <= S_WR_ASSCS1;
         end if;
                        
 -----------------   Set 4 Byte mode first -----------------------------------------------------
---   when S_WR_S4BMode_ASSCS1 =>
---        SpiCsB <= '0';
---        wrstate <= S_WR_S4BMode_WRCMD;
---          
---   when S_WR_S4BMode_WRCMD =>    -- Set WE bit
---        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1; 
---          cmdreg32 <= cmdreg32(38 downto 0) & '0'; 
---        else
---          cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
---          cmdcounter32 <= "100111";  -- 40 bit command+addr
---          SpiCsB <= '1';   -- turn off SPI 
---          wrstate <= S_WR_S4BMode_ASSCS2; 
---        end if;
---        
---   when S_WR_S4BMode_ASSCS2 =>
---        SpiCsB <= '0';
---        wrstate <= S_WR_S4BMode_WR4BADDR;
---                        
---   when S_WR_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
---        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
---           cmdreg32 <= cmdreg32(38 downto 0) & '0';
---        else 
---          SpiCsB <= '1';   -- turn off SPI
---          cmdcounter32 <= "100111";  -- 32 bit command
---          cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable 
---          wrstate <= S_WR_ASSCS1;  
---        end if;  
+   when S_WR_S4BMode_ASSCS1 =>
+        SpiCsB <= '0';
+        wrstate <= S_WR_S4BMode_WRCMD;
+          
+   when S_WR_S4BMode_WRCMD =>    -- Set WE bit
+        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1; 
+          cmdreg32 <= cmdreg32(38 downto 0) & '0'; 
+        else
+          cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status register
+          cmdcounter32 <= "100111";  -- 40 bit command+addr
+          SpiCsB <= '1';   -- turn off SPI 
+          wrstate <= S_WR_S4BMode_ASSCS2; 
+        end if;
+        
+   when S_WR_S4BMode_ASSCS2 =>
+        SpiCsB <= '0';
+        wrstate <= S_WR_S4BMode_WR4BADDR;
+                        
+   when S_WR_S4BMode_WR4BADDR =>    -- Set 4-Byte address Mode
+        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
+           cmdreg32 <= cmdreg32(38 downto 0) & '0';
+        else 
+          SpiCsB <= '1';   -- turn off SPI
+          cmdcounter32 <= "100111";  -- 32 bit command
+          cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable 
+          wrstate <= S_WR_ASSCS1;  
+        end if;  
 -------------------------  end set 4 byte Mode
 
    when S_WR_ASSCS1 =>
@@ -674,17 +674,17 @@ processProgram  : process (Clk)
           cmdreg32 <= cmdreg32(38 downto 0) & '0';
         elsif (page_count /= 0) then    -- Next PP
           SpiCsB <= '1';   -- turn off SPI
-          --cmdreg32 <=  CmdPP32Quad & Current_Addr;  -- Program Page at Current_Addr
-          cmdreg32 <=  CmdPP24Quad & Current_Addr;  -- Program Page at Current_Addr
+          cmdreg32 <=  CmdPP32Quad & Current_Addr;  -- Program Page at Current_Addr
+          --cmdreg32 <=  CmdPP24Quad & Current_Addr;  -- Program Page at Current_Addr
           cmdcounter32 <= "100111";
           wrstate <= S_WR_ASSCS2;
         else                              -- Done with writing Program Pages. Turn off 4 byte Mode
---          cmdcounter32 <= "100111";
---          cmdreg32 <= CmdExit4BMode & X"00000000";
+          cmdcounter32 <= "100111";
+          cmdreg32 <= CmdExit4BMode & X"00000000";
           SpiCsB <= '1';
           write_done <= '1';
-          wrstate <= S_WR_IDLE;  
-          --wrstate <= S_EXIT4BMode_ASSCS1;        
+          --wrstate <= S_WR_IDLE;  
+          wrstate <= S_EXIT4BMode_ASSCS1;        
         end if;
                    
    when S_WR_ASSCS2 =>
@@ -753,18 +753,18 @@ processProgram  : process (Clk)
         end if;  -- reset_design
                           
 -----------------   Exit 4 Byte mode ------------------------------------    
-   --when S_EXIT4BMode_ASSCS1 =>
-   --     SpiCsB <= '0';   
-   --     wrstate <= S_EXIT4BMODE;
-   --      
-   --when S_EXIT4BMODE =>    -- Back to 3 Byte Mode
-   --     if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
-   --       cmdreg32 <= cmdreg32(38 downto 0) & '0';
-   --     else 
-   --       SpiCsB <= '1';   -- turn off SPI 
-   --       write_done <= '1';
-   --       wrstate <= S_WR_IDLE;  
-   --     end if; 
+   when S_EXIT4BMode_ASSCS1 =>
+        SpiCsB <= '0';   
+        wrstate <= S_EXIT4BMODE;
+         
+   when S_EXIT4BMODE =>    -- Back to 3 Byte Mode
+        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1;  
+          cmdreg32 <= cmdreg32(38 downto 0) & '0';
+        else 
+          SpiCsB <= '1';   -- turn off SPI 
+          write_done <= '1';
+          wrstate <= S_WR_IDLE;  
+        end if; 
     end case;
    end if;  -- Clk
 end process processProgram;
