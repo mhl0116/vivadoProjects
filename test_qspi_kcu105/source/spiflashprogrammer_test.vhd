@@ -77,6 +77,9 @@ entity spiflashprogrammer_test is
     out_rd_rddata: out std_logic_vector(15 downto 0);
     out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0);
+    out_wr_rddata: out std_logic_vector(1 downto 0);
+    out_wr_statusdatavalid: out std_logic;
+    out_wr_spistatus: out std_logic_vector(1 downto 0);
     out_wrfifo_dout: out std_logic_vector(3 downto 0);
     out_wrfifo_rden: out std_logic
    ); 	
@@ -230,9 +233,8 @@ end component oneshot;
 
      type wrstates is
    (
-     S_WR_IDLE, S_WR_S4BMode_ASSCS1, S_WR_S4BMode_WRCMD, S_WR_S4BMode_ASSCS2, S_WR_S4BMode_WR4BADDR, S_WR_ASSCS1, S_WR_WRCMD,  
-     S_WR_ASSCS2, S_WR_PROGRAM, S_WR_DATA, S_WR_PPDONE, S_WR_PPDONE_WAIT, S_EXIT4BMode_ASSCS1, 
-     S_EXIT4BMODE --  
+     S_WR_IDLE, S_WR_ASSCS1, S_WR_WRCMD,  
+     S_WR_ASSCS2, S_WR_PROGRAM, S_WR_DATA, S_WR_PPDONE, S_WR_PPDONEPRE, S_WR_PPDONESTATUS, S_WR_PPDONE_WAIT 
    );
    signal wrstate  : wrstates := S_WR_IDLE;
 
@@ -374,6 +376,10 @@ FIFO36_inst : FIFO36E2
 
     out_er_status <= er_status;
     out_wrfifo_rden <= fifo_rden;
+
+    out_wr_statusdatavalid <= StatusDataValid;
+    out_wr_rddata <= rddata;
+    out_wr_spistatus <= spi_status; 
 -----------------------------  select command  --------------------------------------------------
   CmdSelect <= CmdStatus when CmdIndex = x"1" else
                CmdRDID   when CmdIndex = x"2" else
@@ -711,17 +717,33 @@ processProgram  : process (Clk)
             dopin_ts <= "1110";
             cmdreg32 <=  CmdStatus & X"00000000";  -- Read Status register next
             --cmdreg32 <=  CmdFLAGStatus & X"00000000";  -- Read Status register next
-            wrstate <= S_WR_PPDONE;  -- one PP done
+            wrstate <= S_WR_PPDONEPRE;  -- one PP done
           end if;
         end if;
-                    
+--                    
+-- this part is strange, if only do read stataus once, will get 11111111 always from miso
+   when S_WR_PPDONEPRE =>
+        SpiCsB <= '0';
+        cmdcounter32 <= "100111";
+        wrstate <= S_WR_PPDONESTATUS;
+                       
+   when S_WR_PPDONESTATUS =>    
+        if (cmdcounter32 /= 32) then cmdcounter32 <= cmdcounter32 - 1; 
+          cmdreg32 <= cmdreg32(38 downto 0) & '0'; 
+        else
+          cmdreg32 <=  CmdStatus  & X"00000000";  
+          cmdcounter32 <= "100111";  
+          SpiCsB <= '1';   -- turn off SPI 
+          wrstate <= S_WR_PPDONE; 
+        end if;
+
    when S_WR_PPDONE =>
         dopin_ts <= "1110";
         SpiCsB <= '0';
         data_valid_cntr <= "000";
         cmdcounter32 <= "100111";
         wrstate <= S_WR_PPDONE_WAIT;
-                       
+--                    
    when S_WR_PPDONE_WAIT => 
         fifo_rden <= '0';  
         if (reset_design = '1') then wrstate <= S_WR_IDLE;

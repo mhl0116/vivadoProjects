@@ -90,6 +90,9 @@ architecture behavioral of spiflashprogrammer_top is
     out_rd_rddata: out std_logic_vector(15 downto 0);
     out_rd_rddata_all: out std_logic_vector(15 downto 0);
     out_er_status: out std_logic_vector(1 downto 0);
+    out_wr_rddata: out std_logic_vector(1 downto 0);
+    out_wr_statusdatavalid: out std_logic;
+    out_wr_spistatus: out std_logic_vector(1 downto 0);
     out_wrfifo_dout: out std_logic_vector(3 downto 0);
     out_wrfifo_rden: out std_logic
    ); 
@@ -218,6 +221,9 @@ architecture behavioral of spiflashprogrammer_top is
 
 
  signal ila_er_status : std_logic_vector(1 downto 0);
+ signal ila_wr_rddata : std_logic_vector(1 downto 0);
+ signal ila_wr_statusdatavalid : std_logic;
+ signal ila_wr_spistatus : std_logic_vector(1 downto 0);
  signal ila_wrfifo_dout : std_logic_vector(3 downto 0);
  signal ila_wrfifo_rden : std_logic;
 
@@ -490,6 +496,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_rd_rddata => ila_rd_rddata,
     out_rd_rddata_all => ila_rd_rddata_all,
     out_er_status => ila_er_status,
+    out_wr_rddata => ila_wr_rddata,
+    out_wr_statusdatavalid => ila_wr_statusdatavalid,
+    out_wr_spistatus => ila_wr_spistatus,
     out_wrfifo_rden => ila_wrfifo_rden,
     out_wrfifo_dout => ila_wrfifo_dout
 );
@@ -557,6 +566,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data16(15 downto 0) <= ila_rd_rddata_all(15 downto 0);
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
   ila_data17(0) <= ila_wrfifo_rden;
+  ila_data17(2 downto 1) <= ila_wr_rddata;
+  ila_data17(3) <= ila_wr_statusdatavalid;
+  ila_data17(5 downto 4) <= ila_wr_spistatus;
   ila_data18(3 downto 0) <= ila_wrfifo_dout(3 downto 0);
 
   i_ila : ila_0
