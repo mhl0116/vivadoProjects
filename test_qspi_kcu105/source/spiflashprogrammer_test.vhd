@@ -38,7 +38,7 @@ entity spiflashprogrammer_test is
     data_to_fifo  : in std_logic_vector(31 downto 0);
     startaddr     : in std_logic_vector(31 downto 0);
     startaddrvalid   : in std_logic;
-    pagecount     : in std_logic_vector(16 downto 0);   
+    pagecount     : in std_logic_vector(17 downto 0);   
     pagecountvalid   : in std_logic;
     sectorcount   : in std_logic_vector(13 downto 0);
     sectorcountvalid : in std_logic;
@@ -154,7 +154,7 @@ end component oneshot;
    signal rddata          : std_logic_vector(1 downto 0) := "00";
    signal wrdata_count    : std_logic_vector(2 downto 0) := "000"; -- SPI from FIFO Nibble count
    signal spi_wrdata      : std_logic_vector(31 downto 0) := X"00000000";
-   signal page_count      : std_logic_vector(16 downto 0) := "11111111111111111";
+   signal page_count      : std_logic_vector(17 downto 0) := "111111111111111111";
    signal Current_Addr    : std_logic_vector(31 downto 0) := X"00000000";
    signal StatusDataValid : std_logic := '0';
    signal spi_status      : std_logic_vector(1 downto 0) := "11";

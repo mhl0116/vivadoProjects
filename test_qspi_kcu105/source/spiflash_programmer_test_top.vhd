@@ -52,7 +52,7 @@ architecture behavioral of spiflashprogrammer_top is
     data_to_fifo : in std_logic_vector(31 downto 0); -- until sectorcountvalid, all hardcoded
     startaddr   : in std_logic_vector(31 downto 0);
     startaddrvalid   : in std_logic;
-    pagecount   : in std_logic_vector(16 downto 0);
+    pagecount   : in std_logic_vector(17 downto 0);
     pagecountvalid   : in std_logic;
     sectorcount : in std_logic_vector(13 downto 0);
     sectorcountvalid : in std_logic;
@@ -175,7 +175,7 @@ architecture behavioral of spiflashprogrammer_top is
     probe_out6 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
     probe_out7 : OUT STD_LOGIC := '0';
     probe_out8 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0');
-    probe_out9 : OUT STD_LOGIC_VECTOR(16 downto 0) := (others=> '0');
+    probe_out9 : OUT STD_LOGIC_VECTOR(17 downto 0) := (others=> '0');
     probe_out10 : OUT STD_LOGIC_VECTOR(13 downto 0) := (others=> '0');
     probe_out11 : OUT STD_LOGIC_VECTOR(31 downto 0) := (others=> '0')
   );
@@ -183,7 +183,7 @@ architecture behavioral of spiflashprogrammer_top is
 
  -- use a counter to pass these 3 buses
  constant startaddr_c         : std_logic_vector(31 downto 0) := X"003CF960";
- constant pagecount_c         : std_logic_vector(16 downto 0) := "00000000000000001";
+ constant pagecount_c         : std_logic_vector(17 downto 0) := "000000000000000001";
  constant sectorcount_c       : std_logic_vector(13 downto 0) := "00000000000001";
 
  signal  Bscan1Capture        : std_logic;
@@ -259,7 +259,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal erasingspi               : std_logic := '0';
   signal erasespidone               : std_logic := '0';
   signal init_counter             : std_logic_vector(4 downto 0) := "00000";
-  signal pagecount                : std_logic_vector(16 downto 0) := "00000000000000000";
+  signal pagecount                : std_logic_vector(17 downto 0) := "000000000000000000";
   signal pagecountvalid           : std_logic := '0';
   signal startaddr                : std_logic_vector(31 downto 0) := X"00000000";
   signal startaddrvalid           : std_logic := '0';
@@ -319,7 +319,7 @@ architecture behavioral of spiflashprogrammer_top is
   signal probeout6: std_logic_vector(31 downto 0) := (others=> '0'); 
   signal probeout7: std_logic := '0'; 
   signal probeout8: std_logic_vector(31 downto 0) := (others=> '0'); 
-  signal probeout9: std_logic_vector(16 downto 0) := (others=> '0'); 
+  signal probeout9: std_logic_vector(17 downto 0) := (others=> '0'); 
   signal probeout10: std_logic_vector(13 downto 0) := (others=> '0'); 
   signal probeout11: std_logic_vector(31 downto 0) := (others=> '0'); 
   -- readback fifo
@@ -747,6 +747,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
     rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010";
+    -- need add one line, if reach limit of eprom size, return address to 0
     rd_nbyte_cntr_dly <= rd_nbyte_cntr; 
     if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
        read_rd_fifo <= '0';
