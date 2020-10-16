@@ -25,9 +25,9 @@ eof="02000000"
 #done
 
 #./doeprom.sh "write" $binfilename  
-./doeprom.sh "read" $binfilename "afterwrite" $eof 
-#for csvname in epromcontent/*afterwrite*
-#do 
-#echo $csvname
-#awk -F "," '{print $10":",$11,$12,$13,$14,$15,$16,$17,$18}' $csvname | head #sed -n '4,$p' >> epromafterwrite_${tag}.txt
-#done
+#./doeprom.sh "read" $binfilename "afterwrite" $eof 
+for csvname in epromcontent/*afterwrite*
+do 
+echo $csvname
+awk -F "," '{print $10":",$11,$12,$13,$14,$15,$16,$17,$18}' $csvname | sed -n '4,$p' >> epromafterwrite_${tag}.txt
+done
