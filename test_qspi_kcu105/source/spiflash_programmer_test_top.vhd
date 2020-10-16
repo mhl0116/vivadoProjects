@@ -746,7 +746,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
-    if (rd_nbyte_cntr < x"01FFFFFE") then
+    if (rd_nbyte_cntr < x"01FFFFF0") then
         rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010";
     else
         rd_nbyte_cntr <= x"00000000";
