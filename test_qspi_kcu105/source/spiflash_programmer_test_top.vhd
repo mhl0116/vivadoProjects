@@ -746,7 +746,11 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
 
    when S_FIFOREAD =>
     rd_dvalid_cnt <= rd_dvalid_cnt + 1;
-    rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010";
+    if (rd_nbyte_cntr = x"01FFFFFF") then
+        rd_nbyte_cntr <= rd_nbyte_cntr + x"00000010";
+    else
+        rd_nbyte_cntr <= x"00000000";
+    end if; 
     -- need add one line, if reach limit of eprom size, return address to 0
     rd_nbyte_cntr_dly <= rd_nbyte_cntr; 
     if (rd_dvalid_cnt = unsigned(ila_wdlimit)) then
