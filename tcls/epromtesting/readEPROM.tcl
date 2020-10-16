@@ -16,7 +16,9 @@ set bitfilename  [lindex $argv 5]
 set_property PROGRAM.FILE $bitfilename.bit [get_hw_devices xcku040_0]
 set_property PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
 set_property FULL_PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
+
 current_hw_device [get_hw_devices xcku040_0]
+program_hw_devices [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
 #
 

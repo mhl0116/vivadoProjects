@@ -15,6 +15,7 @@ set_property FULL_PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
 #set_property PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
 #set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
 current_hw_device [get_hw_devices xcku040_0]
+program_hw_devices [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
 
 # set trigger
@@ -50,5 +51,6 @@ commit_hw_vio [get_hw_probes {starterase_gen} -of_objects [get_hw_vios -of_objec
 endgroup
 
 wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]
+current_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcku040_0] -filter {CELL_NAME=~"i_ila"}]]
 
