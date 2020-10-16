@@ -6,10 +6,14 @@ open_hw_target
 
 set startaddr [lindex $argv 0] 
 set sectorcount  [lindex $argv 1]
+set bitfilename  [lindex $argv 2]
 
-set_property PROGRAM.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.bit} [get_hw_devices xcku040_0]
-set_property PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
-set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
+set_property PROGRAM.FILE $bitfilename.bit [get_hw_devices xcku040_0]
+set_property PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
+set_property FULL_PROBES.FILE $bitfilename.ltx [get_hw_devices xcku040_0]
+#set_property PROGRAM.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.bit} [get_hw_devices xcku040_0]
+#set_property PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
+#set_property FULL_PROBES.FILE {/net/top/homes/hmei/ODMB/vivadoProjects/test_qspi_kcu105/project/test_qspi_kcu105.runs/impl_1/spiflashprogrammer_top.ltx} [get_hw_devices xcku040_0]
 current_hw_device [get_hw_devices xcku040_0]
 refresh_hw_device [lindex [get_hw_devices xcku040_0] 0]
 
