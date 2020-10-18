@@ -733,7 +733,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
               when S_WRFIFO_PROG_FULL =>  
                   fifowren <= '1';
                   load_data_cntr <= load_data_cntr + 1;
-                  if (load_data_cntr = load_data_size) then
+                  if (load_data_cntr = load_data_size-1) then
                       wr_fifo_state <= S_WRFIFO_FULL;
                   end if;
                   if (write_done = '1') then
