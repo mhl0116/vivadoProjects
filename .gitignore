@@ -16,6 +16,9 @@ test_qspi_kcu105/ip/xcku040-ffva1156-2-e/vio_0/*
 test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/
 !test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/*xci
 
+test_qspi_kcu105/ip/xcku040-ffva1156-2-e/writefifo/
+!test_qspi_kcu105/ip/xcku040-ffva1156-2-e/writefifo/*xci
+
 test_qspi_kcu105/project/test_qspi_kcu105.cache/
 test_qspi_kcu105/project/test_qspi_kcu105.hw/
 test_qspi_kcu105/project/test_qspi_kcu105.runs/

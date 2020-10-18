@@ -106,7 +106,24 @@ port (
   pulse: out std_logic
 );
 end component oneshot;
-  
+ 
+COMPONENT writeFIFO
+  PORT (
+      srst : IN STD_LOGIC;
+      wr_clk : IN STD_LOGIC;
+      rd_clk : IN STD_LOGIC;
+      din : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+      wr_en : IN STD_LOGIC;
+      rd_en : IN STD_LOGIC;
+      dout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+      full : OUT STD_LOGIC;
+      empty : OUT STD_LOGIC;
+      prog_full : OUT STD_LOGIC;
+      wr_rst_busy : OUT STD_LOGIC;
+      rd_rst_busy : OUT STD_LOGIC
+        );
+END COMPONENT;
+
   -- SPI COMMAND ADDRESS WIDTH (IN BITS): Ensure setting is correct for the target flash
   constant  AddrWidth        : integer   := 32;  -- 24 or 32 (3 or 4 byte addr mode)
   -- SPI SECTOR SIZE (IN Bits)
@@ -302,59 +319,73 @@ end component oneshot;
         pulse  => erase_start
       );
 
-FIFO36_inst : FIFO36E2
-           generic map (
-              CLOCK_DOMAINS => "INDEPENDENT",     -- COMMON, INDEPENDENT
-              FIRST_WORD_FALL_THROUGH => "TRUE",  -- first word read doesn't require FIFO_EN
-              PROG_EMPTY_THRESH => 2,             -- 
-              PROG_FULL_THRESH => 65,             -- Async case. Top level artifect. Usually set to 64 
-              READ_WIDTH => 4,                    -- 
-              REGISTER_MODE => "REGISTERED",      -- 
-              RSTREG_PRIORITY => "RSTREG",        -- REGCE, RSTREG
-              WRITE_WIDTH => 36                    
-           )    
-           port map (
-              CASDOUT => open,             
-              CASDOUTP => open,           
-              CASNXTEMPTY => open,    
-              CASPRVRDEN => open,       
-              DOUT => fifodout,                   
-              DOUTP => open,                 
-              EMPTY => fifo_empty,                 
-              FULL => fifo_full,                   
-              PROGEMPTY => fifo_almostempty,         
-              PROGFULL => fifo_almostfull,           
-              RDCOUNT => open,             
-              RDERR => open,                 
-              RDRSTBUSY => open,         
-              WRCOUNT => open,             
-              WRERR => wrerr,                 
-              WRRSTBUSY => open,         
-              CASDIN => X"0000000000000000",               
-              CASDINP => X"00",             
-              CASDOMUX => '0',           
-              CASDOMUXEN => '1',       
-              CASNXTRDEN => '0',       
-              CASOREGIMUX => '0',                  
-              CASOREGIMUXEN => '1', 
-              CASPRVEMPTY => '0',     
-              RDCLK => Clk,                 
-              RDEN => fifo_rden, 
-              REGCE => '1',                 
-              RSTREG => '0',               
-              SLEEP => '0',                 
-              RST => reset_design,    -- Requires a WRCLK                    
-              WRCLK => fifoclk,       -- DRCK cable clock frequency          
-              WREN => fifowren,                   
-              DIN => fifo_unconned,                      
-              DINP => X"00",
-              INJECTDBITERR => '0',
-              INJECTSBITERR =>  '0',
-              DBITERR => open,
-              SBITERR => open,
-              ECCPARITY => open
-           );
-
+--FIFO36_inst : FIFO36E2
+--           generic map (
+--              CLOCK_DOMAINS => "INDEPENDENT",     -- COMMON, INDEPENDENT
+--              FIRST_WORD_FALL_THROUGH => "TRUE",  -- first word read doesn't require FIFO_EN
+--              PROG_EMPTY_THRESH => 2,             -- 
+--              PROG_FULL_THRESH => 65,             -- Async case. Top level artifect. Usually set to 64 
+--              READ_WIDTH => 4,                    -- 
+--              REGISTER_MODE => "REGISTERED",      -- 
+--              RSTREG_PRIORITY => "RSTREG",        -- REGCE, RSTREG
+--              WRITE_WIDTH => 36                    
+--           )    
+--           port map (
+--              CASDOUT => open,             
+--              CASDOUTP => open,           
+--              CASNXTEMPTY => open,    
+--              CASPRVRDEN => open,       
+--              DOUT => fifodout,                   
+--              DOUTP => open,                 
+--              EMPTY => fifo_empty,                 
+--              FULL => fifo_full,                   
+--              PROGEMPTY => fifo_almostempty,         
+--              PROGFULL => fifo_almostfull,           
+--              RDCOUNT => open,             
+--              RDERR => open,                 
+--              RDRSTBUSY => open,         
+--              WRCOUNT => open,             
+--              WRERR => wrerr,                 
+--              WRRSTBUSY => open,         
+--              CASDIN => X"0000000000000000",               
+--              CASDINP => X"00",             
+--              CASDOMUX => '0',           
+--              CASDOMUXEN => '1',       
+--              CASNXTRDEN => '0',       
+--              CASOREGIMUX => '0',                  
+--              CASOREGIMUXEN => '1', 
+--              CASPRVEMPTY => '0',     
+--              RDCLK => Clk,                 
+--              RDEN => fifo_rden, 
+--              REGCE => '1',                 
+--              RSTREG => '0',               
+--              SLEEP => '0',                 
+--              RST => reset_design,    -- Requires a WRCLK                    
+--              WRCLK => fifoclk,       -- DRCK cable clock frequency          
+--              WREN => fifowren,                   
+--              DIN => fifo_unconned,                      
+--              DINP => X"00",
+--              INJECTDBITERR => '0',
+--              INJECTSBITERR =>  '0',
+--              DBITERR => open,
+--              SBITERR => open,
+--              ECCPARITY => open
+--           );
+writeFIFO_i : writeFIFO
+  PORT MAP (
+    srst => reset_design,
+    wr_clk => fifoclk,
+    rd_clk => Clk,
+    din => fifo_unconned,
+    wr_en => fifowren,
+    rd_en => fifo_rden,
+    dout => fifodout,
+    full => fifo_full,
+    empty => fifo_empty,
+    prog_full => fifo_almostfull,
+    wr_rst_busy => open,
+    rd_rst_busy => open 
+  );
 -----------------------------  pass output signals  --------------------------------------------------
     out_read_inprogress     <= read_inprogress; 
     out_rd_SpiCsB           <= rd_SpiCsB;

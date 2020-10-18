@@ -36,6 +36,7 @@ set files [list \
 "ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci"\
 "ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci"\
 "ip/xcku040-ffva1156-2-e/readbackfifo/spi_readback_fifo.xci"\
+"ip/xcku040-ffva1156-2-e/writefifo/writeFIFO.xci"\
 "source/spiflashprogrammer.xdc"\
 "source/Firmware_pkg.vhd"
 ]
@@ -60,6 +61,7 @@ set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockMana
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_0/ila_0.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_0/vio_0.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/readbackfifo/spi_readback_fifo.xci ]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/writefifo/writeFIFO.xci ]
 
 puts "\[Success\] Created project"
 close_project
