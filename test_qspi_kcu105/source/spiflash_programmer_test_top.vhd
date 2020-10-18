@@ -348,7 +348,7 @@ architecture behavioral of spiflashprogrammer_top is
   type rd_fifo_states is (S_FIFOIDLE, S_FIFOWRITE_PRE, S_FIFOWRITE, S_FIFOWAIT, S_FIFOREAD);
   signal rd_fifo_state : rd_fifo_states := S_FIFOIDLE;
 
-  type wr_fifo_states is (S_WRFIFO_IDLE, S_WRFIFO_WR, S_WRFIFO_PROG_FULL, S_WFFIFO_FULL);
+  type wr_fifo_states is (S_WRFIFO_IDLE, S_WRFIFO_WR, S_WRFIFO_PROG_FULL, S_WRFIFO_FULL);
   signal wr_fifo_state : wr_fifo_states := S_WRFIFO_IDLE; 
   -- this part is from example design, may not needed in the end
     type init is
@@ -728,7 +728,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
                       wr_fifo_state <= S_WRFIFO_PROG_FULL;
                   end if;
                   if (write_done = '1') then
-                      wr_fifo_state <= S_IDLE;
+                      wr_fifo_state <= S_WRFIFO_IDLE;
                   end if;
               when S_WRFIFO_PROG_FULL =>  
                   fifowren <= '1';
@@ -737,7 +737,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
                       wr_fifo_state <= S_WRFIFO_FULL;
                   end if;
                   if (write_done = '1') then
-                      wr_fifo_state <= S_IDLE;
+                      wr_fifo_state <= S_WRFIFO_IDLE;
                   end if;
               when S_WRFIFO_FULL => 
                   fifowren <= '0';
@@ -746,10 +746,10 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
                       wr_fifo_state <= S_WRFIFO_WR;
                   end if; 
                   if (write_done = '1') then
-                      wr_fifo_state <= S_IDLE;
+                      wr_fifo_state <= S_WRFIFO_IDLE;
                   end if;
           end case;
-      end fi;
+      end if;
   end process processwrfifo;
 
   processrdfifo : process (spiclk)
