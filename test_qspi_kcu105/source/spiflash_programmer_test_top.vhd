@@ -348,6 +348,8 @@ architecture behavioral of spiflashprogrammer_top is
   type rd_fifo_states is (S_FIFOIDLE, S_FIFOWRITE_PRE, S_FIFOWRITE, S_FIFOWAIT, S_FIFOREAD);
   signal rd_fifo_state : rd_fifo_states := S_FIFOIDLE;
 
+  type wr_fifo_states is (S_WRFIFO_IDLE, S_WRFIFO_WR, S_WRFIFO_PROG_FULL, S_WFFIFO_FULL);
+  signal wr_fifo_state : wr_fifo_states := S_WRFIFO_IDLE; 
   -- this part is from example design, may not needed in the end
     type init is
    (
@@ -695,19 +697,60 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   end if;
   end process;
 
-  process(spiclk)
+  --process(spiclk)
+  --begin
+  --if (rising_edge(spiclk) and startdata = '1') then
+  --     fifowren <= '1';
+  --     load_data_cntr <= load_data_cntr + 1;
+  --     -- write 1 pages, 1 page is 256 bytes
+  --     --if (load_data_cntr = x"800") then
+  --     if (load_data_cntr = load_data_size) then
+  --         fifowren <= '0';
+  --         load_data_cntr <= x"00000000";
+  --     end if;
+  --  end if;
+  --end process;
+
+  processwrfifo : process (spiclk)
   begin
-  if (rising_edge(spiclk) and startdata = '1') then
-       fifowren <= '1';
-       load_data_cntr <= load_data_cntr + 1;
-       -- write 1 pages, 1 page is 256 bytes
-       --if (load_data_cntr = x"800") then
-       if (load_data_cntr = load_data_size) then
-           fifowren <= '0';
-           load_data_cntr <= x"00000000";
-       end if;
-    end if;
-  end process;
+      if rising_edge(spiclk) then
+          case wr_fifo_state is 
+              when S_WRFIFO_IDLE =>
+                  fifowren <= '0';
+                  load_data_cntr <= x"00000000";
+                  if (startdata = '1') then
+                      wr_fifo_state <= S_WRFIFO_WR;
+                  end if;
+              when S_WRFIFO_WR =>
+                  fifowren <= '1';
+                  load_data_cntr <= load_data_cntr + 1;
+                  if (almostfull = '1') then
+                      wr_fifo_state <= S_WRFIFO_PROG_FULL;
+                  end if;
+                  if (write_done = '1') then
+                      wr_fifo_state <= S_IDLE;
+                  end if;
+              when S_WRFIFO_PROG_FULL =>  
+                  fifowren <= '1';
+                  load_data_cntr <= load_data_cntr + 1;
+                  if (load_data_cntr = load_data_size) then
+                      wr_fifo_state <= S_WRFIFO_FULL;
+                  end if;
+                  if (write_done = '1') then
+                      wr_fifo_state <= S_IDLE;
+                  end if;
+              when S_WRFIFO_FULL => 
+                  fifowren <= '0';
+                  load_data_cntr <= x"00000000";
+                  if (almostfull = '0') then
+                      wr_fifo_state <= S_WRFIFO_WR;
+                  end if; 
+                  if (write_done = '1') then
+                      wr_fifo_state <= S_IDLE;
+                  end if;
+          end case;
+      end fi;
+  end process processwrfifo;
 
   processrdfifo : process (spiclk)
   begin
