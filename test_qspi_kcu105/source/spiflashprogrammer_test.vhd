@@ -112,7 +112,7 @@ COMPONENT writeFIFO
       srst : IN STD_LOGIC;
       wr_clk : IN STD_LOGIC;
       rd_clk : IN STD_LOGIC;
-      din : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+      din : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
       wr_en : IN STD_LOGIC;
       rd_en : IN STD_LOGIC;
       dout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
@@ -219,7 +219,7 @@ END COMPONENT;
    signal fifo_almostfull : std_logic := '0';
    signal fifo_almostempty : std_logic := '0';
    signal fifodout        : std_logic_vector(63 downto 0) := X"0000000000000000";
-   signal fifo_unconned   : std_logic_vector(63 downto 0) := X"0000000000000000";
+   signal fifo_unconned   : std_logic_vector(31 downto 0) := X"00000000";
    ----- Misc signal
    signal reset_design    : std_logic := '0';
    signal wrerr           : std_logic := '0';
@@ -379,7 +379,7 @@ writeFIFO_i : writeFIFO
     din => fifo_unconned,
     wr_en => fifowren,
     rd_en => fifo_rden,
-    dout => fifodout,
+    dout => fifodout(3 downto 0),
     full => fifo_full,
     empty => fifo_empty,
     prog_full => fifo_almostfull,
