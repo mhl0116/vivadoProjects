@@ -721,7 +721,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
           case wr_fifo_state is 
               when S_WRFIFO_IDLE =>
                   fifowren <= '0';
-                  load_data_cntr <= x"00000000";
+                  load_data_cntr <= x"A50F0000";
                   if (startdata = '1') then
                       wr_fifo_state <= S_WRFIFO_WR;
                   end if;
@@ -745,7 +745,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
                   end if;
               when S_WRFIFO_FULL => 
                   fifowren <= '0';
-                  load_data_cntr <= x"00000000";
+                  load_data_cntr <= x"A50F0000";
                   if (almostfull = '0') then
                       wr_fifo_state <= S_WRFIFO_WR;
                   end if; 
