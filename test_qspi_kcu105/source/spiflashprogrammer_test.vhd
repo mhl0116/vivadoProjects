@@ -415,7 +415,8 @@ writeFIFO_i : writeFIFO
   CmdSelect <= CmdStatus when CmdIndex = x"1" else
                CmdRDID   when CmdIndex = x"2" else
                CmdRDFlashPara   when CmdIndex = x"3" else
-               CmdRDFR24Quad    when CmdIndex = x"4" else
+               --CmdRDFR24Quad    when CmdIndex = x"4" else
+               CmdFASTREAD    when CmdIndex = x"4" else
                x"FF";
                
   rd_nword_limit(31 downto 0) <= in_wdlimit(31 downto 0); 
@@ -432,28 +433,25 @@ processread : process (Clk)
           rd_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
           rd_rddata <= x"0000";
           rd_rddata_all <= x"0000";
-          --rd_cmdreg32 <=  CmdSelect & X"00000000";  
-          --rd_cmdreg32 <=  CmdSelect & AddSelect;  
-          --rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           rd_cmdreg32 <=  CmdWE & X"00000000";  -- Write Enable
           read_inprogress <= '1';
-          rdstate <= S_RD_S4BMode_ASSCS1;
+          rdstate <= S_RD_S4BMode_ASSCS2;
          end if;
                        
 -----------------   Set 4 Byte mode first -----------------------------------------------------
-   when S_RD_S4BMode_ASSCS1=>
-        rd_SpiCsB <= '0';
-        rdstate <= S_RD_S4BMode_WRCMD;
-          
-   when S_RD_S4BMode_WRCMD =>    -- Set WE bit
-        if (rd_cmdcounter32 /= 32) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; 
-          rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0'; 
-        else
-          rd_cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status registrd
-          rd_cmdcounter32 <= "100111";  -- 40 bit command+addr
-          rd_SpiCsB <= '1';   -- turn off SPI 
-          rdstate <= S_RD_S4BMode_ASSCS2; 
-        end if;
+--   when S_RD_S4BMode_ASSCS1=>
+--        rd_SpiCsB <= '0';
+--        rdstate <= S_RD_S4BMode_WRCMD;
+--          
+--   when S_RD_S4BMode_WRCMD =>    -- Set WE bit
+--        if (rd_cmdcounter32 /= 32) then rd_cmdcounter32 <= rd_cmdcounter32 - 1; 
+--          rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0'; 
+--        else
+--          rd_cmdreg32 <=  Cmd4BMode  & X"00000000";  -- Flag Status registrd
+--          rd_cmdcounter32 <= "100111";  -- 40 bit command+addr
+--          rd_SpiCsB <= '1';   -- turn off SPI 
+--          rdstate <= S_RD_S4BMode_ASSCS2; 
+--        end if;
         
    when S_RD_S4BMode_ASSCS2 =>
         rd_SpiCsB <= '0';
@@ -465,8 +463,8 @@ processread : process (Clk)
         else 
           rd_SpiCsB <= '1';   -- turn off SPI
           --rd_cmdcounter32 <= "100111";  -- 32 bit command
-          --rd_cmdcounter32 <= "110001";  -- 32 bit address + 8 bit command + 5 bit wait
-          rd_cmdcounter32 <= "110000";  -- 32 bit address + 8 bit command + 5 bit wait
+          --rd_cmdcounter32 <= "110000";  -- 32 bit address + 8 bit command + 5 bit wait
+          rd_cmdcounter32 <= "101000";  -- 24 bit address + 8 bit command + 5 bit wait
           rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
           rdstate <= S_RD_CS1;  
         end if;  
@@ -500,27 +498,29 @@ processread : process (Clk)
           if (rd_nword_cntr = rd_nword_limit) then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = x"c") then  -- Check Status after 8 bits (+1) of status read
           --if (rd_nbyte_cntr = in_rdAddr) then  -- Check Status after 8 bits (+1) of status read
-            rdstate <= S_RD_EXIT4BMode_ASSCS1;   -- Done. All info read 
+            --rdstate <= S_RD_EXIT4BMode_ASSCS1;   -- Done. All info read 
+            rdstate <= S_RD_IDLE;   -- Done. All info read 
             rd_nword_cntr <= x"00000000";
             rd_data_valid_cntr <= "0000";
             rd_cmdcounter32 <= "100111";
             rd_cmdreg32 <= CmdExit4BMode & X"00000000";
             rd_SpiCsB <= '1';
+            read_inprogress <= '0';
           end if;  -- if rddata valid
         end if; -- cmdcounter /= 32
 
-    when S_RD_EXIT4BMode_ASSCS1 =>
-        rd_SpiCsB <= '0';   
-        rdstate <= S_RD_EXIT4BMODE;
-
-    when S_RD_EXIT4BMODE =>    -- Back to 3 Byte Mode
-        if (rd_cmdcounter32 /= 32) then rd_cmdcounter32 <= rd_cmdcounter32 - 1;  
-          rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
-        else 
-          rd_SpiCsB <= '1';   -- turn off SPI 
-          read_inprogress <= '0';
-          rdstate <= S_RD_IDLE;  
-        end if; 
+--    when S_RD_EXIT4BMode_ASSCS1 =>
+--        rd_SpiCsB <= '0';   
+--        rdstate <= S_RD_EXIT4BMODE;
+--
+--    when S_RD_EXIT4BMODE =>    -- Back to 3 Byte Mode
+--        if (rd_cmdcounter32 /= 32) then rd_cmdcounter32 <= rd_cmdcounter32 - 1;  
+--          rd_cmdreg32 <= rd_cmdreg32(38 downto 0) & '0';
+--        else 
+--          rd_SpiCsB <= '1';   -- turn off SPI 
+--          read_inprogress <= '0';
+--          rdstate <= S_RD_IDLE;  
+--        end if; 
    end case;  
  end if;  -- Clk
 end process processread;

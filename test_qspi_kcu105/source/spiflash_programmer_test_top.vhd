@@ -555,6 +555,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data5(39 downto 0) <= ila_cmdreg32(39 downto 0);
   ila_data6(5 downto 0) <= ila_cmdcntr32(5 downto 0);
 
+  -- do not touch this block --
   ila_data7(27 downto 0) <= rd_nbyte_cntr_dly(27 downto 0); 
   ila_data8(15 downto 0) <= rd_fifo_dout(0)(15 downto 0); 
   ila_data9(15 downto 0) <= rd_fifo_dout(1)(15 downto 0); 
@@ -564,6 +565,9 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
   ila_data13(15 downto 0) <= rd_fifo_dout(5)(15 downto 0); 
   ila_data14(15 downto 0) <= rd_fifo_dout(6)(15 downto 0); 
   ila_data15(15 downto 0) <= rd_fifo_dout(7)(15 downto 0); 
+  -- do not touch this block --
+
+  -- now you can touch
   -- this line could be useless, it's adding an address to a count of word
   ila_data16(15 downto 0) <= ila_rd_rddata_all(15 downto 0);
 --  ila_currentAddr <= ila_rdAddr + ila_nbyte_cntr;
