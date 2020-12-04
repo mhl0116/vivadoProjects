@@ -766,8 +766,7 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     rd_dvalid_cnt <= x"00000000";
     load_rd_fifo <= '0';
     read_rd_fifo <= '0';
-    -- 3-byte mode
-    rd_nbyte_cntr <= x"00" & ila_rdAddr(31 downto 8); 
+    rd_nbyte_cntr <= ila_rdAddr(31 downto 0); 
     if (ila_read_start = '1') then
 	rd_fifo_state <= S_FIFOWRITE_PRE;
     end if;

@@ -469,7 +469,7 @@ processread : process (Clk)
           --rd_cmdcounter32 <= "100111";  -- 32 bit command
           --rd_cmdcounter32 <= "110000";  -- 32 bit address + 8 bit command + 5 bit wait
           rd_cmdcounter32 <= "101000";  -- 24 bit address + 8 bit command + 5 bit wait
-          rd_cmdreg32 <=  CmdSelect & in_rdAddr;  
+          rd_cmdreg32 <=  CmdSelect & in_rdAddr(23 downto 0) & x"00";  
           rdstate <= S_RD_CS1;  
         end if;  
 -------------------------  end set 4 byte Mode
@@ -538,7 +538,7 @@ processerase : process (Clk)
    when S_ER_IDLE =>
         er_SpiCsB <= '1';
         if (sectorcountvalid = '1') then er_sector_count <= sectorcount; end if;  -- no sync required
-        if (startaddrvalid = '1') then er_current_sector_addr <= startaddr; end if;  -- no sync required. lots of time spent in _top
+        if (startaddrvalid = '1') then er_current_sector_addr <= startaddr(23 downto 0) & x"00"; end if;  -- no sync required. lots of time spent in _top
         if (erase_start = '1') then  -- one shot based on I/F erase -> synced_erase input going high e.g. "if rising edge erase"
           er_data_valid_cntr <= "000";
           er_cmdcounter32 <= "100111";  -- 32 bit command (cmd + addr = 40 bits)
@@ -655,7 +655,7 @@ processProgram  : process (Clk)
    when S_WR_IDLE =>
         SpiCsB <= '1';
         write_done <= '0';
-        if (startaddrvalid = '1') then Current_Addr <= startaddr; end if;  -- no sync required. lots of time spent in _top
+        if (startaddrvalid = '1') then Current_Addr <= startaddr(23 downto 0) & x"00"; end if;  -- no sync required. lots of time spent in _top
         if (pagecountvalid = '1') then page_count <= pagecount; end if;  -- no sync required
         if (synced_fifo_almostfull(1) = '1') then         -- some  starting point              
           dopin_ts <= "1110";
