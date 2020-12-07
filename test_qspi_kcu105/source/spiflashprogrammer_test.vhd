@@ -601,7 +601,9 @@ processerase : process (Clk)
                       
    when S_ER_ERASECMD =>     -- send erase command
         er_cmdreg32 <= er_cmdreg32(38 downto 0) & '0';
-        if (er_cmdcounter32 /= 0) then er_cmdcounter32 <= er_cmdcounter32 - 1; -- send erase + 24 bit address???? 
+        -- 8 bit cmd + 24 bit addr in 3-byte mode
+        if (er_cmdcounter32 /= 8) then er_cmdcounter32 <= er_cmdcounter32 - 1; -- send erase + 24 bit address???? 
+        --if (er_cmdcounter32 /= 0) then er_cmdcounter32 <= er_cmdcounter32 - 1; -- send erase + 24 bit address???? 
                                                                                -- this comment from example design is wrong, should be erase + 32 bit address, here 4 byte address mode is on
         else
           er_SpiCsB <= '1';   -- turn off SPI
@@ -630,7 +632,7 @@ processerase : process (Clk)
                 erase_inprogress <= '0';
                 erase_done <= '1';
               else 
-                er_current_sector_addr <= er_current_sector_addr + SubSectorSize;
+                er_current_sector_addr <= (er_current_sector_addr(39 downto 8) + SubSectorSize) & x"00";
                 er_sector_count <= er_sector_count - 1;
                 er_cmdreg32 <=  CmdWE & X"00000000";   
                 er_cmdcounter32 <= "100111";
