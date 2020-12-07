@@ -1,46 +1,54 @@
 ####################################
 # KCU105 RevD XDC
 ####################################
-create_clock -period 3.333 [get_nets SYSCLK_P]
+create_clock -period 25.0 [get_nets SYSCLK_P]
+#create_clock -period 3.333 [get_nets SYSCLK_P]
 #create_clock -period 31.000 [get_nets Bscan1Drck]
-
-#125MHz clock
-set_property IOSTANDARD DIFF_SSTL12 [get_ports SYSCLK_P]
+#40MHz clock
+set_property IOSTANDARD LVDS [get_ports SYSCLK_P]
 set_property PACKAGE_PIN AK17 [get_ports SYSCLK_P]
-set_property ODT         RTT_48 [get_ports SYSCLK_P]
+#set_property ODT         RTT_48 [get_ports SYSCLK_P]
 
 set_property PACKAGE_PIN AK16 [get_ports SYSCLK_N]
-set_property IOSTANDARD DIFF_SSTL12 [get_ports SYSCLK_N]
-set_property ODT         RTT_48 [get_ports SYSCLK_N]
+set_property IOSTANDARD LVDS [get_ports SYSCLK_N]
+
+#125MHz clock
+#set_property IOSTANDARD DIFF_SSTL12 [get_ports SYSCLK_P]
+#set_property PACKAGE_PIN AK17 [get_ports SYSCLK_P]
+#set_property ODT         RTT_48 [get_ports SYSCLK_P]
+#
+#set_property PACKAGE_PIN AK16 [get_ports SYSCLK_N]
+#set_property IOSTANDARD DIFF_SSTL12 [get_ports SYSCLK_N]
+#set_property ODT         RTT_48 [get_ports SYSCLK_N]
 
 set_property CFGBVS GND [current_design]
 set_property CONFIG_VOLTAGE 1.8 [current_design]
 
 #LED 0
-set_property PACKAGE_PIN AP8 [get_ports {LEDS[0]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[0]}]
-#LED 1
-set_property PACKAGE_PIN H23 [get_ports {LEDS[1]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[1]}]
-##LED 2
-set_property PACKAGE_PIN P20 [get_ports {LEDS[2]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[2]}]
-#LED 3
-set_property PACKAGE_PIN P21 [get_ports {LEDS[3]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[3]}]
-#LED 4
-set_property PACKAGE_PIN N22 [get_ports {LEDS[4]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[4]}]
-#LED 5
-set_property PACKAGE_PIN M22 [get_ports {LEDS[5]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[5]}]
-#LED 6
-set_property PACKAGE_PIN R23 [get_ports {LEDS[6]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[6]}]
-#LED 7
-set_property PACKAGE_PIN P23 [get_ports {LEDS[7]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[7]}]
-
+#set_property PACKAGE_PIN AP8 [get_ports {LEDS[0]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[0]}]
+##LED 1
+#set_property PACKAGE_PIN H23 [get_ports {LEDS[1]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[1]}]
+###LED 2
+#set_property PACKAGE_PIN P20 [get_ports {LEDS[2]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[2]}]
+##LED 3
+#set_property PACKAGE_PIN P21 [get_ports {LEDS[3]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[3]}]
+##LED 4
+#set_property PACKAGE_PIN N22 [get_ports {LEDS[4]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[4]}]
+##LED 5
+#set_property PACKAGE_PIN M22 [get_ports {LEDS[5]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[5]}]
+##LED 6
+#set_property PACKAGE_PIN R23 [get_ports {LEDS[6]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[6]}]
+##LED 7
+#set_property PACKAGE_PIN P23 [get_ports {LEDS[7]}]
+#set_property IOSTANDARD LVCMOS18 [get_ports {LEDS[7]}]
+#
 ##set_false_path -to [get_cells spiflashprogrammer_inst/synced_fifo_almostfull_reg*]
 ##set_false_path -to [get_cells spiflashprogrammer_inst/synced_erase_reg*]
 

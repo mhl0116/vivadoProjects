@@ -34,7 +34,7 @@ use work.Firmware_pkg.all;
 entity spiflashprogrammer_top is
   port
   (
-    LEDS                : out std_logic_vector(7 downto 0);
+    --LEDS                : out std_logic_vector(7 downto 0);
     SYSCLK_N            : in  std_logic;
     SYSCLK_P            : in  std_logic
   );
@@ -98,16 +98,16 @@ architecture behavioral of spiflashprogrammer_top is
    ); 
   end component spiflashprogrammer_test;
 
-  component leds_0to7 
-  port  (
-    sysclk   : in  std_logic;
-    leds     : out std_logic_vector(7 downto 0) 
-  );
-  end component leds_0to7;
+  --component leds_0to7 
+  --port  (
+  --  sysclk   : in  std_logic;
+  --  leds     : out std_logic_vector(7 downto 0) 
+  --);
+  --end component leds_0to7;
   
   component clockManager is
   port (
-    CLK_IN300 : in std_logic := '0';
+    CLK_IN40 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
     --CLK_OUT31p25: out std_logic := '0'; 
     --CLK_OUT62p5: out std_logic := '0'; 
@@ -385,7 +385,7 @@ begin
 
   ClockManager_i : clockManager
   port map(
-            CLK_IN300=> clk_in_buf,
+            CLK_IN40=> clk_in_buf,
             CLK_OUT6=> drck,
             --CLK_OUT31p25=> spiclk_old, 
             --CLK_OUT62p5=> spiclk2_old,           
@@ -450,11 +450,11 @@ begin
   
   rst <= rst_sim or rst_init;
 
- led_inst: leds_0to7 port map
-  (
-  sysclk => spiclk,
-  leds => LEDS
- );
+ --led_inst: leds_0to7 port map
+ -- (
+ -- sysclk => spiclk,
+ -- leds => LEDS
+ --);
    
 spiflashprogrammer_inst: spiflashprogrammer_test port map
   (

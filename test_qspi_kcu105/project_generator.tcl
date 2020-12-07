@@ -2,7 +2,9 @@
 # vivado -nojournal -nolog -mode batch -source project_generator.tcl
 
 # Environment variables
-set FPGA_TYPE xcku040-ffva1156-2-e
+#set FPGA_TYPE xcku040-ffva1156-2-e
+set FPGA_TYPE xcku035-ffva1156-1-c 
+
 
 # Generate ip
 set argv $FPGA_TYPE
@@ -32,11 +34,11 @@ set files [list \
 "source/spiflashprogrammer_test.vhd"\
 "source/leds_0to7.vhd"\
 "source/oneshot.vhd"\
-"ip/xcku040-ffva1156-2-e/clockManager/clockManager.xci"\
-"ip/xcku040-ffva1156-2-e/ila_0/ila_0.xci"\
-"ip/xcku040-ffva1156-2-e/vio_0/vio_0.xci"\
-"ip/xcku040-ffva1156-2-e/readbackfifo/spi_readback_fifo.xci"\
-"ip/xcku040-ffva1156-2-e/writefifo/writeFIFO.xci"\
+"ip/xcku035-ffva1156-1-c/clockManager/clockManager.xci"\
+"ip/xcku035-ffva1156-1-c/ila_0/ila_0.xci"\
+"ip/xcku035-ffva1156-1-c/vio_0/vio_0.xci"\
+"ip/xcku035-ffva1156-1-c/readbackfifo/spi_readback_fifo.xci"\
+"ip/xcku035-ffva1156-1-c/writefifo/writeFIFO.xci"\
 "source/spiflashprogrammer.xdc"\
 "source/Firmware_pkg.vhd"
 ]
