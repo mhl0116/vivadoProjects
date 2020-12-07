@@ -736,7 +736,8 @@ processProgram  : process (Clk)
         wrstate <= S_WR_PROGRAM;
                                                  
    when S_WR_PROGRAM =>  -- send Program command
-        if (cmdcounter32 /= 0) then cmdcounter32 <= cmdcounter32 - 1;
+        if (cmdcounter32 /= 8) then cmdcounter32 <= cmdcounter32 - 1;
+        --if (cmdcounter32 /= 0) then cmdcounter32 <= cmdcounter32 - 1;
           cmdreg32 <= cmdreg32(38 downto 0) & '0';
         else 
           fifo_rden <= '1';
@@ -748,8 +749,10 @@ processProgram  : process (Clk)
         SpiCsB <= '0';
         wrdata_count <= wrdata_count +1;
         if (wrdata_count = 7) then -- 8x4 bits from FIFO.  wrdata_count rolls over to 0
-          Current_Addr <= Current_Addr + 4;  -- 4 bytes out of 256 bytes per page   
-          if (Current_Addr(7 downto 0) = 252) then   -- every 256 bytes (1 PP) written, only check lower bits = mod 256
+          --Current_Addr <= Current_Addr + 4;  -- 4 bytes out of 256 bytes per page   
+          Current_Addr <= (Current_Addr(31 downto 8) + 4) & x"00";  -- 4 bytes out of 256 bytes per page   
+          --if (Current_Addr(7 downto 0) = 252) then   -- every 256 bytes (1 PP) written, only check lower bits = mod 256
+          if (Current_Addr(15 downto 8) = 252) then   -- every 256 bytes (1 PP) written, only check lower bits = mod 256
             SpiCsB <= '1';
             fifo_rden <= '0';
             dopin_ts <= "1110";
