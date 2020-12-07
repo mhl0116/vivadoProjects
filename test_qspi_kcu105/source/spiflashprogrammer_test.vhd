@@ -633,7 +633,7 @@ processerase : process (Clk)
                 erase_inprogress <= '0';
                 erase_done <= '1';
               else 
-                er_current_sector_addr <= (er_current_sector_addr(39 downto 8) + SubSectorSize) & x"00";
+                er_current_sector_addr <= (er_current_sector_addr(31 downto 8) + SubSectorSize) & x"00";
                 er_sector_count <= er_sector_count - 1;
                 er_cmdreg32 <=  CmdWE & X"00000000";   
                 er_cmdcounter32 <= "100111";
