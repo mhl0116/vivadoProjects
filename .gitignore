@@ -19,6 +19,21 @@ test_qspi_kcu105/ip/xcku040-ffva1156-2-e/readbackfifo/
 test_qspi_kcu105/ip/xcku040-ffva1156-2-e/writefifo/
 !test_qspi_kcu105/ip/xcku040-ffva1156-2-e/writefifo/*xci
 
+test_qspi_kcu105/ip/xcku035-ffva1156-1-c/clockManager/*
+!test_qspi_kcu105/ip/xcku035-ffva1156-1-c/clockManager/*xci
+
+test_qspi_kcu105/ip/xcku035-ffva1156-1-c/ila_0/*
+!test_qspi_kcu105/ip/xcku035-ffva1156-1-c/ila_0/*xci
+
+test_qspi_kcu105/ip/xcku035-ffva1156-1-c/vio_0/*
+!test_qspi_kcu105/ip/xcku035-ffva1156-1-c/vio_0/*xci
+
+test_qspi_kcu105/ip/xcku035-ffva1156-1-c/readbackfifo/
+!test_qspi_kcu105/ip/xcku035-ffva1156-1-c/readbackfifo/*xci
+
+test_qspi_kcu105/ip/xcku035-ffva1156-1-c/writefifo/
+!test_qspi_kcu105/ip/xcku035-ffva1156-1-c/writefifo/*xci
+
 test_qspi_kcu105/project/test_qspi_kcu105.cache/
 test_qspi_kcu105/project/test_qspi_kcu105.hw/
 test_qspi_kcu105/project/test_qspi_kcu105.runs/
