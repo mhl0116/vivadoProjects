@@ -36,7 +36,11 @@ entity spiflashprogrammer_top is
   (
     --LEDS                : out std_logic_vector(7 downto 0);
     SYSCLK_N            : in  std_logic;
-    SYSCLK_P            : in  std_logic
+    SYSCLK_P            : in  std_logic;
+    KUS_DL_SEL          : out    std_logic;
+    FPGA_SEL_18         : out    std_logic;
+    RST_CLKS_18_B       : out    std_logic;
+    DONE                : in     std_logic
   );
 end spiflashprogrammer_top;
 
@@ -358,6 +362,10 @@ architecture behavioral of spiflashprogrammer_top is
    signal download_state  : init := S_INIT;
    
 begin
+
+    KUS_DL_SEL  <= '1';
+    FPGA_SEL_18  <= '0';
+    RST_CLKS_18_B  <= '1';
     
   -- generate clk in simulation
   input_clk_simulation_i : if in_simulation generate

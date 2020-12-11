@@ -1,6 +1,15 @@
 ####################################
 # KCU105 RevD XDC
 ####################################
+set_property PACKAGE_PIN U21        [get_ports KUS_DL_SEL]
+set_property IOSTANDARD LVCMOS18    [get_ports KUS_DL_SEL]
+set_property PACKAGE_PIN T23        [get_ports FPGA_SEL_18]
+set_property IOSTANDARD LVCMOS18    [get_ports FPGA_SEL_18]
+set_property PACKAGE_PIN W29        [get_ports RST_CLKS_18_B]
+set_property IOSTANDARD LVCMOS18    [get_ports RST_CLKS_18_B]
+set_property PACKAGE_PIN L9         [get_ports DONE]
+set_property IOSTANDARD LVCMOS18    [get_ports DONE]
+
 create_clock -period 25.0 [get_nets SYSCLK_P]
 #create_clock -period 3.333 [get_nets SYSCLK_P]
 #create_clock -period 31.000 [get_nets Bscan1Drck]
