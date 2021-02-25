@@ -26,24 +26,24 @@ end odmb7_voltageMon;
 
 architecture Behavioral of odmb7_voltageMon is
 
-    component ila_2 is
-        port (
-            clk : in std_logic := '0';
-            probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
-            probe1 : in std_logic := '0';
-            probe2 : in std_logic := '0';
-            probe3 : in std_logic := '0';
-            probe4 : in std_logic_vector(11 downto 0) := (others=> '0');
-            probe5 : in std_logic_vector(2 downto 0) := (others=> '0');
-            probe6 : in std_logic_vector(4 downto 0) := (others=> '0');
-            probe7 : in std_logic_vector(7 downto 0) := (others=> '0');
-            probe8 : in std_logic_vector(7 downto 0) := (others=> '0');
-            probe9 : in std_logic_vector(7 downto 0) := (others=> '0');
-            probe10 : in std_logic_vector(7 downto 0) := (others=> '0');
-            probe11 : in std_logic := '0'
+--    component ila_2 is
+--        port (
+--            clk : in std_logic := '0';
+--            probe0 : in std_logic_vector(7 downto 0) := (others=> '0');
+--            probe1 : in std_logic := '0';
+--            probe2 : in std_logic := '0';
+--            probe3 : in std_logic := '0';
+--            probe4 : in std_logic_vector(11 downto 0) := (others=> '0');
+--            probe5 : in std_logic_vector(2 downto 0) := (others=> '0');
+--            probe6 : in std_logic_vector(4 downto 0) := (others=> '0');
+--            probe7 : in std_logic_vector(7 downto 0) := (others=> '0');
+--            probe8 : in std_logic_vector(7 downto 0) := (others=> '0');
+--            probe9 : in std_logic_vector(7 downto 0) := (others=> '0');
+--            probe10 : in std_logic_vector(7 downto 0) := (others=> '0');
+--            probe11 : in std_logic := '0'
 
-        );
-    end component;
+--        );
+--    end component;
 
 
     signal current_channel : std_logic_vector(2 downto 0) := "000";
@@ -183,21 +183,21 @@ ila_trigger1(1) <= mon_inprogress;
 ila_trigger1(2) <= data_done;
 ila_trigger1(3) <= ctrlseq_done;
 
-i_ila : ila_2
-    port map(
-        clk => CLK_div2,
-        probe0 => ila_trigger1,
-        probe1 => mon_SpiCsB,  
-        probe2 => mon_cmdreg(0),  
-        probe3 => DOUT,  
-        probe4 => dout_data,  
-        probe5 => current_channel,  
-        probe6 => variousflags,  
-        probe7 => mon_cmdcounter,  
-        probe8 => mon_cmdreg,  
-        probe9 => data_valid_cntr,  
-        probe10 => dout_counter,  
-        probe11 => CLK  
-);
+--i_ila : ila_2
+--    port map(
+--        clk => CLK_div2,
+--        probe0 => ila_trigger1,
+--        probe1 => mon_SpiCsB,  
+--        probe2 => mon_cmdreg(0),  
+--        probe3 => DOUT,  
+--        probe4 => dout_data,  
+--        probe5 => current_channel,  
+--        probe6 => variousflags,  
+--        probe7 => mon_cmdcounter,  
+--        probe8 => mon_cmdreg,  
+--        probe9 => data_valid_cntr,  
+--        probe10 => dout_counter,  
+--        probe11 => CLK  
+--);
 
 end Behavioral;

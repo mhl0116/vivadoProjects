@@ -36,6 +36,10 @@ entity spiflashprogrammer_top is
   (
     --LEDS                : out std_logic_vector(7 downto 0);
     SYSCLK_N            : in  std_logic;
+    KUS_DL_SEL    : out std_logic;
+    FPGA_SEL_18    : out std_logic;
+    RST_CLKS_18_B    : out std_logic;
+
     --------------------------------
     -- Voltage monitoring ports
     --------------------------------
