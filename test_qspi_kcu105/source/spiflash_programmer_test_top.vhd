@@ -36,11 +36,18 @@ entity spiflashprogrammer_top is
   (
     --LEDS                : out std_logic_vector(7 downto 0);
     SYSCLK_N            : in  std_logic;
-    SYSCLK_P            : in  std_logic;
-    KUS_DL_SEL          : out    std_logic;
-    FPGA_SEL_18         : out    std_logic;
-    RST_CLKS_18_B       : out    std_logic;
-    DONE                : in     std_logic
+    --------------------------------
+    -- Voltage monitoring ports
+    --------------------------------
+    ADC_CS0_18    : out std_logic; -- Bank 46
+    ADC_CS1_18    : out std_logic; -- Bank 46 
+    ADC_CS2_18    : out std_logic; -- Bank 46 
+    ADC_CS3_18    : out std_logic; -- Bank 46 
+    ADC_CS4_18    : out std_logic; -- Bank 46 
+    ADC_DIN_18    : out std_logic; -- Bank 46 
+    ADC_SCK_18    : out std_logic; -- Bank 46 
+    ADC_DOUT_18   : in std_logic;   -- Bank 46
+    SYSCLK_P            : in  std_logic
   );
 end spiflashprogrammer_top;
 
@@ -75,6 +82,7 @@ architecture behavioral of spiflashprogrammer_top is
     eraseing     : out std_logic; 
     erasedone     : out std_logic; 
     ------------------------------------
+
     out_read_inprogress        : out std_logic;
     out_rd_SpiCsB: out std_logic;
     out_SpiCsB_N: out std_logic;
@@ -108,12 +116,27 @@ architecture behavioral of spiflashprogrammer_top is
   --  leds     : out std_logic_vector(7 downto 0) 
   --);
   --end component leds_0to7;
+  component odmb7_voltageMon_wrapper is
+    port (
+      CLK            : in  std_logic;
+      CLK_div2       : in  std_logic;
+      ADC_CS0_18     : out std_logic;
+      ADC_CS1_18     : out std_logic;
+      ADC_CS2_18     : out std_logic;
+      ADC_CS3_18     : out std_logic;
+      ADC_CS4_18     : out std_logic;
+      ADC_DIN_18     : out std_logic;
+      ADC_SCK_18     : out std_logic; 
+      ADC_DOUT_18    : in  std_logic
+   );
+  end component;
   
   component clockManager is
   port (
     CLK_IN40 : in std_logic := '0';
     CLK_OUT6 : out std_logic := '0';
     --CLK_OUT31p25: out std_logic := '0'; 
+    CLK_OUT10 : out std_logic := '0';
     --CLK_OUT62p5: out std_logic := '0'; 
     CLK_OUT40: out std_logic := '0'; 
     CLK_OUT80: out std_logic := '0' 
@@ -164,6 +187,13 @@ architecture behavioral of spiflashprogrammer_top is
     probe21 : in std_logic_vector(7 downto 0) := (others=> '0');
     probe22 : in std_logic_vector(3 downto 0) := (others=> '0')
   );
+  end component;
+
+  component ila_1 is
+      port (
+          clk : in std_logic := '0';
+          probe0 : in std_logic_vector(7 downto 0) := (others=> '0')
+      );
   end component;
 
  COMPONENT vio_0
@@ -349,6 +379,32 @@ architecture behavioral of spiflashprogrammer_top is
   signal wr_dvalid_cnt: unsigned(31 downto 0) := (others=> '0'); 
   signal rd_dvalid_cnt: unsigned(31 downto 0) := (others=> '0'); 
 
+  signal clk_cmsclk_unbuf : std_logic;
+  signal clk_gp6_unbuf : std_logic;
+  signal clk_gp7_unbuf : std_logic;
+
+  signal clk20_unbuf     : std_logic := '0';
+  signal clk20_inv       : std_logic := '1';
+  signal clk20           : std_logic := '0';
+  signal clk5_unbuf      : std_logic := '0';
+  signal clk5_inv        : std_logic := '1';
+  signal clk2p5_unbuf    : std_logic := '0';
+  signal clk2p5_inv      : std_logic := '1';
+  signal clk2p5          : std_logic := '0';
+  signal clk1p25         : std_logic := '0';
+  signal clk1p25_inv     : std_logic := '1';
+  signal clk625k         : std_logic := '0';
+  signal clk625k_inv     : std_logic := '1';
+  signal clk625k_unbuf   : std_logic := '0';
+  
+  signal CLK10           : std_logic := '0';
+  signal clk_sysclk2p5   : std_logic := '0';
+  signal clk_sysclk1p25  : std_logic := '0';
+  signal clk_sysclk625k  : std_logic := '0';
+  signal clk_sysclk10    : std_logic := '0';
+  signal probe0    : std_logic_vector(7 downto 0) := (others=>'0');
+
+
   type rd_fifo_states is (S_FIFOIDLE, S_FIFOWRITE_PRE, S_FIFOWRITE, S_FIFOWAIT, S_FIFOREAD);
   signal rd_fifo_state : rd_fifo_states := S_FIFOIDLE;
 
@@ -397,10 +453,31 @@ begin
             CLK_OUT6=> drck,
             --CLK_OUT31p25=> spiclk_old, 
             --CLK_OUT62p5=> spiclk2_old,           
+            CLK_OUT10=> CLK10, 
             CLK_OUT40=> spiclk, 
             CLK_OUT80=> spiclk2           
           );
 
+  clk20_inv <= not clk20_unbuf;
+  clk5_inv <= not clk5_unbuf;
+  clk2p5_inv <= not clk2p5_unbuf;
+  clk1p25_inv <= not clk1p25;
+  clk625k_inv <= not clk625k_unbuf;
+  
+  clk_sysclk10 <= CLK10;
+
+  FD_clk20  : FD port map(D => clk20_inv,  C => clk_in_buf, Q => clk20_unbuf);
+  FD_clk5   : FD port map(D => clk5_inv,   C => CLK10, Q => clk5_unbuf  );
+  FD_clk2p5 : FD port map(D => clk2p5_inv, C => clk5_unbuf, Q => clk2p5_unbuf);
+  FD_clk1p25 : FD port map(D => clk1p25_inv, C => clk2p5_unbuf, Q => clk1p25);
+  FD_clk625k : FD port map(D => clk625k_inv, C => clk1p25, Q => clk625k_unbuf);
+  BUFG_clk20  : BUFG port map(I => clk20_unbuf, O => clk20);
+  BUFG_clk2p5 : BUFG port map(I => clk2p5_unbuf, O => clk2p5);
+  BUFG_clk625k : BUFG port map(I => clk625k_unbuf, O => clk625k);
+
+  clk_sysclk2p5 <= clk2p5_unbuf;
+  clk_sysclk1p25 <= clk1p25;
+  clk_sysclk625k <= clk625k_unbuf;
 
   process (spiclk2)
   begin
@@ -513,6 +590,19 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     out_wrfifo_dout => ila_wrfifo_dout
 );
 
+  u_voltageMon_wrapper : odmb7_voltageMon_wrapper
+    port map (
+      CLK            => clk_sysclk1p25, 
+      CLK_div2       => clk_sysclk625k, 
+      ADC_CS0_18     => ADC_CS0_18,
+      ADC_CS1_18     => ADC_CS1_18,
+      ADC_CS2_18     => ADC_CS2_18,
+      ADC_CS3_18     => ADC_CS3_18,
+      ADC_CS4_18     => ADC_CS4_18,
+      ADC_DIN_18     => ADC_DIN_18,
+      ADC_SCK_18     => ADC_SCK_18,
+      ADC_DOUT_18    => ADC_DOUT_18
+      );
 
   ila_trigger1(0) <= ila_read_inprogress;
   ila_trigger1(1) <= ila_read_start;
@@ -614,6 +704,14 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe22 => ila_data18
   );
 
+probe0 <= "00" & clk20 & clk10 & clk2p5_unbuf & clk1p25 & clk625k & clk625k_unbuf;
+
+ii_ila : ila_1
+    port map(
+        clk => clk_cmsclk_unbuf,
+        probe0 => probe0
+         
+);
   startread_synthesize_i : if in_synthesis generate
   -- generate a clk pulse of startread once having a 1 from vio
   startread_gen <= probeout0; 
