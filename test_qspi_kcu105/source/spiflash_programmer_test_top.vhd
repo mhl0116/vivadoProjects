@@ -712,7 +712,7 @@ probe0 <= "00" & clk20 & clk10 & clk2p5_unbuf & clk1p25 & clk625k & clk625k_unbu
 
 ii_ila : ila_1
     port map(
-        clk => clk_cmsclk_unbuf,
+        clk => clk_in_buf,
         probe0 => probe0
          
 );
