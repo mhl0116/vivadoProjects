@@ -32,11 +32,16 @@ set obj [get_filesets sources_1]
 set files [list \
 "source/spiflash_programmer_test_top.vhd"\
 "source/spiflashprogrammer_test.vhd"\
+"source/odmb7_voltageMon.vhd"\
+"source/odmb7_voltageMon_wrapper.vhd"\
 "source/leds_0to7.vhd"\
 "source/oneshot.vhd"\
 "ip/xcku035-ffva1156-1-c/clockManager/clockManager.xci"\
 "ip/xcku035-ffva1156-1-c/ila_0/ila_0.xci"\
+"ip/xcku035-ffva1156-1-c/ila_1/ila_1.xci"\
+"ip/xcku035-ffva1156-1-c/ila_2/ila_2.xci"\
 "ip/xcku035-ffva1156-1-c/vio_0/vio_0.xci"\
+"ip/xcku035-ffva1156-1-c/vio_1/vio_1.xci"\
 "ip/xcku035-ffva1156-1-c/readbackfifo/spi_readback_fifo.xci"\
 "ip/xcku035-ffva1156-1-c/writefifo/writeFIFO.xci"\
 "source/spiflashprogrammer.xdc"\
@@ -61,7 +66,10 @@ set_property -name "top_auto_set" -value "0" -objects $obj
 #set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ibert_ultrascale_gth_0/ibert_ultrascale_gth_0.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/clockManager/clockManager.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_0/ila_0.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_1/ila_1.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/ila_2/ila_2.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_0/vio_0.xci]
+set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/vio_1/vio_1.xci]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/readbackfifo/spi_readback_fifo.xci ]
 set_property generate_synth_checkpoint false [get_files  ip/$FPGA_TYPE/writefifo/writeFIFO.xci ]
 
