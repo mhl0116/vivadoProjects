@@ -1,6 +1,15 @@
 ####################################
 # KCU105 RevD XDC
 ####################################
+set_property PACKAGE_PIN U21        [get_ports KUS_DL_SEL]
+set_property IOSTANDARD LVCMOS18    [get_ports KUS_DL_SEL]
+set_property PACKAGE_PIN T23        [get_ports FPGA_SEL_18]
+set_property IOSTANDARD LVCMOS18    [get_ports FPGA_SEL_18]
+set_property PACKAGE_PIN W29        [get_ports RST_CLKS_18_B]
+set_property IOSTANDARD LVCMOS18    [get_ports RST_CLKS_18_B]
+set_property PACKAGE_PIN L9         [get_ports DONE]
+set_property IOSTANDARD LVCMOS18    [get_ports DONE]
+
 create_clock -period 25.0 [get_nets SYSCLK_P]
 #create_clock -period 3.333 [get_nets SYSCLK_P]
 #create_clock -period 31.000 [get_nets Bscan1Drck]
@@ -86,10 +95,11 @@ set_max_delay -to [get_pins -hierarchical {rddata_reg[0]/D}] 8.000
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property BITSTREAM.CONFIG.CONFIGFALLBACK ENABLE [current_design]
-set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
-set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
-set_property CONFIG_MODE SPIx4 [current_design] 
+set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR NO [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 8 [current_design]
+set_property CONFIG_MODE SPIx8 [current_design] 
 set_property CONFIG_VOLTAGE 1.8 [current_design] 
 set_property CFGBVS GND [current_design] 
 
-
+set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN div-1 [current_design]
+set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]

@@ -418,6 +418,10 @@ architecture behavioral of spiflashprogrammer_top is
    signal download_state  : init := S_INIT;
    
 begin
+
+    KUS_DL_SEL  <= '1';
+    FPGA_SEL_18  <= '0';
+    RST_CLKS_18_B  <= '1';
     
   -- generate clk in simulation
   input_clk_simulation_i : if in_simulation generate
