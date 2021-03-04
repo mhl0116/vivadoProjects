@@ -709,14 +709,14 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     probe22 => ila_data18
   );
 
-probe0 <= "00" & clk20 & clk10 & clk2p5_unbuf & clk1p25 & clk625k & clk625k_unbuf;
+--probe0 <= "00" & clk20 & clk10 & clk2p5_unbuf & clk1p25 & clk625k & clk625k_unbuf;
 
-ii_ila : ila_1
-    port map(
-        clk => clk_in_buf,
-        probe0 => probe0
-         
-);
+--ii_ila : ila_1
+--    port map(
+--        clk => clk_in_buf,
+--        probe0 => probe0
+--         
+--);
   startread_synthesize_i : if in_synthesis generate
   -- generate a clk pulse of startread once having a 1 from vio
   startread_gen <= probeout0; 
