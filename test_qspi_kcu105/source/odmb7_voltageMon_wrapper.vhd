@@ -36,13 +36,13 @@ architecture Behavioral of odmb7_voltageMon_wrapper is
    );
   end component;
 
---  component vio_1
---    port (
---        clk : in std_logic;
---        probe_out0 : out std_logic_vector(4 downto 0) := "11111";
---        probe_out1 : out std_logic_vector(3 downto 0) := "0000"
---  );
---  end component;
+  component vio_1
+    port (
+        clk : in std_logic;
+        probe_out0 : out std_logic_vector(4 downto 0) := "11111";
+        probe_out1 : out std_logic_vector(3 downto 0) := "0000"
+  );
+  end component;
 
   -- add ILA and VIO here
   signal CS   : std_logic := '0';
@@ -75,11 +75,11 @@ begin
             
     );
 
---    i_vio : vio_1
---        PORT MAP (
---            clk => CLK_div2,
---            probe_out0 => CS_SEL,
---            probe_out1 => probeout1 
---    );
+    i_vio : vio_1
+        PORT MAP (
+            clk => CLK_div2,
+            probe_out0 => CS_SEL,
+            probe_out1 => probeout1 
+    );
 
 end Behavioral;
