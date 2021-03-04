@@ -1,4 +1,4 @@
-library IEEE;
+ibrary IEEE;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use ieee.std_logic_misc.all;
@@ -40,7 +40,7 @@ architecture Behavioral of odmb7_voltageMon_wrapper is
     port (
         clk : in std_logic;
         probe_out0 : out std_logic_vector(4 downto 0) := "11111";
-        probe_out1 : out std_logic_vector(3 downto 0) := "0000"
+        probe_out1 : out std_logic := "0"
   );
   end component;
 
@@ -71,7 +71,7 @@ begin
             SCK  => ADC_SCK_18,
             DOUT => ADC_DOUT_18,
             DATA => dout_data,
-            startchannelvalid => probeout1(0)
+            startchannelvalid => probeout1
             
     );
 

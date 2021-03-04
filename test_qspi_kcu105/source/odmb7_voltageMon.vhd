@@ -93,8 +93,11 @@ begin
     case monstate is 
         when S_MON_IDLE =>
         mon_SpiCsB <= '1';
-        if (startchannelvalid = '1') then current_channel <= STARTCHANNEL; end if; -- 8 channels to read for each chip 
-        if (mon_start = '1') then  
+        --if (startchannelvalid = '1') then current_channel <= STARTCHANNEL; end if; -- 8 channels to read for each chip 
+        if (startchannelvalid = '1') then  
+        --if (mon_start = '1') then  
+            mon_start <= '1';
+            current_channel <= STARTCHANNEL;
             mon_cmdcounter <= x"11";  -- 18 clks conversion  
             mon_inprogress <= '1';
             monstate <= S_MON_ASSCS1;
@@ -166,6 +169,7 @@ processdout : process (CLK)
             if (ctrlseq_done = '1') then
                 doutstate <= S_DOUT_IDLE;
                 data_done <= '1';
+                mon_start <= '0';
             end if;  -- if ctrl sequence is done
          end if;
     end case;  
