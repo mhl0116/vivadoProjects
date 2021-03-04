@@ -128,6 +128,7 @@ begin
         when S_MON_WAIT =>
         if (data_done = '1') then
             monstate <= S_MON_IDLE;
+            mon_start <= '0';
         end if;
    end case;  
  end if;  -- Clk
@@ -169,7 +170,7 @@ processdout : process (CLK)
             if (ctrlseq_done = '1') then
                 doutstate <= S_DOUT_IDLE;
                 data_done <= '1';
-                mon_start <= '0';
+                --mon_start <= '0';
             end if;  -- if ctrl sequence is done
          end if;
     end case;  
