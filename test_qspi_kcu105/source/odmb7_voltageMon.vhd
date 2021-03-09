@@ -176,8 +176,11 @@ processdout : process (CLK)
         if (data_valid_cntr > 5 ) then -- 12 bits of valid data 
             dout_data <= dout_data(10 downto 0) & DOUT;  
             data_valid <= '0';
-        elsif (data_valid_cntr = 4) then 
-            data_valid <= '1';
+            if (data_valid_cntr = 6) then
+                data_valid <= '1';
+            end if;
+        --elsif (data_valid_cntr = 5) then 
+        --    data_valid <= '1';
         else
             data_valid <= '0';
             dout_data <= x"000"; 
