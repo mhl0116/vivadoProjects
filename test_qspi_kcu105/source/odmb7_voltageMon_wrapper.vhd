@@ -83,7 +83,7 @@ begin
             SCK  => ADC_SCK_18,
             DOUT => ADC_DOUT_18,
             DATA => dout_data,
-            startchannelvalid => probeout1
+            startchannelvalid => startchannelvalid 
             
     );
 
