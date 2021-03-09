@@ -43,7 +43,7 @@ architecture Behavioral of odmb7_voltageMon is
             probe3 : in std_logic := '0';
             probe4 : in std_logic_vector(11 downto 0) := (others=> '0');
             probe5 : in std_logic_vector(2 downto 0) := (others=> '0');
-            probe6 : in std_logic_vector(4 downto 0) := (others=> '0');
+            probe6 : in std_logic_vector(7 downto 0) := (others=> '0');
             probe7 : in std_logic_vector(7 downto 0) := (others=> '0');
             probe8 : in std_logic_vector(7 downto 0) := (others=> '0');
             probe9 : in std_logic_vector(7 downto 0) := (others=> '0');
@@ -68,7 +68,7 @@ architecture Behavioral of odmb7_voltageMon is
     signal data_valid_cntr : std_logic_vector(7 downto 0) := x"00";
     signal dout_data : std_logic_vector(11 downto 0) := x"000"; 
     signal dout_counter: std_logic_vector(7 downto 0) := x"00";
-    signal variousflags: std_logic_vector(4 downto 0) := "00000";
+    signal variousflags: std_logic_vector(7 downto 0) := x"00";
     signal ila_trigger1: std_logic_vector(7 downto 0) := x"00";
 
 
@@ -203,6 +203,7 @@ variousflags(1) <= mon_inprogress;
 variousflags(2) <= ctrlseq_done;
 variousflags(3) <= data_done;
 variousflags(4) <= data_valid;
+variousflags(5) <= startchannelvalid;
 
 ila_trigger1(0) <= mon_start;
 ila_trigger1(1) <= mon_inprogress;

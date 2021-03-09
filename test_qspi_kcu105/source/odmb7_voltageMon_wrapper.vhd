@@ -66,11 +66,11 @@ begin
     u_oneshot : oneshot port map (trigger => probeout1, clk => clk, pulse => startchannelvalid);
 
     -- depend on input value from VIO or VME command, decide which CS to use
-    ADC_CS0_18 <= CS and CS_SEL(0); 
-    ADC_CS1_18 <= CS and CS_SEL(1); 
-    ADC_CS2_18 <= CS and CS_SEL(2); 
-    ADC_CS3_18 <= CS and CS_SEL(3); 
-    ADC_CS4_18 <= CS and CS_SEL(4); 
+    ADC_CS0_18 <= '1'; --CS and CS_SEL(0); 
+    ADC_CS1_18 <= CS; -- and CS_SEL(1); 
+    ADC_CS2_18 <= '1'; --CS and CS_SEL(2); 
+    ADC_CS3_18 <= '1'; --CS and CS_SEL(3); 
+    ADC_CS4_18 <= '1'; --CS and CS_SEL(4); 
 
     --startchannelvalid <= probeout1(0);
 
