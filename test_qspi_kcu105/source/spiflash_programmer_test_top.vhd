@@ -598,7 +598,8 @@ spiflashprogrammer_inst: spiflashprogrammer_test port map
     port map (
       CLK            => clk_sysclk1p25, 
       --CLK_div2       => clk_sysclk625k, 
-      CLK_div2       => clk_in_buf, 
+      --CLK_div2       => clk_in_buf, 
+      CLK_div2       => CLK10, 
       ADC_CS0_18     => ADC_CS0_18,
       ADC_CS1_18     => ADC_CS1_18,
       ADC_CS2_18     => ADC_CS2_18,
