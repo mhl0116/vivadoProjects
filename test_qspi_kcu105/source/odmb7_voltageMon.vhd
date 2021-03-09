@@ -26,6 +26,14 @@ end odmb7_voltageMon;
 
 architecture Behavioral of odmb7_voltageMon is
 
+    component SpiCsBflop is
+      port (
+        C : in  std_logic;
+        D : in std_logic;
+        Q : out std_logic
+      );
+    end component SpiCsBflop;
+
     component ila_2 is
         port (
             clk : in std_logic := '0';
@@ -48,6 +56,7 @@ architecture Behavioral of odmb7_voltageMon is
 
     signal current_channel : std_logic_vector(2 downto 0) := "000";
     signal mon_SpiCsB : std_logic := '1';
+    signal SpiCsB_N        : std_logic;
     --signal startchannelvalid : std_logic := '0';
     signal mon_start : std_logic := '0';
     signal mon_cmdcounter  : std_logic_vector(7 downto 0) := x"00";  
@@ -82,8 +91,9 @@ architecture Behavioral of odmb7_voltageMon is
 begin
 
 SCK <= CLK;
-DIN <= mon_cmdreg(0);
-CS <= mon_SpiCsB;
+DIN <= mon_cmdreg(7);
+--CS <= mon_SpiCsB;
+CS <= SpiCsB_N;
 DATA <= dout_data;
 
 processmon : process (CLK)
@@ -98,29 +108,34 @@ begin
         --if (mon_start = '1') then  
             mon_start <= '1';
             current_channel <= STARTCHANNEL;
-            mon_cmdcounter <= x"11";  -- 18 clks conversion  
+            --mon_cmdcounter <= x"11";  -- 18 clks conversion  
             mon_inprogress <= '1';
             monstate <= S_MON_ASSCS1;
         end if;
         -- send 8 bits control sequence 
         when S_MON_ASSCS1 =>
             mon_SpiCsB <= '0';
+            mon_cmdcounter <= x"11";  -- 18 clks conversion  
             mon_cmdreg <=  START & current_channel & RNG & BIP & PD1 & PD0; 
             monstate <= S_MON_CTRLSEQ;
           
         when S_MON_CTRLSEQ =>    
-            if (mon_cmdcounter /= 17) then mon_cmdcounter <= mon_cmdcounter - 1; 
+            if (mon_cmdcounter > 10) then mon_cmdcounter <= mon_cmdcounter - 1; 
                 mon_cmdreg <= mon_cmdreg(6 downto 0) & '0'; 
+            elsif (mon_cmdcounter > 1) then
+                mon_cmdcounter <= mon_cmdcounter - 1;
+                mon_cmdreg <= x"00";
             else
+                -- all 7 channels finished
                 if (current_channel = "111") then 
                     current_channel <= STARTCHANNEL;
                     monstate <= S_MON_WAIT; 
                     mon_inprogress <= '0';
+                    mon_start <= '0';
                     ctrlseq_done <= '1';
-                else 
+                else
                     current_channel <= current_channel + 1;
                     monstate <= S_MON_ASSCS1;
-                    mon_cmdcounter <= x"11";
                 end if;
             end if;
 
@@ -128,7 +143,6 @@ begin
         when S_MON_WAIT =>
         if (data_done = '1') then
             monstate <= S_MON_IDLE;
-            mon_start <= '0';
         end if;
    end case;  
  end if;  -- Clk
@@ -143,7 +157,7 @@ processdout : process (CLK)
     case doutstate is 
     when S_DOUT_IDLE =>
         if (mon_start = '1') then  
-            dout_counter <= x"0d";  -- 18 clks conversion, after cs goes low for 13 clk, data starts to arrive  
+            dout_counter <= x"0c";  -- 18 clks conversion, after cs goes low for 13 clk, data starts to arrive  
             data_done <= '0';
             data_valid_cntr <= x"11";
             data_valid <= '0';
@@ -151,18 +165,18 @@ processdout : process (CLK)
         end if;
 
     when S_DOUT_WAIT =>    
-        if (dout_counter /= 13) then
+        if (dout_counter /= 0) then
          dout_counter <= dout_counter - 1; 
         else
             doutstate <= S_DOUT_DATA;
         end if;
                        
     when S_DOUT_DATA =>    
-        data_valid_cntr <= data_valid_cntr + 1;
-        if (data_valid_cntr < 12) then -- 12 bits of valid data 
-            dout_data <= dout_data(11 downto 1) & DOUT;  
+        data_valid_cntr <= data_valid_cntr - 1;
+        if (data_valid_cntr > 5 ) then -- 12 bits of valid data 
+            dout_data <= dout_data(10 downto 0) & DOUT;  
             data_valid <= '0';
-        elsif (data_valid_cntr /= 17) then 
+        elsif (data_valid_cntr = 4) then 
             data_valid <= '1';
         else
             data_valid <= '0';
@@ -171,6 +185,10 @@ processdout : process (CLK)
                 doutstate <= S_DOUT_IDLE;
                 data_done <= '1';
                 --mon_start <= '0';
+            else
+                if (data_valid_cntr = 0) then
+                    data_valid_cntr <= x"11";
+                end if;
             end if;  -- if ctrl sequence is done
          end if;
     end case;  
@@ -205,4 +223,31 @@ i_ila : ila_2
         probe11 => CLK  
 );
 
+negedgecs_flop : SpiCsBflop    -- launch SpicCsB on neg edge
+port map (
+        C => CLK,
+        D => mon_SpiCsB,  
+        Q => SpiCsB_N   
+);
+
 end Behavioral;
+--------------------------------------   Neg edge Flop ------------------------
+--library ieee;
+--use ieee.std_logic_1164.all;
+--
+--entity SpiCsBflop is  
+--   port(C, D  : in std_logic; 
+--        Q     : out std_logic);  
+--end SpiCsBflop;  
+--
+--architecture flop of SpiCsBflop is  -- neg edge flop
+--   begin  
+--     process (C)  
+--     begin  
+--       if falling_edge(C) then         
+--          Q <= D;  
+--       end if;  
+--     end process;  
+--end flop;
+
+

@@ -22,6 +22,15 @@ entity odmb7_voltageMon_wrapper is
 end odmb7_voltageMon_wrapper;
 
 architecture Behavioral of odmb7_voltageMon_wrapper is
+
+component oneshot is
+  port (
+    trigger: in  std_logic;
+    clk : in std_logic;
+    pulse: out std_logic
+  );
+end component;
+
   component odmb7_voltageMon is
     port (
         CLK    : in  std_logic;
@@ -49,9 +58,12 @@ architecture Behavioral of odmb7_voltageMon_wrapper is
   signal CS_SEL : std_logic_vector(4 downto 0) := "11111"; 
   signal dout_data : std_logic_vector(11 downto 0) := x"000"; 
   signal probeout1 : std_logic := '0'; 
+  signal startchannelvalid: std_logic := '0';
   
 
 begin
+
+    u_oneshot : oneshot port map (trigger => probeout1, clk => clk, pulse => startchannelvalid);
 
     -- depend on input value from VIO or VME command, decide which CS to use
     ADC_CS0_18 <= CS and CS_SEL(0); 

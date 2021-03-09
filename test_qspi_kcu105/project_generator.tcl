@@ -36,6 +36,7 @@ set files [list \
 "source/odmb7_voltageMon_wrapper.vhd"\
 "source/leds_0to7.vhd"\
 "source/oneshot.vhd"\
+"source/SpiCsBflop.vhd"\
 "ip/xcku035-ffva1156-1-c/clockManager/clockManager.xci"\
 "ip/xcku035-ffva1156-1-c/ila_0/ila_0.xci"\
 "ip/xcku035-ffva1156-1-c/ila_1/ila_1.xci"\
